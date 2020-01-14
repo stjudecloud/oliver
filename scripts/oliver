@@ -13,6 +13,8 @@ if __name__ == "__main__":
 
     subcommand_mapping = {}
     for name, module in SUBCOMMANDS.items():
+        if not hasattr(module, 'register_subparser') or not hasattr(module, 'call'):
+            raise RuntimeError(f"Subcommand does not have required methods: {name}!")
         module.register_subparser(subparsers)
         subcommand_mapping[name] = module.call
 
