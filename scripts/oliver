@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+import argparse
+
+from oliver.subcommands import dummy
+
+SUBCOMMANDS = {
+    'dummy': dummy
+}
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="An opinionated Cromwell orchestration system.")
+    subparsers = parser.add_subparsers(dest="subcommand")
+
+    subcommand_mapping = {}
+    for name, module in SUBCOMMANDS.items():
+        module.register_subparser(subparsers)
+        subcommand_mapping[name] = module.call
+
+    args = parser.parse_args()
+
+    if args.subcommand not in subcommand_mapping:
+        raise RuntimeError(f"Invalid subcommand: {args.subcommand}!")
+
+    subcommand_mapping[args.subcommand](args)
