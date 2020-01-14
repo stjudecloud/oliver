@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 import argparse
 
-from oliver.subcommands import dummy
+from oliver.subcommands import configure, status 
 
 SUBCOMMANDS = {
-    'dummy': dummy
+    'status': status,
+    'configure': configure
 }
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="An opinionated Cromwell orchestration system.")
+    
+    # Common arguments
+    parser.add_argument("--host", help="Cromwell host location.", default="http://localhost:8000")
+    parser.add_argument("-v", "--verbose", help="Print verbose output.", default=False, action="store_true")
+
+    # Subparsers
     subparsers = parser.add_subparsers(dest="subcommand")
 
     subcommand_mapping = {}
