@@ -28,10 +28,16 @@ oliver --help
 
 Currently, the following commands are supported.
 
-| Command | Description |
-|-|-|
-| `configure` | Configure default parameters, such as the Cromwell server location and API version. |
-| `status` | Get status information about Cromwell workflows. |
+| Command     | Description                                                |
+| ----------- | ---------------------------------------------------------- |
+| `configure` | Configure Oliver with default options.                     |
+| `config`    | Set or get a single config value from Oliver.              |
+| `inspect`   | Inspect a workflow.                                        |
+| `kill`      | Kill a workflow running on a Cromwell server.              |
+| `logs`      | Find all reported logs for a given workflow.               |
+| `outputs`   | Find all reported outputs for a given workflow.            |
+| `runtime`   | Get the runtime attributes used for a specific call.       |
+| `status`    | Report various statistics about a running Cromwell server. |
 
 ## Author
 
