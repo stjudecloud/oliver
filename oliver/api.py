@@ -76,9 +76,13 @@ class CromwellAPI:
         "GET /api/workflows/{version}/{id}/timing"
         raise NotImplementedError()
 
-    def get_workflows_metadata(self):
+
+    def get_workflows_metadata(self, workflow_id):
         "GET /api/workflows/{version}/{id}/metadata"
-        raise NotImplementedError()
+
+        _, data = self._api_call(f"/api/workflows/{{version}}/{workflow_id}/metadata")
+        return data
+
 
     def get_workflows_call_caching_diff(self):
         "GET /api/workflows/{version}/callcaching/diff"
