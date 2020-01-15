@@ -2,8 +2,10 @@ from ..config import read_config, write_config
 
 def call(args):
     cromwell_server = input("What is the Cromwell server address? ")
+    cromwell_api_version = input("What is the Cromwell API version? ")
     config = {
-        "cromwell-server": cromwell_server
+        "cromwell_server": cromwell_server,
+        "cromwell_api_version": cromwell_api_version
     }
     write_config(config)
 
