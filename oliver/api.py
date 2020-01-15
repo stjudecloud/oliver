@@ -1,59 +1,89 @@
-def post_workflows():
-    "POST /api/workflows/{version}"
-    raise NotImplementedError()
+import json
 
-def post_workflows_batch():
-    "POST /api/workflows/{version}/batch"
-    raise NotImplementedError()
+from requests import request
+from urllib.parse import urljoin
 
-def get_workflows_labels():
-    "GET /api/workflows/{version}/{id}/labels"
-    raise NotImplementedError()
+class CromwellAPI:
 
-def patch_workflows_labels():
-    "PATCH /api/workflows/{version}/{id}/labels"
-    raise NotImplementedError()
+    def __init__(self, server = "http://localhost:8000", version = "v1", 
+                headers = { 'Accept' : 'application/json'}):
+        self.server = server
+        self.version = version
+        self.headers = headers
 
-def post_workflows_abort():
-    "POST /api/workflows/{version}/{id}/abort"
-    raise NotImplementedError()
+    def _api_call(self, route, params = {}, data = None, method="GET"):
+        url = urljoin(self.server, route).format(
+            version = self.version
+        )
+        
+        response = request(method, url, headers=self.headers, params=params, data=data)
+        return response.status_code, json.loads(response.content)
 
-def post_workflows_release_hold():
-    "POST /api/workflows/{version}/{id}/releaseHold"
-    raise NotImplementedError()
+    def post_workflows(self):
+        "POST /api/workflows/{version}"
+        raise NotImplementedError()
 
-def get_workflows_status():
-    "GET /api/workflows/{version}/{id}/status"
-    raise NotImplementedError()
+    def post_workflows_batch(self):
+        "POST /api/workflows/{version}/batch"
+        raise NotImplementedError()
 
-def get_workflows_outputs():
-    "GET /api/workflows/{version}/{id}/outputs"
-    raise NotImplementedError()
+    def get_workflows_labels(self):
+        "GET /api/workflows/{version}/{id}/labels"
+        raise NotImplementedError()
 
-def get_workflows_logs():
-    "POST /api/workflows/{version}/{id}/logs"
-    raise NotImplementedError()
+    def patch_workflows_labels(self):
+        "PATCH /api/workflows/{version}/{id}/labels"
+        raise NotImplementedError()
 
-def get_workflows_query():
-    "GET /api/workflows/{version}/query"
-    raise NotImplementedError()
+    def post_workflows_abort(self):
+        "POST /api/workflows/{version}/{id}/abort"
+        raise NotImplementedError()
 
-def post_workflows_query():
-    "POST /api/workflows/{version}/query"
-    raise NotImplementedError()
+    def post_workflows_release_hold(self):
+        "POST /api/workflows/{version}/{id}/releaseHold"
+        raise NotImplementedError()
 
-def get_workflows_timing():
-    "GET /api/workflows/{version}/{id}/timing"
-    raise NotImplementedError()
+    def get_workflows_status(self):
+        "GET /api/workflows/{version}/{id}/status"
+        raise NotImplementedError()
 
-def get_workflows_metadata():
-    "GET /api/workflows/{version}/{id}/metadata"
-    raise NotImplementedError()
+    def get_workflows_outputs(self):
+        "GET /api/workflows/{version}/{id}/outputs"
+        raise NotImplementedError()
 
-def get_workflows_call_caching_diff():
-    "GET /api/workflows/{version}/callcaching/diff"
-    raise NotImplementedError()
+    def get_workflows_logs(self):
+        "POST /api/workflows/{version}/{id}/logs"
+        raise NotImplementedError()
 
-def get_workflows_backends():
-    "GET /api/workflows/{version}/backends"
-    raise NotImplementedError()
+    def get_workflows_query(self, includeSubworkflows=True, statuses=None):
+        "GET /api/workflows/{version}/query"
+        params = { "includeSubworkflows": includeSubworkflows }
+
+        if statuses:
+            params["status"] = statuses
+
+        _, data = self._api_call("/api/workflows/{version}/query", params=params)
+        if not 'results' in data:
+            raise RuntimeError("Expected 'results' key in response!")
+
+        return data['results']
+
+    def post_workflows_query(self):
+        "POST /api/workflows/{version}/query"
+        raise NotImplementedError()
+
+    def get_workflows_timing(self):
+        "GET /api/workflows/{version}/{id}/timing"
+        raise NotImplementedError()
+
+    def get_workflows_metadata(self):
+        "GET /api/workflows/{version}/{id}/metadata"
+        raise NotImplementedError()
+
+    def get_workflows_call_caching_diff(self):
+        "GET /api/workflows/{version}/callcaching/diff"
+        raise NotImplementedError()
+
+    def get_workflows_backends(self):
+        "GET /api/workflows/{version}/backends"
+        raise NotImplementedError()

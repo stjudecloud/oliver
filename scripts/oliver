@@ -2,6 +2,7 @@
 import argparse
 import sys
 
+from oliver.config import read_config
 from oliver.subcommands import configure, status 
 
 SUBCOMMANDS = {
@@ -9,11 +10,25 @@ SUBCOMMANDS = {
     'configure': configure
 }
 
+REQUIRED_ARGS = ['cromwell_server', 'cromwell_api_version']
+
+def ensure_required_args(args):
+    missing_args = []
+
+    for a in REQUIRED_ARGS:
+        if not a in args or not args[a]:
+            missing_args.append(a)
+
+    if missing_args:
+        raise RuntimeError(f"Missing required arguments: {missing_args}.\n\n" + \
+                           "Please run 'oliver configure' or pass their respective flags on the command line!")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="An opinionated Cromwell orchestration system.")
     
     # Common arguments
-    parser.add_argument("--host", help="Cromwell host location.", default="http://localhost:8000")
+    parser.add_argument("--cromwell-server", help="Cromwell host location.")
+    parser.add_argument("--cromwell-api-version", help="Cromwell API version.")
     parser.add_argument("-v", "--verbose", help="Print verbose output.", default=False, action="store_true")
 
     # Subparsers
@@ -26,12 +41,21 @@ if __name__ == "__main__":
         module.register_subparser(subparsers)
         subcommand_mapping[name] = module.call
 
-    args = parser.parse_args()
+    args = vars(parser.parse_args())
 
-    if not args.subcommand:
+    for k, v in read_config().items():
+        # if the user has not supplied a parameter on the command line, add the default
+        # value from the config to `args`.
+        if not k in args or not args[k]:
+            args[k] = v
+
+    if 'subcommand' in args and args['subcommand'] != "configure":
+        ensure_required_args(args)
+
+    if not 'subcommand' in args:
         parser.print_help()
         sys.exit(1)
-    elif args.subcommand not in subcommand_mapping:
-        raise RuntimeError(f"Invalid subcommand: {args.subcommand}!")
+    elif args['subcommand'] not in subcommand_mapping:
+        raise RuntimeError(f"Invalid subcommand: {args['subcommand']}!")
 
-    subcommand_mapping[args.subcommand](args)
+    subcommand_mapping[args['subcommand']](args)

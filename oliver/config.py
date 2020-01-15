@@ -9,7 +9,7 @@ def read_config(config_file=DEFAULT_LOCATION, default={}):
     if not os.path.exists(path):
         return default
     
-    with open(config_file, "r") as f:
+    with open(path, "r") as f:
         return json.load(f)
 
 
