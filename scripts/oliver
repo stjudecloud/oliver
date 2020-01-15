@@ -3,11 +3,12 @@ import argparse
 import sys
 
 from oliver.config import read_config
-from oliver.subcommands import configure, status 
+from oliver.subcommands import configure, inspect, status 
 
 SUBCOMMANDS = {
-    'status': status,
-    'configure': configure
+    'configure': configure,
+    'inspect': inspect,
+    'status': status
 }
 
 REQUIRED_ARGS = ['cromwell_server', 'cromwell_api_version']

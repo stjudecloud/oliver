@@ -4,7 +4,7 @@ from tabulate import tabulate
 from .. import api
 
 def call(args):
-    cromwell = api.CromwellAPI(server=args['cromwell_server'])
+    cromwell = api.CromwellAPI(server=args['cromwell_server'], version=args['cromwell_api_version'])
 
     statuses = None
     if not args['show_all_statuses']:
