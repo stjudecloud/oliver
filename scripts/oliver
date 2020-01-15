@@ -52,7 +52,7 @@ if __name__ == "__main__":
     if 'subcommand' in args and args['subcommand'] != "configure":
         ensure_required_args(args)
 
-    if not 'subcommand' in args:
+    if not 'subcommand' in args or not args['subcommand']:
         parser.print_help()
         sys.exit(1)
     elif args['subcommand'] not in subcommand_mapping:
