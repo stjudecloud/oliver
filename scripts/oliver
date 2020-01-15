@@ -3,11 +3,12 @@ import argparse
 import sys
 
 from oliver.config import read_config
-from oliver.subcommands import configure, inspect, outputs, status 
+from oliver.subcommands import configure, inspect, logs, outputs, status 
 
 SUBCOMMANDS = {
     'configure': configure,
     'inspect': inspect,
+    'logs': logs,
     'outputs': outputs,
     'status': status
 }
