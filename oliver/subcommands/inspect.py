@@ -30,9 +30,18 @@ def call(args):
 
     calls = []
     for name, call in metadata["calls"].items():
-        for i, attempt in enumerate(call):
-            call_start_date = pendulum.parse(attempt["start"]) if "start" in attempt else None
-            call_end_date = pendulum.parse(attempt["end"]) if "end" in attempt else None
+        for process in call:
+            attempt = process["attempt"] if "attempt" in process else None
+            shard = process["shardIndex"] if "shardIndex" in process else None
+
+            # TODO: experimental, this code can be removed in the future if no
+            # runtime errors are raised. If they are raised, we'll need to
+            # further flesh out how Cromwell is reporting results.
+            if not attempt or not shard:
+                raise RuntimeError("Expected key is missing! The code needs to be updated, please contact the author!")
+
+            call_start_date = pendulum.parse(process["start"]) if "start" in process else None
+            call_end_date = pendulum.parse(process["end"]) if "end" in process else None
 
             call_start = ""
             duration = "Not Started"
@@ -46,8 +55,9 @@ def call(args):
 
             calls.append([
                 name,
-                i + 1,
-                attempt["executionStatus"] if "executionStatus" in attempt else "",
+                attempt,
+                shard,
+                process["executionStatus"] if "executionStatus" in process else "",
                 call_start,
                 duration
             ])
@@ -60,7 +70,7 @@ def call(args):
     print(f"Submission: {workflow_submission}")
     print(f"Duration: {workflow_duration}")
     print()
-    print(tabulate(calls, headers=["Step", "Attempt", "Status", "Start", "Duration"], tablefmt=args['grid_style']))
+    print(tabulate(calls, headers=["Step", "Attempt", "Shard", "Status", "Start", "Duration"], tablefmt=args['grid_style']))
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser("inspect", help="Inspect a workflow.")
