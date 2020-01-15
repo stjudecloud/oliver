@@ -35,9 +35,11 @@ class CromwellAPI:
         "PATCH /api/workflows/{version}/{id}/labels"
         raise NotImplementedError()
 
-    def post_workflows_abort(self):
+    def post_workflows_abort(self, workflow_id):
         "POST /api/workflows/{version}/{id}/abort"
-        raise NotImplementedError()
+
+        _, data = self._api_call(f"/api/workflows/{{version}}/{workflow_id}/abort", method="POST")
+        return data
 
     def post_workflows_release_hold(self):
         "POST /api/workflows/{version}/{id}/releaseHold"
