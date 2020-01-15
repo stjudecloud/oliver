@@ -11,17 +11,27 @@ class CromwellAPI:
         self.version = version
         self.headers = headers
 
-    def _api_call(self, route, params = {}, data = None, method="GET"):
+    def _api_call(self, route, params = {}, data = None, files = None, method="GET"):
         url = urljoin(self.server, route).format(
             version = self.version
         )
         
-        response = request(method, url, headers=self.headers, params=params, data=data)
+        response = request(method, url, headers=self.headers, params=params, data=data, files=files)
         return response.status_code, json.loads(response.content)
 
-    def post_workflows(self):
+    def post_workflows(self, workflowUrl, workflowInputs, workflowOptions):
         "POST /api/workflows/{version}"
-        raise NotImplementedError()
+
+        workflowInputs_file = open(workflowInputs, "rb")
+        workflowInputs_text = workflowInputs_file.read()
+
+        files = {
+            "workflowUrl": workflowUrl,
+            "workflowInputs": workflowInputs_text
+        }
+
+        _, data = self._api_call("/api/workflows/{version}", method="POST", files=files)
+        return data
 
     def post_workflows_batch(self):
         "POST /api/workflows/{version}/batch"
