@@ -1,13 +1,18 @@
 from tabulate import tabulate
 
-from .. import api
+from .. import api, utils
 
 def call(args):
     cromwell = api.CromwellAPI(server=args['cromwell_server'], version=args['cromwell_api_version'])
     resp = cromwell.post_workflows_abort(args['workflow-id'])
+
+    if not "id" in resp:
+        utils.print_error_as_table(resp["status"], resp["message"])
+        return
+
     results = [{
-        "Status": resp["status"],
-        "Message": resp["message"],
+        "Workflow ID": resp["id"],
+        "Status": resp["status"]
     }]
 
     if len(results) > 0:

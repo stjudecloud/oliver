@@ -25,7 +25,7 @@ def call(args):
 
             if attempt == args['attempt'] and shard == args['shard'] and name == args['call-name']:
                 if "runtimeAttributes" not in process:
-                    calls_that_match.append({"Status": "Error", "Message": "Job did not have any runtime attributes set at the time of query."})
+                    calls_that_match.append([{"Status": "Error", "Message": "Job did not have any runtime attributes set at the time of query."}])
                 else:
                     calls_that_match.append([{"Key": k, "Value": v} for k, v in process['runtimeAttributes'].items()])
 
