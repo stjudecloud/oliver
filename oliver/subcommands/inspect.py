@@ -19,11 +19,11 @@ def call(args):
     workflow_start_date = pendulum.parse(metadata["start"]) if "start" in metadata else None
     workflow_end_date = pendulum.parse(metadata["end"]) if "end" in metadata else None
     workflow_start = ""
-    workflow_duration = "Not Started"
+    workflow_duration = "Not started"
 
     if workflow_start_date:
         workflow_start = workflow_start_date.to_day_datetime_string()
-        workflow_duration = "In Progress"
+        workflow_duration = utils.duration_to_text(pendulum.now() - workflow_start_date) + " (In progress)"
 
     if workflow_start_date and workflow_end_date:
         workflow_duration = utils.duration_to_text(workflow_end_date - workflow_start_date)
@@ -44,14 +44,14 @@ def call(args):
             call_end_date = pendulum.parse(process["end"]) if "end" in process else None
 
             call_start = ""
-            duration = "Not Started"
+            duration = "Not started"
 
             if call_start_date:
                 call_start = call_start_date.to_day_datetime_string()
-                duration = "In Progress"
+                duration = utils.duration_to_text(pendulum.now() - call_start_date)
 
             if call_start_date and call_end_date:
-                duration = utils.duration_to_text(call_end_date - call_start_date)
+                duration = utils.duration_to_text(call_end_date - call_start_date) + " (In progress)"
 
             result = {
                 "Call Name": name,
