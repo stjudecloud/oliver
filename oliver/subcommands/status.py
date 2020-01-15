@@ -12,12 +12,15 @@ def call(args):
 
     workflows = cromwell.get_workflows_query(includeSubworkflows=False, statuses=statuses)
 
-    results = [(
-        w["id"] if "id" in w else "", 
-        w["name"] if "name" in w else "", 
-        w["status"] if "status" in w else "",
-        pendulum.parse(w["start"]).diff_for_humans() if "start" in w else "") for w in workflows]
-    print(tabulate(results, headers=["ID", "Name", "Status", "Start"], tablefmt=args['grid_style']))
+    results = [
+        {
+            "Workflow ID": w["id"] if "id" in w else "", 
+            "Workflow Name": w["name"] if "name" in w else "", 
+            "Status": w["status"] if "status" in w else "",
+            "Start": pendulum.parse(w["start"]).diff_for_humans() if "start" in w else ""
+        } for w in workflows]
+    if len(results) > 0:
+        print(tabulate([r.values() for r in results], headers=results[0].keys(), tablefmt=args['grid_style']))
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser("status", help="Report various statistics about a running Cromwell server.")

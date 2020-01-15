@@ -53,14 +53,16 @@ def call(args):
             if call_start_date and call_end_date:
                 duration = utils.duration_to_text(call_end_date - call_start_date)
 
-            calls.append([
-                name,
-                attempt,
-                shard,
-                process["executionStatus"] if "executionStatus" in process else "",
-                call_start,
-                duration
-            ])
+            result = {
+                "Call Name": name,
+                "Attempt": attempt,
+                "Shard": shard,
+                "Status": process["executionStatus"] if "executionStatus" in process else "",
+                "Start": call_start,
+                "Duration": duration
+            }
+            
+            calls.append(result)
 
     print()
     print(f"Workflow Name: {workflow_name}")
@@ -70,7 +72,9 @@ def call(args):
     print(f"Submission: {workflow_submission}")
     print(f"Duration: {workflow_duration}")
     print()
-    print(tabulate(calls, headers=["Step", "Attempt", "Shard", "Status", "Start", "Duration"], tablefmt=args['grid_style']))
+
+    if len(calls) > 0:
+        print(tabulate([call.values() for call in calls], headers=calls[0].keys(), tablefmt=args['grid_style']))
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser("inspect", help="Inspect a workflow.")

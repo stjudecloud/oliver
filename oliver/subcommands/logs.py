@@ -20,10 +20,23 @@ def call(args):
 
             stdout = process["stdout"] if "stdout" in process else ""
             stderr = process["stderr"] if "stderr" in process else ""
-            results.append([name, attempt, shard, "stdout", stdout])
-            results.append([name, attempt, shard, "stderr", stderr])
+            results.append({
+                "Call Name": name, 
+                "Attempt": attempt, 
+                "Shard": shard, 
+                "Log Name": "stdout", 
+                "Location": stdout
+            })
+            results.append({
+                "Call Name": name, 
+                "Attempt": attempt, 
+                "Shard": shard, 
+                "Log Name": "stderr", 
+                "Location": stderr 
+            })
 
-    print(tabulate(results, headers=["Name", "Attempt", "Shard", "Log Name", "Location"], tablefmt=args['grid_style']))
+    if len(results) > 0:
+        print(tabulate([r.values() for r in results], headers=results[0].keys(), tablefmt=args['grid_style']))
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser("logs", help="Find all reported logs for a given workflow.")
