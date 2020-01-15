@@ -22,7 +22,7 @@ def call(args):
     workflow_duration = "Not Started"
 
     if workflow_start_date:
-        workflow_start = workflow_start_date.diff_for_humans()
+        workflow_start = workflow_start_date.to_day_datetime_string()
         workflow_duration = "In Progress"
 
     if workflow_start_date and workflow_end_date:
@@ -47,7 +47,7 @@ def call(args):
             duration = "Not Started"
 
             if call_start_date:
-                call_start = call_start_date.diff_for_humans()
+                call_start = call_start_date.to_day_datetime_string()
                 duration = "In Progress"
 
             if call_start_date and call_end_date:
