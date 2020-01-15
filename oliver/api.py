@@ -47,9 +47,11 @@ class CromwellAPI:
         "GET /api/workflows/{version}/{id}/status"
         raise NotImplementedError()
 
-    def get_workflows_outputs(self):
+    def get_workflows_outputs(self, workflow_id):
         "GET /api/workflows/{version}/{id}/outputs"
-        raise NotImplementedError()
+
+        _, data = self._api_call(f"/api/workflows/{{version}}/{workflow_id}/outputs")
+        return data
 
     def get_workflows_logs(self):
         "POST /api/workflows/{version}/{id}/logs"
