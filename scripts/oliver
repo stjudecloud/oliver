@@ -9,13 +9,13 @@ SUBCOMMANDS = {
     'configure': configure,
     'config': config,
     'cosmos': cosmos,
-    'submit': submit,
     'inspect': inspect,
     'kill': kill,
     'logs': logs,
     'outputs': outputs,
     'runtime': runtime,
-    'status': status
+    'status': status,
+    'submit': submit
 }
 
 REQUIRED_ARGS = ['cromwell_server', 'cromwell_api_version']
