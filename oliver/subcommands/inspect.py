@@ -4,6 +4,12 @@ from tabulate import tabulate
 
 from .. import api, utils
 
+def report_failure(failure, indent, step = 2, offset = 2):
+    print((" " * offset ) + "| " + (" " * indent) + failure["message"])
+    for f in failure["causedBy"]:
+        report_failure(f, indent + step)
+
+
 def call(args):
     cromwell = api.CromwellAPI(server=args['cromwell_server'], version=args['cromwell_api_version'])
     metadata = cromwell.get_workflows_metadata(args['workflow-id'])
@@ -72,15 +78,26 @@ def call(args):
     print(f"Workflow Version: {workflow_language}")
     print(f"Submission: {workflow_submission}")
     print(f"Duration: {workflow_duration}")
-    print()
+
+    # Show labels if they exist
     if args['show_labels']:
         if 'labels' not in metadata:
             print("Labels: None")
         else:
             print("Labels:")
+            print()
             for k, v in metadata['labels'].items():
                 print(f"  {k} = {v}")
-    print()
+            print()
+
+    # Show failures if they exist
+    if "failures" in metadata and len(metadata["failures"]) > 0:
+        print("Failures:")
+        print()
+        for i ,failure in enumerate(metadata["failures"]):
+            print(f"  == Failure {i + 1} ==")
+            report_failure(failure, 0, offset = 2)
+            print()
 
     if len(calls) > 0:
         print(tabulate([call.values() for call in calls], headers=calls[0].keys(), tablefmt=args['grid_style']))
