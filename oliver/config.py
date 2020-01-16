@@ -4,7 +4,9 @@ import os
 DEFAULT_LOCATION = "~/.oliver_config"
 DEFAULT_CONFIG = {
     "cromwell_server": "http://localhost:8000",
-    "cromwell_api_version": "v1"
+    "cromwell_api_version": "v1",
+    "azure_resource_group": "", 
+    "cosmos_account_name": "" 
 }
 
 def get_default_config():
