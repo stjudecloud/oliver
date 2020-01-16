@@ -1,3 +1,4 @@
 pendulum==2.0.5
 requests==2.22.0
 tabulate==0.8.6
+azure-cosmos==3.1.2
