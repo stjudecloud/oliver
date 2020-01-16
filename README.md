@@ -1,5 +1,5 @@
 <h1 align="center">Oliver</h1>
-<p>
+<p align="center">
   <a href="https://www.npmjs.com/package/oliver" target="_blank">
     <img alt="Version" src="https://img.shields.io/static/v1?label=version&message=alpha&color=orange">
   </a>
