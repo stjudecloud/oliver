@@ -37,9 +37,7 @@ def parse_workflow_inputs_source(workflow_inputs):
             workflowInputs_file = open(workflow_inputs[0], "rb")
             workflowInputs_text = workflowInputs_file.read()
 
-            json.loads(workflowInputs_text)
-
-            return workflowInputs_text, {}, {}
+            return workflowInputs_text, json.dumps({}), json.dumps({})
         except (ValueError, FileNotFoundError) as e:
             inputs, runtime_inputs, properties = parse_workflow_inputs(workflow_inputs)
             if len(inputs) == 0:
