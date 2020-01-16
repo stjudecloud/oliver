@@ -35,6 +35,10 @@ def call(args):
                 "Location": stderr 
             })
 
+    if "output_prefix" in args:
+        for result in results:
+            result["Location"] = args["output_prefix"] + result["Location"]
+
     if len(results) > 0:
         print(tabulate([r.values() for r in results], headers=results[0].keys(), tablefmt=args['grid_style']))
 
