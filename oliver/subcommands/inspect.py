@@ -13,7 +13,6 @@ def call(args):
     workflow_language = metadata['actualWorkflowLanguage'] if 'actualWorkflowLanguage' in metadata else ''
     if workflow_language:
         workflow_language += " " + metadata['actualWorkflowLanguageVersion'] if 'actualWorkflowLanguageVersion' in metadata else ''
-    workflow_labels = ', '.join(metadata['labels'] if 'labels' in metadata else [])
     workflow_submission = metadata['submission'] if "submission" in metadata else ""
 
     workflow_start_date = pendulum.parse(metadata["start"]) if "start" in metadata else None
@@ -47,7 +46,6 @@ def call(args):
             duration = ""
 
             if call_start_date:
-                call_start = call_start_date.to_day_datetime_string()
                 duration = utils.duration_to_text(pendulum.now() - call_start_date)  + " (In progress)"
 
             if call_start_date and call_end_date:
@@ -58,18 +56,30 @@ def call(args):
                 "Attempt": attempt,
                 "Shard": shard,
                 "Status": process["executionStatus"] if "executionStatus" in process else "",
-                "Start": call_start,
+                "Start": call_start_date,
                 "Duration": duration
             }
             
             calls.append(result)
 
+    calls = sorted(calls, key=lambda k: k['Start'])
+    
+    for call in calls:
+        call["Start"] = call["Start"].to_day_datetime_string()
+
     print(f"Workflow Name: {workflow_name}")
     print(f"Workflow ID: {workflow_id}")
     print(f"Workflow Version: {workflow_language}")
-    print(f"Labels: {workflow_labels}")
     print(f"Submission: {workflow_submission}")
     print(f"Duration: {workflow_duration}")
+    print()
+    if args['show_labels']:
+        if 'labels' not in metadata:
+            print("Labels: None")
+        else:
+            print("Labels:")
+            for k, v in metadata['labels'].items():
+                print(f"  {k} = {v}")
     print()
 
     if len(calls) > 0:
@@ -78,4 +88,5 @@ def call(args):
 def register_subparser(subparser):
     subcommand = subparser.add_parser("inspect", help="Inspect a workflow.")
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
+    subcommand.add_argument("-l", "--show-labels", help="Show labels associated with the workflow", default=False, action="store_true")
     subcommand.add_argument("--grid-style", help="Any valid `tablefmt` for python-tabulate.", default="fancy_grid")

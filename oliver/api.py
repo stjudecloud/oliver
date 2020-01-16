@@ -19,7 +19,7 @@ class CromwellAPI:
         response = request(method, url, headers=self.headers, params=params, data=data, files=files)
         return response.status_code, json.loads(response.content)
 
-    def post_workflows(self, workflowUrl, workflowInputs, workflowOptions):
+    def post_workflows(self, workflowUrl, workflowInputs, workflowOptions={}):
         "POST /api/workflows/{version}"
 
         workflowInputs_file = open(workflowInputs, "rb")
