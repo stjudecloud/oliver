@@ -16,21 +16,23 @@ class CromwellAPI:
             version = self.version
         )
         
-        response = request(method, url, headers=self.headers, params=params, data=data, files=files)
+        response = request(method, url, headers = self.headers, params = params, data = data, files = files)
         return response.status_code, json.loads(response.content)
 
-    def post_workflows(self, workflowUrl, workflowInputs, workflowOptions={}):
+    def post_workflows(self, workflowSource = None, workflowUrl = None, workflowInputs = None, workflowOptions = {}, labels = {}):
         "POST /api/workflows/{version}"
 
-        workflowInputs_file = open(workflowInputs, "rb")
-        workflowInputs_text = workflowInputs_file.read()
+        if workflowSource is None and workflowUrl is None:
+            raise RuntimeError("Expected either 'workflowSource' or 'workflowUrl'!")
 
         files = {
             "workflowUrl": workflowUrl,
-            "workflowInputs": workflowInputs_text
+            "workflowInputs": workflowInputs,
+            "workflowOptions": workflowOptions,
+            "labels": labels
         }
 
-        _, data = self._api_call("/api/workflows/{version}", method="POST", files=files)
+        _, data = self._api_call("/api/workflows/{version}", method = "POST", files = files)
         return data
 
     def post_workflows_batch(self):
