@@ -39,10 +39,14 @@ def call(args):
         for result in results:
             result["Location"] = args["output_prefix"] + result["Location"]
 
+    if "call_name" in args and args["call_name"]:
+        results = list(filter(lambda r: r["Call Name"] == args["call_name"], results))
+
     if len(results) > 0:
         print(tabulate([r.values() for r in results], headers=results[0].keys(), tablefmt=args['grid_style']))
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser("logs", help="Find all reported logs for a given workflow.")
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
+    subcommand.add_argument("-c", "--call-name", help="Call name from the Cromwell workflow instance.")
     subcommand.add_argument("--grid-style", help="Any valid `tablefmt` for python-tabulate.", default="fancy_grid")
