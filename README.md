@@ -39,6 +39,16 @@ Currently, the following commands are supported.
 | `runtime`   | Get the runtime attributes used for a specific call.       |
 | `status`    | Report various statistics about a running Cromwell server. |
 
+## Documentation
+
+Please refer to the guides in the `docs/` folder for more in-depth
+documentation.
+
+| Guide Name     | Link                             |
+| -------------- | -------------------------------- |
+| Advanced Usage | [Link](./docs/ADVANCED_USAGE.md) |
+| Configuration  | [Link](./docs/CONFIGURATION.md)  |
+
 ## Author
 
 👤 **St. Jude Cloud Team**
