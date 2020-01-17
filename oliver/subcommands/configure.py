@@ -3,8 +3,6 @@ from ..config import get_default_config, read_config, write_config
 QUESTION_MAPPING = {
     "cromwell_server": "What is the Cromwell server address",
     "cromwell_api_version": "What is the Cromwell API version",
-    "azure_resource_group": "What is the Azure resource group",
-    "cosmos_account_name": "What is the Cosmos account name",
 }
 
 
