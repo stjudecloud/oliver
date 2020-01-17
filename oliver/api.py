@@ -1,9 +1,10 @@
 import json
+import sys
 
 from requests import request
 from urllib.parse import urljoin
 
-from . import errors
+from . import errors, reporting
 
 
 class CromwellAPI:
@@ -23,7 +24,18 @@ class CromwellAPI:
         response = request(
             method, url, headers=self.headers, params=params, data=data, files=files
         )
-        return response.status_code, json.loads(response.content)
+
+        status_code = response.status_code
+        content = json.loads(response.content)
+
+        if not str(status_code).startswith("2"):
+            if "status" in content and content["status"] == "fail":
+                reporting.print_error_as_table(
+                    content["status"].capitalize(), content["message"].capitalize()
+                )
+                sys.exit(errors.ERROR_UNEXPECTED_RESPONSE)
+
+        return status_code, content
 
     def post_workflows(
         self,

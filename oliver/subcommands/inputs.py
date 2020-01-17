@@ -1,7 +1,5 @@
 import json
 
-from tabulate import tabulate
-
 from .. import api, errors
 
 

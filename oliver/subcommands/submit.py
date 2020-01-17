@@ -1,8 +1,7 @@
-from tabulate import tabulate
 import re
 import json
 
-from .. import api, errors
+from .. import api, errors, reporting
 
 
 def call(args):
@@ -18,15 +17,7 @@ def call(args):
     ) = parse_workflow_inputs_source(args["workflowInputs"])
 
     results = [cromwell.post_workflows(**workflow_args)]
-
-    if len(results) > 0:
-        print(
-            tabulate(
-                [r.values() for r in results],
-                headers=results[0].keys(),
-                tablefmt=args["grid_style"],
-            )
-        )
+    reporting.print_dicts_as_table(results)
 
 
 def parse_workflow(workflow):

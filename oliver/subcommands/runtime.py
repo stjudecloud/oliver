@@ -1,8 +1,6 @@
 import pendulum
 
-from tabulate import tabulate
-
-from .. import api, errors, utils
+from .. import api, errors, reporting
 
 
 def call(args):
@@ -11,7 +9,7 @@ def call(args):
     )
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
     if not "calls" in metadata:
-        utils.print_error_as_table(metadata["status"], metadata["message"])
+        reporting.print_error_as_table(metadata["status"], metadata["message"])
         return
 
     calls_that_match = []
@@ -61,14 +59,7 @@ def call(args):
             )
 
         calls = calls_that_match[0]
-
-        print(
-            tabulate(
-                [call.values() for call in calls],
-                headers=calls[0].keys(),
-                tablefmt=args["grid_style"],
-            )
-        )
+        reporting.print_dicts_as_table(calls)
 
 
 def register_subparser(subparser):

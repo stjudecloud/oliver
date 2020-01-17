@@ -1,8 +1,7 @@
-from .. import cosmos
+from .. import cosmos, reporting
 
 import json
 import os
-from tabulate import tabulate
 
 
 def call(args):
@@ -41,14 +40,8 @@ def call(args):
                     "Log": log,
                 }
             )
-        if len(res) > 0:
-            print(
-                tabulate(
-                    [r.values() for r in res],
-                    headers=res[0].keys(),
-                    tablefmt=args["grid_style"],
-                )
-            )
+
+        reporting.print_dicts_as_table(res)
 
 
 def register_subparser(subparser):

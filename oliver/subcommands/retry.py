@@ -1,6 +1,4 @@
-from tabulate import tabulate
-
-from .. import api
+from .. import api, reporting
 
 
 def call(args):
@@ -38,14 +36,8 @@ def call(args):
             labels=labels,
         )
     ]
-    if len(results) > 0:
-        print(
-            tabulate(
-                [r.values() for r in results],
-                headers=results[0].keys(),
-                tablefmt=args["grid_style"],
-            )
-        )
+
+    reporting.print_dicts_as_table(results)
 
 
 def register_subparser(subparser):
