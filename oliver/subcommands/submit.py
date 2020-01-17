@@ -2,7 +2,7 @@ from tabulate import tabulate
 import re
 import json
 
-from .. import api
+from .. import api, errors
 
 
 def call(args):
@@ -58,7 +58,11 @@ def parse_workflow_inputs_source(workflow_inputs):
         except (ValueError, FileNotFoundError) as e:
             inputs, runtime_inputs, properties = parse_workflow_inputs(workflow_inputs)
             if len(inputs) == 0:
-                raise RuntimeError(f"Unexpected input: {workflow_inputs[0]}")
+                errors.report(
+                    f"Unexpected input: {workflow_inputs[0]}",
+                    fatal=True,
+                    exitcode=errors.ERROR_INVALID_INPUT,
+                )
     else:
         inputs, runtime_inputs, properties = parse_workflow_inputs(workflow_inputs)
 
@@ -82,7 +86,11 @@ def parse_workflow_inputs(workflow_inputs):
             result = re.match(property_regex, input)
             properties[result.group(1)] = result.group(2)
         else:
-            raise RuntimeError(f"Unknown input argument: {input}")
+            errors.report(
+                f"Unknown input argument: {input}",
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
 
     return inputs, runtime_inputs, properties
 
