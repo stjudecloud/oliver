@@ -45,3 +45,4 @@ def register_subparser(subparser):
     subcommand.add_argument(
         "value", nargs="*", help='"<key>" for "get" or "<key> <value>" for "set".'
     )
+    subcommand.set_defaults(func=call)

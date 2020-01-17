@@ -89,7 +89,7 @@ def parse_workflow_inputs(workflow_inputs):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "submit", help="Submit a workflow to the Cromwell server."
+        "submit", aliases=["su"], help="Submit a workflow to the Cromwell server."
     )
     subcommand.add_argument("workflow", help="The workflow to run (URL or file).")
     subcommand.add_argument(
@@ -103,3 +103,4 @@ def register_subparser(subparser):
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
+    subcommand.set_defaults(func=call)

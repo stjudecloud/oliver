@@ -65,7 +65,9 @@ def call(args):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "runtime", help="Get the runtime attributes used for a specific call."
+        "runtime",
+        aliases=["ru"],
+        help="Get the runtime attributes used for a specific call.",
     )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
@@ -78,3 +80,4 @@ def register_subparser(subparser):
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
+    subcommand.set_defaults(func=call)

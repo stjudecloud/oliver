@@ -27,7 +27,7 @@ def call(args):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "kill", help="Kill a workflow running on a Cromwell server."
+        "kill", aliases=["k"], help="Kill a workflow running on a Cromwell server."
     )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
@@ -35,3 +35,4 @@ def register_subparser(subparser):
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
+    subcommand.set_defaults(func=call)
