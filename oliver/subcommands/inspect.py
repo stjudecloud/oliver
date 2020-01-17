@@ -129,6 +129,7 @@ def call(args):
             print()
 
     if len(calls) > 0:
+        print()
         print(
             tabulate(
                 [call.values() for call in calls],
