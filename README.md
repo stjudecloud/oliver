@@ -13,11 +13,24 @@
 ## Install
 
 ```sh
-# Developer workstation
-python setup.py develop
-
 # Package install
 python setup.py install
+```
+
+## Development
+
+```sh
+# Clone the repository
+git clone git@github.com:stjudecloud/oliver.git
+cd oliver
+
+# Link the package with your current Python environment
+python setup.py develop
+
+# Ensure pre-commit is installed to automatically format
+# code using `black`.
+brew install pre-commit
+pre-commit install
 ```
 
 ## Usage
