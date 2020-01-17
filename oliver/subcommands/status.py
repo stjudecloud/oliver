@@ -62,7 +62,7 @@ def call(args: Dict):
             filter(lambda r: r["Workflow Name"] == args["workflow_name"], results)
         )
 
-    reporting.print_dicts_as_table(results)
+    reporting.print_dicts_as_table(results, args["grid_style"])
 
 
 def register_subparser(subparser: argparse._SubParsersAction):

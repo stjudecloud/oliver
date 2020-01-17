@@ -41,7 +41,7 @@ class CromwellAPI:
         self,
         workflowSource=None,
         workflowUrl=None,
-        workflowInputs=None,
+        workflowInputs={},
         workflowOptions={},
         labels={},
     ):
@@ -55,6 +55,7 @@ class CromwellAPI:
             )
 
         files = {
+            "workflowSource": workflowSource,
             "workflowUrl": workflowUrl,
             "workflowInputs": workflowInputs,
             "workflowOptions": workflowOptions,

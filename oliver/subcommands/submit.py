@@ -1,10 +1,11 @@
 import argparse
 import re
 import json
+import os
 
 from typing import Dict
 
-from .. import api, errors, reporting
+from .. import api, constants, errors, reporting, utils
 
 
 def call(args: Dict):
@@ -23,76 +24,101 @@ def call(args: Dict):
         workflow_args["workflowInputs"],
         workflow_args["workflowOptions"],
         workflow_args["labels"],
-    ) = parse_workflow_inputs_source(args["workflowInputs"])
+    ) = prepare_workflow_inputs(args)
 
     results = [cromwell.post_workflows(**workflow_args)]
-    reporting.print_dicts_as_table(results)
+    reporting.print_dicts_as_table(results, args["grid_style"])
 
 
-def parse_workflow(workflow):
-    # Source: https://stackoverflow.com/a/7160778
-    url_regex = re.compile(
-        r"^(?:http|ftp)s?://"
-        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"
-        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
-        r"(?::\d+)?"
-        r"(?:/?|[/?]\S+)$",
-        re.IGNORECASE,
-    )
+def parse_workflow(workflow: str) -> Dict[str, str]:
+    """Determine if the workflow is a source file or URL.
 
-    if re.match(url_regex, workflow):
+    Args:
+        workflow (str): Workflow source input from the command line.
+
+    Returns:
+        Dict[str, str]: Arguments for API call which consists of either
+        workflowSource or workflowUrl, but not both.
+    """
+    if utils.is_url(workflow):
         return {"workflowUrl": workflow}
+    elif os.path.isfile(workflow):
+        return {"workflowSource": workflow}
     else:
-        # Add a check for file else error
-        pass
-    return {"workflowSource": workflow}
+        errors.report(
+            "Workflow is not a valid file or URL!",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+        )
 
 
-def parse_workflow_inputs_source(workflow_inputs):
-    if len(workflow_inputs) == 1:
-        try:
-            workflowInputs_file = open(workflow_inputs[0], "rb")
-            workflowInputs_text = workflowInputs_file.read()
+def prepare_workflow_inputs(args):
 
-            return workflowInputs_text, json.dumps({}), json.dumps({})
-        except (ValueError, FileNotFoundError) as e:
-            inputs, runtime_inputs, properties = parse_workflow_inputs(workflow_inputs)
-            if len(inputs) == 0:
+    inputs, options, labels = {}, {}, {}
+
+    for i in args["workflowInputs"]:
+        arg_type, source_type, result = parse_cmdline_arg(i)
+        if arg_type == "input":
+            inputs.update(result)
+        elif arg_type == "option":
+            options.update(result)
+        elif arg_type == "label":
+            labels.update(result)
+
+    if "job_name" in args and args["job_name"]:
+        labels[constants.OLIVER_JOB_NAME_KEY] = args["job_name"]
+
+    if "job_group" in args and args["job_group"]:
+        labels[constants.OLIVER_JOB_GROUP_KEY] = args["job_group"]
+
+    return json.dumps(inputs), json.dumps(options), json.dumps(labels)
+
+
+def parse_cmdline_arg(arg):
+    # We step through this list in order and check if it matches. In this scenario, its
+    # important that `inputs` remains last as it matches the patterns before it
+    # (including the prefix characters).
+    patterns = [
+        ("option", r"^\@(\S+)$"),
+        ("label", r"^\%(\S+)$"),
+        ("input", r"^(\S+)$"),
+    ]
+
+    arg_type = None
+    source_type = None
+    result = {}
+
+    for type, regex in patterns:
+        if match := re.match(regex, arg):
+            arg_type = type
+            suffix = match.group(1)
+            if match := re.match(r"(\S+)=(\S+)", suffix):
+                # key value pairs
+                source_type = "key-value pair"
+                k, v = match.group(1), match.group(2)
+                result[k] = v
+                break
+            elif os.path.exists(suffix):
+                # file
+                source_type = "file"
+                try:
+                    result = json.loads(open(suffix, "rb").read())
+                except:
+                    errors.report(
+                        f"Could not parse JSON for file: {arg}.",
+                        fatal=True,
+                        exitcode=errors.ERROR_INVALID_INPUT,
+                    )
+                break
+            else:
+                source_type = "unknown"
                 errors.report(
-                    f"Unexpected input: {workflow_inputs[0]}",
+                    f"Not a valid input: {arg}.",
                     fatal=True,
                     exitcode=errors.ERROR_INVALID_INPUT,
                 )
-    else:
-        inputs, runtime_inputs, properties = parse_workflow_inputs(workflow_inputs)
 
-    return json.dumps(inputs), json.dumps(runtime_inputs), json.dumps(properties)
-
-
-def parse_workflow_inputs(workflow_inputs):
-    input_regex = r"^([\w\-\/.]*)=([\w\-\/.]*)$"
-    runtime_input_regex = r"^\@([\w\-\/.]*)=([\w\-\/.]*)$"
-    property_regex = r"^\%([\w\-\/.]*)=([\w\-\/.]*)$"
-
-    inputs, runtime_inputs, properties = {}, {}, {}
-    for input in workflow_inputs:
-        if re.match(input_regex, input):
-            result = re.match(input_regex, input)
-            inputs[result.group(1)] = result.group(2)
-        elif re.match(runtime_input_regex, input):
-            result = re.match(runtime_input_regex, input)
-            runtime_inputs[result.group(1)] = result.group(2)
-        elif re.match(property_regex, input):
-            result = re.match(property_regex, input)
-            properties[result.group(1)] = result.group(2)
-        else:
-            errors.report(
-                f"Unknown input argument: {input}",
-                fatal=True,
-                exitcode=errors.ERROR_INVALID_INPUT,
-            )
-
-    return inputs, runtime_inputs, properties
+    return arg_type, source_type, result
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -109,7 +135,10 @@ def register_subparser(subparser: argparse._SubParsersAction):
     subcommand.add_argument(
         "workflowInputs", nargs="+", help="JSON file of workflow inputs."
     )
-    subcommand.add_argument("-j", help="Name of workflow.")
+    subcommand.add_argument(
+        "-g", "--job-group", help="Job Group", type=str, default=None
+    )
+    subcommand.add_argument("-j", "--job-name", help="Job Name", type=str, default=None)
     subcommand.add_argument("-m", help="Default memory for workflow (in MB)")
     subcommand.add_argument("-n", help="Default number of cpus")
     subcommand.add_argument(
