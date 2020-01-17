@@ -3,6 +3,8 @@ import json
 from requests import request
 from urllib.parse import urljoin
 
+from . import errors
+
 
 class CromwellAPI:
     def __init__(
@@ -34,7 +36,11 @@ class CromwellAPI:
         "POST /api/workflows/{version}"
 
         if workflowSource is None and workflowUrl is None:
-            raise RuntimeError("Expected either 'workflowSource' or 'workflowUrl'!")
+            errors.report(
+                "Expected either 'workflowSource' or 'workflowUrl'!",
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
 
         files = {
             "workflowUrl": workflowUrl,
@@ -95,7 +101,11 @@ class CromwellAPI:
 
         _, data = self._api_call("/api/workflows/{version}/query", params=params)
         if not "results" in data:
-            raise RuntimeError("Expected 'results' key in response!")
+            errors.report(
+                "Expected 'results' key in response!",
+                fatal=True,
+                exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+            )
 
         return data["results"]
 

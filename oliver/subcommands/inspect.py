@@ -2,7 +2,7 @@ import pendulum
 
 from tabulate import tabulate
 
-from .. import api, utils
+from .. import api, errors, utils
 
 
 def report_failure(failure, indent, step=2, offset=2):
@@ -61,8 +61,10 @@ def call(args):
             # runtime errors are raised. If they are raised, we'll need to
             # further flesh out how Cromwell is reporting results.
             if not attempt or not shard:
-                raise RuntimeError(
-                    "Expected key is missing! The code needs to be updated, please contact the author!"
+                errors.report(
+                    "Expected key is missing! The code needs to be updated, please contact the author!",
+                    fatal=True,
+                    exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
 
             call_start_date = (

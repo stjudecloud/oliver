@@ -4,6 +4,7 @@ import logging
 import logzero
 import sys
 
+from oliver import errors
 from oliver.config import read_config
 from oliver.subcommands import configure, config, cosmos, inputs, inspect, kill, logs, outputs, retry, runtime, status, submit 
 
@@ -32,8 +33,8 @@ def ensure_required_args(args):
             missing_args.append(a)
 
     if missing_args:
-        raise RuntimeError(f"Missing required arguments: {missing_args}.\n\n" + \
-                           "Please run 'oliver configure' or pass their respective flags on the command line!")
+        errors.report(f"Missing required arguments: {missing_args}.\n\n" + \
+                           "Please run 'oliver configure' or pass their respective flags on the command line!", fatal=True, exitcode=errors.ERROR_PRECAUTION)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="An opinionated Cromwell orchestration system.")
@@ -48,7 +49,7 @@ if __name__ == "__main__":
 
     for name, module in SUBCOMMANDS.items():
         if not hasattr(module, 'register_subparser') or not hasattr(module, 'call'):
-            raise RuntimeError(f"Subcommand does not have required methods: {name}!")
+            errors.report(f"Subcommand does not have required methods: {name}!", fatal=True, exitcode=errors.ERROR_INTERNAL_ERROR)
         module.register_subparser(subparsers)
 
     args = vars(parser.parse_args())

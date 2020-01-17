@@ -2,7 +2,7 @@ import json
 
 from tabulate import tabulate
 
-from .. import api
+from .. import api, errors
 
 
 def call(args):
@@ -12,7 +12,11 @@ def call(args):
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
     if not "submittedFiles" in metadata or "inputs" not in metadata["submittedFiles"]:
-        raise RuntimeError("Could not retrieve inputs!")
+        errors.report(
+            "Could not retrieve inputs!",
+            fatal=True,
+            exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+        )
 
     print(json.dumps(json.loads(metadata["submittedFiles"]["inputs"]), indent=2))
 

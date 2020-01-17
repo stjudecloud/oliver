@@ -1,5 +1,6 @@
 import sys
 
+from .. import errors
 from ..config import get_default_config, read_config, write_config
 
 
@@ -11,26 +12,46 @@ def call(args):
             print(f"{k}\t{v}")
     elif args["action"] == "rm":
         if len(args["value"]) != 1:
-            raise RuntimeError('"rm" must take one value as "<key>".')
+            errors.report(
+                '"rm" must take one value as "<key>".',
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
         [key] = args["value"]
         if key in config:
             del config[key]
         write_config(config)
     elif args["action"] == "get":
         if len(args["value"]) != 1:
-            raise RuntimeError('"get" must take one value as "<key>".')
+            errors.report(
+                '"get" must take one value as "<key>".',
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
         [key] = args["value"]
         if key not in config:
-            raise RuntimeError(f'"{key}" not in config.')
+            errors.report(
+                f'"{key}" not in config.',
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
         print(config[key])
     elif args["action"] == "set":
         if len(args["value"]) != 2:
-            raise RuntimeError('"set" must take two values as "<key> <value>".')
+            errors.report(
+                '"set" must take two values as "<key> <value>".',
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
         [key, value] = args["value"]
         config[key] = value
         write_config(config)
     else:
-        raise RuntimeError(f"Unhandled action: {args['actions']}")
+        errors.report(
+            f"Unhandled action: {args['actions']}",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+        )
 
 
 def register_subparser(subparser):
