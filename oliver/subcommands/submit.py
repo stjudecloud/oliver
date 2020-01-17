@@ -89,7 +89,7 @@ def parse_workflow_inputs(workflow_inputs):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "submit", help="Submit a workflow to the Cromwell server"
+        "submit", help="Submit a workflow to the Cromwell server."
     )
     subcommand.add_argument("workflow", help="The workflow to run (URL or file).")
     subcommand.add_argument(
