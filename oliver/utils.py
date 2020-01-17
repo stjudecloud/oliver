@@ -1,4 +1,4 @@
-from tabulate import tabulate
+from . import reporting
 
 
 def duration_to_text(duration):
@@ -16,12 +16,3 @@ def duration_to_text(duration):
                 parts.append(f"{value} {attr}")
 
     return " ".join(parts)
-
-
-def print_error_as_table(status, message, tablefmt="fancy_grid"):
-    results = [{"Status": status, "Message": message}]
-    print(
-        tabulate(
-            [r.values() for r in results], headers=results[0].keys(), tablefmt=tablefmt
-        )
-    )

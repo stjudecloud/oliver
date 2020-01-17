@@ -1,8 +1,6 @@
 import pendulum
 
-from tabulate import tabulate
-
-from .. import api, errors, utils
+from .. import api, errors, reporting, utils
 
 
 def report_failure(failure, indent, step=2, offset=2):
@@ -130,13 +128,7 @@ def call(args):
 
     if len(calls) > 0:
         print()
-        print(
-            tabulate(
-                [call.values() for call in calls],
-                headers=calls[0].keys(),
-                tablefmt=args["grid_style"],
-            )
-        )
+        reporting.print_dicts_as_table(calls)
 
 
 def register_subparser(subparser):
