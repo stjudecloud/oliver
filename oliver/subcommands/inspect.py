@@ -137,7 +137,9 @@ def call(args):
 
 
 def register_subparser(subparser):
-    subcommand = subparser.add_parser("inspect", help="Inspect a workflow.")
+    subcommand = subparser.add_parser(
+        "inspect", help="Describe the state of a Cromwell workflow."
+    )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
         "-l",

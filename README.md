@@ -47,14 +47,14 @@ Currently, the following commands are supported.
 | `configure` | Configure Oliver with default options.                     |
 | `config`    | Set or get a single config value from Oliver.              |
 | `cosmos`    | Get cosmos DB entries for a workflow.                      |
-| `inspect`   | Inspect a workflow.                                        |
+| `inspect`   | Describe the state of a Cromwell workflow.                 |
 | `kill`      | Kill a workflow running on a Cromwell server.              |
 | `logs`      | Find all reported logs for a given workflow.               |
 | `outputs`   | Find all reported outputs for a given workflow.            |
 | `retry`     | Resubmit a workflow with the same parameters.              |
 | `runtime`   | Get the runtime attributes used for a specific call.       |
 | `status`    | Report various statistics about a running Cromwell server. |
-| `submit`    | Submit a workflow to the Cromwell server                   |
+| `submit`    | Submit a workflow to the Cromwell server.                  |
 
 ## Documentation
 
