@@ -50,7 +50,7 @@ def call(args):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "retry", help="Resubmit a workflow with the same parameters."
+        "retry", aliases=["re"], help="Resubmit a workflow with the same parameters."
     )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
@@ -58,3 +58,4 @@ def register_subparser(subparser):
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
+    subcommand.set_defaults(func=call)

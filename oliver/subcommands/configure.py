@@ -34,3 +34,4 @@ def register_subparser(subparser):
     subcommand = subparser.add_parser(
         "configure", help="Configure Oliver with default options."
     )
+    subcommand.set_defaults(func=call)

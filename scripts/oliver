@@ -43,12 +43,10 @@ if __name__ == "__main__":
     # Subparsers
     subparsers = parser.add_subparsers(dest="subcommand")
 
-    subcommand_mapping = {}
     for name, module in SUBCOMMANDS.items():
         if not hasattr(module, 'register_subparser') or not hasattr(module, 'call'):
             raise RuntimeError(f"Subcommand does not have required methods: {name}!")
         module.register_subparser(subparsers)
-        subcommand_mapping[name] = module.call
 
     args = vars(parser.parse_args())
 
@@ -64,7 +62,5 @@ if __name__ == "__main__":
     if not 'subcommand' in args or not args['subcommand']:
         parser.print_help()
         sys.exit(1)
-    elif args['subcommand'] not in subcommand_mapping:
-        raise RuntimeError(f"Invalid subcommand: {args['subcommand']}!")
 
-    subcommand_mapping[args['subcommand']](args)
+    args['func'](args)

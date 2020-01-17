@@ -6,7 +6,7 @@ from .. import api
 
 def call(args):
     cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
+        server=args["cromwell_server"], version=args["cromwell_api_version"],
     )
 
     if args["show_all_statuses"]:
@@ -66,7 +66,9 @@ def call(args):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "status", help="Report various statistics about a running Cromwell server."
+        "status",
+        aliases=["st"],
+        help="Report various statistics about a running Cromwell server.",
     )
     subcommand.add_argument(
         "-a",
@@ -114,3 +116,4 @@ def register_subparser(subparser):
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
+    subcommand.set_defaults(func=call)

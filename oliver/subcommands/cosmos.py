@@ -70,3 +70,4 @@ def register_subparser(subparser):
         action="store_true",
     )
     subcommand.add_argument("-o", "--outfile", help="File to save JSON records to")
+    subcommand.set_defaults(func=call)

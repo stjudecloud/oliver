@@ -26,7 +26,7 @@ def call(args):
 
 def register_subparser(subparser):
     subcommand = subparser.add_parser(
-        "outputs", help="Find all reported outputs for a given workflow."
+        "outputs", aliases=["o"], help="Find all reported outputs for a given workflow."
     )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
@@ -34,3 +34,4 @@ def register_subparser(subparser):
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
+    subcommand.set_defaults(func=call)
