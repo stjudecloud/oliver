@@ -4,16 +4,19 @@ QUESTION_MAPPING = {
     "cromwell_server": "What is the Cromwell server address",
     "cromwell_api_version": "What is the Cromwell API version",
     "azure_resource_group": "What is the Azure resource group",
-    "cosmos_account_name": "What is the Cosmos account name"
+    "cosmos_account_name": "What is the Cosmos account name",
 }
+
+
 def ask(question, default):
     return input(f"{question} (default: {default})? ")
+
 
 def call(args):
     starting_config = get_default_config()
     starting_config.update(read_config())
     final_config = {}
-    
+
     for k, v in starting_config.items():
         question = "What is the value for '{k}'"
         if k in QUESTION_MAPPING:
@@ -28,4 +31,6 @@ def call(args):
 
 
 def register_subparser(subparser):
-    subcommand = subparser.add_parser("configure", help="Configure Oliver with default options.")
+    subcommand = subparser.add_parser(
+        "configure", help="Configure Oliver with default options."
+    )
