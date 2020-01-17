@@ -6,24 +6,38 @@ import sys
 
 from oliver import errors
 from oliver.config import read_config
-from oliver.subcommands import configure, config, cosmos, inputs, inspect, kill, logs, outputs, retry, runtime, status, submit 
+from oliver.subcommands import (
+    configure,
+    config,
+    cosmos,
+    inputs,
+    inspect,
+    kill,
+    logs,
+    outputs,
+    retry,
+    runtime,
+    status,
+    submit,
+)
 
 SUBCOMMANDS = {
-    'configure': configure,
-    'config': config,
-    'cosmos': cosmos,
-    'inputs': inputs,
-    'inspect': inspect,
-    'kill': kill,
-    'logs': logs,
-    'outputs': outputs,
-    'retry': retry,
-    'runtime': runtime,
-    'status': status,
-    'submit': submit
+    "configure": configure,
+    "config": config,
+    "cosmos": cosmos,
+    "inputs": inputs,
+    "inspect": inspect,
+    "kill": kill,
+    "logs": logs,
+    "outputs": outputs,
+    "retry": retry,
+    "runtime": runtime,
+    "status": status,
+    "submit": submit,
 }
 
-REQUIRED_ARGS = ['cromwell_server', 'cromwell_api_version']
+REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version"]
+
 
 def ensure_required_args(args):
     missing_args = []
@@ -33,23 +47,41 @@ def ensure_required_args(args):
             missing_args.append(a)
 
     if missing_args:
-        errors.report(f"Missing required arguments: {missing_args}.\n\n" + \
-                           "Please run 'oliver configure' or pass their respective flags on the command line!", fatal=True, exitcode=errors.ERROR_PRECAUTION)
+        errors.report(
+            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n"
+            + "We recommend you run 'oliver configure' to ensure all required arguments are cached.\n"
+            + "If you choose not to do this, you will need to pass their respective flags on the command line.",
+            fatal=True,
+            exitcode=errors.ERROR_PRECAUTION,
+        )
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="An opinionated Cromwell orchestration system.")
-    
+    parser = argparse.ArgumentParser(
+        description="An opinionated Cromwell orchestration system."
+    )
+
     # Common arguments
     parser.add_argument("--cromwell-server", help="Cromwell host location.")
     parser.add_argument("--cromwell-api-version", help="Cromwell API version.")
-    parser.add_argument("-v", "--verbose", help="Print verbose output.", default=False, action="store_true")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="Print verbose output.",
+        default=False,
+        action="store_true",
+    )
 
     # Subparsers
     subparsers = parser.add_subparsers(dest="subcommand")
 
     for name, module in SUBCOMMANDS.items():
-        if not hasattr(module, 'register_subparser') or not hasattr(module, 'call'):
-            errors.report(f"Subcommand does not have required methods: {name}!", fatal=True, exitcode=errors.ERROR_INTERNAL_ERROR)
+        if not hasattr(module, "register_subparser") or not hasattr(module, "call"):
+            errors.report(
+                f"Subcommand does not have required methods: {name}!",
+                fatal=True,
+                exitcode=errors.ERROR_INTERNAL_ERROR,
+            )
         module.register_subparser(subparsers)
 
     args = vars(parser.parse_args())
@@ -60,15 +92,15 @@ if __name__ == "__main__":
         if not k in args or not args[k]:
             args[k] = v
 
-    if 'subcommand' in args and args['subcommand'] != "configure":
+    if "subcommand" in args and args["subcommand"] != "configure":
         ensure_required_args(args)
 
-    if not 'subcommand' in args or not args['subcommand']:
+    if not "subcommand" in args or not args["subcommand"]:
         parser.print_help()
         sys.exit(1)
 
     logzero.loglevel(logging.WARN)
-    if args['verbose']:
+    if args["verbose"]:
         logzero.loglevel(logging.DEBUG)
 
-    args['func'](args)
+    args["func"](args)
