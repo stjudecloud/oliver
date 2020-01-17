@@ -1,4 +1,5 @@
 from . import reporting
+from urllib.parse import urlparse
 
 
 def duration_to_text(duration):
@@ -16,3 +17,9 @@ def duration_to_text(duration):
                 parts.append(f"{value} {attr}")
 
     return " ".join(parts)
+
+
+def is_url(url_string: str) -> bool:
+    return (
+        urlparse(url_string).scheme == "http" or urlparse(url_string).scheme == "https"
+    )
