@@ -1,9 +1,18 @@
+import argparse
 import json
+
+from typing import Dict
 
 from .. import api, errors
 
 
-def call(args):
+def call(args: Dict):
+    """Execute the subcommand.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
+
     cromwell = api.CromwellAPI(
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
@@ -19,7 +28,13 @@ def call(args):
     print(json.dumps(json.loads(metadata["submittedFiles"]["inputs"]), indent=2))
 
 
-def register_subparser(subparser):
+def register_subparser(subparser: argparse._SubParsersAction):
+    """Registers a subparser for the current command.
+    
+    Args:
+        subparser (argparse._SubParsersAction): Subparsers action.
+    """
+
     subcommand = subparser.add_parser(
         "inputs", help="Find all reported outputs for a given workflow."
     )

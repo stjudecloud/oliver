@@ -1,10 +1,18 @@
+import argparse
 import sys
+
+from typing import Dict
 
 from .. import errors
 from ..config import get_default_config, read_config, write_config
 
 
-def call(args):
+def call(args: Dict):
+    """Execute the subcommand.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
     config = read_config()
 
     if args["action"] == "list":
@@ -54,7 +62,13 @@ def call(args):
         )
 
 
-def register_subparser(subparser):
+def register_subparser(subparser: argparse._SubParsersAction):
+    """Registers a subparser for the current command.
+    
+    Args:
+        subparser (argparse._SubParsersAction): Subparsers action.
+    """
+
     subcommand = subparser.add_parser(
         "config", help="Set or get a single config value from Oliver."
     )

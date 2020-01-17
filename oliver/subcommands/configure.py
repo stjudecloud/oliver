@@ -1,3 +1,7 @@
+import argparse
+
+from typing import Dict
+
 from ..config import get_default_config, read_config, write_config
 
 QUESTION_MAPPING = {
@@ -12,7 +16,13 @@ def ask(question, default):
     return input(f"{question} (default: {default})? ")
 
 
-def call(args):
+def call(args: Dict):
+    """Execute the subcommand.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
+
     starting_config = get_default_config()
     starting_config.update(read_config())
     final_config = {}
@@ -30,7 +40,13 @@ def call(args):
     write_config(final_config)
 
 
-def register_subparser(subparser):
+def register_subparser(subparser: argparse._SubParsersAction):
+    """Registers a subparser for the current command.
+    
+    Args:
+        subparser (argparse._SubParsersAction): Subparsers action.
+    """
+
     subcommand = subparser.add_parser(
         "configure", help="Configure Oliver with default options."
     )
