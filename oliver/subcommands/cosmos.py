@@ -1,10 +1,19 @@
-from .. import cosmos, reporting
-
+import argparse
 import json
 import os
 
+from typing import Dict
 
-def call(args):
+from .. import cosmos, reporting
+
+
+def call(args: Dict):
+    """Execute the subcommand.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
+
     client = cosmos.CosmosAPI(
         cosmos_name=args["cosmos_account_name"],
         resource_group=args["azure_resource_group"],
@@ -44,7 +53,13 @@ def call(args):
         reporting.print_dicts_as_table(res)
 
 
-def register_subparser(subparser):
+def register_subparser(subparser: argparse._SubParsersAction):
+    """Registers a subparser for the current command.
+    
+    Args:
+        subparser (argparse._SubParsersAction): Subparsers action.
+    """
+
     subcommand = subparser.add_parser(
         "cosmos", help="Get cosmos DB entries for a workflow."
     )

@@ -1,4 +1,7 @@
+import argparse
 import pendulum
+
+from typing import Dict
 
 from .. import api, errors, reporting, utils
 
@@ -9,7 +12,13 @@ def report_failure(failure, indent, step=2, offset=2):
         report_failure(f, indent + step)
 
 
-def call(args):
+def call(args: Dict):
+    """Execute the subcommand.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
+
     cromwell = api.CromwellAPI(
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
@@ -133,7 +142,13 @@ def call(args):
         reporting.print_dicts_as_table(calls)
 
 
-def register_subparser(subparser):
+def register_subparser(subparser: argparse._SubParsersAction):
+    """Registers a subparser for the current command.
+    
+    Args:
+        subparser (argparse._SubParsersAction): Subparsers action.
+    """
+
     subcommand = subparser.add_parser(
         "inspect", aliases=["i"], help="Describe the state of a Cromwell workflow."
     )
