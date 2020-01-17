@@ -1,3 +1,5 @@
 {
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "autoDocstring.docstringFormat": "google",
+    "autoDocstring.includeExtendedSummary": true
 }
