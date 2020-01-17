@@ -42,7 +42,7 @@ def call(args: Dict):
             if "logs" in item and item["logs"] is not None:
                 log = item["logs"][0]["system_logs"][0]
             size = ""
-            if "resource" in item: 
+            if "resources" in item: 
                 size = item["resources"]["vm_info"]["vm_size"]
 
             res.append(
