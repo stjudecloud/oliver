@@ -28,7 +28,9 @@ def call(args):
             if "actualWorkflowLanguageVersion" in metadata
             else ""
         )
-    workflow_submission = metadata["submission"] if "submission" in metadata else ""
+    workflow_submission = pendulum.parse(
+        metadata["submission"] if "submission" in metadata else ""
+    ).to_day_datetime_string()
 
     workflow_start_date = (
         pendulum.parse(metadata["start"]) if "start" in metadata else None
