@@ -58,7 +58,6 @@ def parse_workflow(workflow: str) -> Dict[str, str]:
 
 
 def prepare_workflow_inputs(args):
-
     inputs, options, labels = {}, {}, {}
 
     for i in args["workflowInputs"]:
@@ -75,6 +74,9 @@ def prepare_workflow_inputs(args):
 
     if "job_group" in args and args["job_group"]:
         labels[constants.OLIVER_JOB_GROUP_KEY] = args["job_group"]
+
+    if "output_dir" in args and args["output_dir"]:
+        options["final_workflow_outputs_dir"] = args["output_dir"]
 
     return json.dumps(inputs), json.dumps(options), json.dumps(labels)
 
@@ -159,5 +161,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
+    )
+    subcommand.add_argument(
+        "-o",
+        "--output-dir",
+        help="Coalesce outputs into the specified directory using `final_workflow_outputs_dir`.",
+        type=str,
+        default=None,
     )
     subcommand.set_defaults(func=call)
