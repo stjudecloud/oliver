@@ -26,6 +26,11 @@ def call(args: Dict):
         workflow_args["labels"],
     ) = prepare_workflow_inputs(args)
 
+    if "dry_run" in args and args["dry_run"]:
+        for key, value in workflow_args.items():
+            print(f"{key} = {value}")
+        return
+
     results = [cromwell.post_workflows(**workflow_args)]
     reporting.print_dicts_as_table(results, args["grid_style"])
 
@@ -136,6 +141,13 @@ def register_subparser(subparser: argparse._SubParsersAction):
     subcommand.add_argument("workflow", help="The workflow to run (URL or file).")
     subcommand.add_argument(
         "workflowInputs", nargs="+", help="JSON file of workflow inputs."
+    )
+    subcommand.add_argument(
+        "-d",
+        "--dry-run",
+        help="Print what would be submitted rather than actually submitting.",
+        default=False,
+        action="store_true",
     )
     subcommand.add_argument(
         "-g", "--job-group", help="Job Group", type=str, default=None
