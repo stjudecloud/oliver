@@ -89,13 +89,15 @@ def parse_cmdline_arg(arg):
     result = {}
 
     for type, regex in patterns:
-        if match := re.match(regex, arg):
+        arg_match = re.match(regex, arg)
+        if arg_match:
             arg_type = type
-            suffix = match.group(1)
-            if match := re.match(r"(\S+)=(\S+)", suffix):
+            suffix = arg_match.group(1)
+            source_match = re.match(r"(\S+)=(\S+)", suffix)
+            if source_match:
                 # key value pairs
                 source_type = "key-value pair"
-                k, v = match.group(1), match.group(2)
+                k, v = source_match.group(1), source_match.group(2)
                 result[k] = v
                 break
             elif os.path.exists(suffix):
