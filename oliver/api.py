@@ -105,12 +105,15 @@ class CromwellAPI:
         _, data = self._api_call(f"/api/workflows/{{version}}/{workflow_id}/logs")
         return data
 
-    def get_workflows_query(self, includeSubworkflows=True, statuses=None):
+    def get_workflows_query(self, includeSubworkflows=True, statuses=None, labels=None):
         "GET /api/workflows/{version}/query"
         params = {"includeSubworkflows": includeSubworkflows}
 
         if statuses:
             params["status"] = statuses
+
+        if labels:
+            params["label"] = labels
 
         _, data = self._api_call("/api/workflows/{version}/query", params=params)
         if not "results" in data:
