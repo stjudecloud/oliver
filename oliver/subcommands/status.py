@@ -47,7 +47,6 @@ def call(args: Dict):
             labels = []
         labels.append(f"{constants.OLIVER_JOB_GROUP_KEY}:{args['job_group']}")
 
-    print(labels)
     workflows = cromwell.get_workflows_query(
         includeSubworkflows=False, statuses=statuses, labels=labels
     )
