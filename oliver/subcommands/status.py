@@ -3,7 +3,7 @@ import pendulum
 
 from typing import Dict
 
-from .. import api, reporting
+from .. import api, constants, reporting
 
 
 def call(args: Dict):
@@ -36,8 +36,20 @@ def call(args: Dict):
     else:
         statuses = ["Running"]
 
+    labels = None
+    if "job_name" in args and args["job_name"]:
+        if not labels:
+            labels = []
+        labels.append(f"{constants.OLIVER_JOB_NAME_KEY}:{args['job_name']}")
+
+    if "job_group" in args and args["job_group"]:
+        if not labels:
+            labels = []
+        labels.append(f"{constants.OLIVER_JOB_GROUP_KEY}:{args['job_group']}")
+
+    print(labels)
     workflows = cromwell.get_workflows_query(
-        includeSubworkflows=False, statuses=statuses
+        includeSubworkflows=False, statuses=statuses, labels=labels
     )
 
     results = [
@@ -94,8 +106,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         action="store_true",
     )
     subcommand.add_argument(
+        "-g", "--job-group", help="Job Group", type=str, default=None
+    )
+    subcommand.add_argument(
         "-i", "--workflow-id", type=str, help="Filter by workflow id matching argument."
     )
+    subcommand.add_argument("-j", "--job-name", help="Job Name", type=str, default=None)
     subcommand.add_argument(
         "-n",
         "--workflow-name",
