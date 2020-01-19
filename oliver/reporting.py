@@ -7,15 +7,15 @@ from . import errors
 
 
 def print_dicts_as_table(
-    data: List[Dict], tablefmt: str = "fancy_grid", clean_shard_col: bool = True
+    data: List[Dict], grid_style: str = "fancy_grid", clean_shard_col: bool = True
 ):
     """Format a list of dicts and print as a table using `tabulate`.
     
     Args:
         data (List[Dict]): Data to be printed structured as a list of dicts.
-        tablefmt (str, optional): Any valid `tabulate` table format. 
-                                  See https://github.com/astanin/python-tabulate#table-format 
-                                  for more information. Defaults to "fancy_grid".
+        grid_style (str, optional): Any valid `tabulate` table format. 
+                                    See https://github.com/astanin/python-tabulate#table-format 
+                                    for more information. Defaults to "fancy_grid".
         clean_shard_col (bool, optional): Remove the column named "Shard" if all values are -1.
                                           Defaults to True.
     """
@@ -45,19 +45,21 @@ def print_dicts_as_table(
                     del item["Shard"]
 
     print(
-        tabulate([d.values() for d in data], headers=data[0].keys(), tablefmt=tablefmt)
+        tabulate(
+            [d.values() for d in data], headers=data[0].keys(), tablefmt=grid_style
+        )
     )
 
 
-def print_error_as_table(status: str, message: str, tablefmt: str = "fancy_grid"):
+def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
     """Prints an error message as a table.
     
     Args:
         status (str): string to put in the "Status" column.
         message (str): string to put in the "Message" column.
-        tablefmt (str, optional): Any valid `tabulate` table format. 
-                                  See https://github.com/astanin/python-tabulate#table-format 
-                                  for more information. Defaults to "fancy_grid".
+        grid_style (str, optional): Any valid `tabulate` table format. 
+                                    See https://github.com/astanin/python-tabulate#table-format 
+                                    for more information. Defaults to "fancy_grid".
     """
     results = [{"Status": status, "Message": message}]
-    print_dicts_as_table(results)
+    print_dicts_as_table(results, grid_style=grid_style)

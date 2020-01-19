@@ -43,9 +43,10 @@ def call(args: Dict):
         args["detail"] = True
 
     metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
-    print_workflow_summary(workflows, metadatas)
+    print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
     if "detail" in args and args["detail"]:
-        workflows = filter(lambda x: x["status"] in statuses, workflows)
+        if statuses:
+            workflows = filter(lambda x: x["status"] in statuses, workflows)
         print()
         print_workflow_detail(workflows, metadatas, grid_style=args["grid_style"])
 
@@ -166,7 +167,7 @@ def get_statuses_to_query(args: Dict) -> Optional[List[str]]:
     return ["Running"]
 
 
-def print_workflow_summary(workflows: List, metadatas: Dict):
+def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
     """Print a summary of workflow statuses.
     
     Args:
@@ -198,7 +199,7 @@ def print_workflow_summary(workflows: List, metadatas: Dict):
             if not k in r:
                 r[k] = 0
 
-    reporting.print_dicts_as_table(results)
+    reporting.print_dicts_as_table(results, grid_style)
 
 
 def print_workflow_detail(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
