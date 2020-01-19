@@ -175,10 +175,34 @@ class CromwellAPI:
         "GET /api/workflows/{version}/{id}/timing"
         raise NotImplementedError()
 
-    def get_workflows_metadata(self, workflow_id):
-        "GET /api/workflows/{version}/{id}/metadata"
+    def get_workflows_metadata(
+        self,
+        id: str,
+        includeKey: List[str] = None,
+        excludeKey: List[str] = None,
+        expandSubWorkflows: bool = False,
+    ) -> List:
+        """GET /api/workflows/{version}/{id}/metadata
+        
+        Args:
+            id (str): Workflow ID to get metadata from.
+            includeKey (List[str], optional): Keys to include in results. Defaults to None.
+            excludeKey (List[str], optional): Keys to exclude in results. Defaults to None.
+            expandSubWorkflows (bool, optional): Whether to expand subworkflows in results. Defaults to False.
+        
+        Returns:
+            List: Metadata of specified workflow.
+        """
 
-        _, data = self._api_call(f"/api/workflows/{{version}}/{workflow_id}/metadata")
+        params = {
+            "includeKey": includeKey,
+            "excludeKey": excludeKey,
+            "expandSubWorkflows": expandSubWorkflows,
+        }
+
+        _, data = self._api_call(
+            f"/api/workflows/{{version}}/{id}/metadata", params=params
+        )
         return data
 
     def get_workflows_call_caching_diff(self):

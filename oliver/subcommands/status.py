@@ -1,9 +1,10 @@
 import argparse
 import pendulum
 
+from collections import defaultdict
 from typing import Dict, List, Optional
 
-from .. import api, constants, reporting
+from .. import api, constants, reporting, utils
 
 
 def call(args: Dict):
@@ -28,13 +29,25 @@ def call(args: Dict):
 
     workflows = cromwell.get_workflows_query(
         includeSubworkflows=False,
-        statuses=statuses,
         labels=labels,
         ids=[args["workflow_id"]],
         names=[args["workflow_name"]],
     )
 
-    print_workflow_detail(workflows, grid_style=args["grid_style"])
+    if (
+        args["show_running_statuses"]
+        or args["show_aborted_statuses"]
+        or args["show_failed_statuses"]
+        or args["show_succeeded_statuses"]
+    ):
+        args["detail"] = True
+
+    metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
+    print_workflow_summary(workflows, metadatas)
+    if "detail" in args and args["detail"]:
+        workflows = filter(lambda x: x["status"] in statuses, workflows)
+        print()
+        print_workflow_detail(workflows, metadatas, grid_style=args["grid_style"])
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -51,9 +64,24 @@ def register_subparser(subparser: argparse._SubParsersAction):
     )
     subcommand.add_argument(
         "-a",
+        "--aborted",
+        dest="show_aborted_statuses",
+        help="Show jobs in the 'Aborted' state.",
+        default=False,
+        action="store_true",
+    )
+    subcommand.add_argument(
+        "-b",
         "--all",
         dest="show_all_statuses",
         help="Show jobs in all states, not just 'Running' jobs.",
+        default=False,
+        action="store_true",
+    )
+    subcommand.add_argument(
+        "-d",
+        "--detail",
+        help="Show detailed view.",
         default=False,
         action="store_true",
     )
@@ -116,12 +144,16 @@ def get_statuses_to_query(args: Dict) -> Optional[List[str]]:
         return None
     elif (
         args["show_running_statuses"]
+        or args["show_aborted_statuses"]
         or args["show_failed_statuses"]
         or args["show_succeeded_statuses"]
     ):
         statuses = []
         if args["show_running_statuses"]:
             statuses.append("Running")
+
+        if args["show_aborted_statuses"]:
+            statuses.append("Aborted")
 
         if args["show_failed_statuses"]:
             statuses.append("Failed")
@@ -134,11 +166,47 @@ def get_statuses_to_query(args: Dict) -> Optional[List[str]]:
     return ["Running"]
 
 
-def print_workflow_detail(workflows: List, grid_style="fancy_grid"):
+def print_workflow_summary(workflows: List, metadatas: Dict):
+    """Print a summary of workflow statuses.
+    
+    Args:
+        workflows (List): List of workflows returned from the API call.
+        metadatas (Dict): Dictionary of metadatas indexed by workflow id.
+    """
+
+    agg = defaultdict(lambda: defaultdict(int))
+
+    for w in workflows:
+        m = metadatas[w["id"]]
+        job_group = utils.get_oliver_group(m)
+        if not job_group:
+            job_group = "<not set>"
+
+        agg[job_group][m["status"]] += 1
+
+    results = []
+    keys = set()
+    for group in agg.keys():
+        for k in agg[group]:
+            keys.add(k)
+        obj = {"Group Name": group}
+        obj.update(agg[group])
+        results.append(obj)
+
+    for r in results:
+        for k in keys:
+            if not k in r:
+                r[k] = 0
+
+    reporting.print_dicts_as_table(results)
+
+
+def print_workflow_detail(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
     """Print a detailed table of workflow statuses.
     
     Args:
         workflows (List): List of workflows returned from the API call.
+        metadatas (Dict): Dictionary of metadatas indexed by workflow id.
     """
 
     results = [
