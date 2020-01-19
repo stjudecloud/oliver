@@ -1,6 +1,8 @@
+import datetime
 import json
 import sys
 
+from typing import List
 from requests import request
 from urllib.parse import urljoin
 
@@ -105,15 +107,55 @@ class CromwellAPI:
         _, data = self._api_call(f"/api/workflows/{{version}}/{workflow_id}/logs")
         return data
 
-    def get_workflows_query(self, includeSubworkflows=True, statuses=None, labels=None):
-        "GET /api/workflows/{version}/query"
-        params = {"includeSubworkflows": includeSubworkflows}
+    def get_workflows_query(
+        self,
+        submission: datetime.datetime = None,
+        start: datetime.datetime = None,
+        end: datetime.datetime = None,
+        statuses: List[str] = None,
+        names: List[str] = None,
+        ids: List[str] = None,
+        labels: List[str] = None,
+        labelors: List[str] = None,
+        excludeLabelAnds: List[str] = None,
+        excludeLabelOrs: List[str] = None,
+        additionalQueryResultFields: List[str] = None,
+        includeSubworkflows: bool = True,
+    ) -> List:
+        """GET /api/workflows/{version}/query
+        
+        Args:
+            submission (datetime.datetime, optional): Returns only workflows with an equal or later submission time. Can be specified at most once. If both submission time and start date are specified, submission time should be before or equal to start date. Defaults to None.
+            start (datetime.datetime, optional): Returns only workflows with an equal or later start datetime. Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. Defaults to None.
+            end (datetime.datetime, optional): Returns only workflows with an equal or earlier end datetime. Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. Defaults to None.
+            statuses (List[str], optional): Returns only workflows with the specified status. If specified multiple times, returns workflows in any of the specified statuses. Defaults to None.
+            names (List[str], optional): Returns only workflows with the specified name. If specified multiple times, returns workflows with any of the specified names. Defaults to None.
+            ids (List[str], optional): Returns only workflows with the specified workflow id. If specified multiple times, returns workflows with any of the specified workflow ids. Defaults to None.
+            labels (List[str], optional): Returns workflows with the specified label keys. If specified multiple times, returns workflows with all of the specified label keys. Specify the label key and label value pair as separated with "label-key:label-value". Defaults to None.
+            labelors (List[str], optional): Returns workflows with the specified label keys. If specified multiple times, returns workflows with any of the specified label keys. Specify the label key and label value pair as separated with "label-key:label-value". Defaults to None.
+            excludeLabelAnd (List[str], optional): Excludes workflows with the specified label. If specified multiple times, excludes workflows with all of the specified label keys. Specify the label key and label value pair as separated with "label-key:label-value". Defaults to None.
+            excludeLabelOr (List[str], optional): Excludes workflows with the specified label. If specified multiple times, excludes workflows with any of the specified label keys. Specify the label key and label value pair as separated with "label-key:label-value". Defaults to None.
+            additionalQueryResultFields (List[str], optional): Currently only 'labels' is a valid value here. Use it to include a list of labels with each result. Defaults to None.
+            includeSubworkflows (Boolean, optional): Include subworkflows in results. By default, it is taken as true. Defaults to True.
+        
+        Returns:
+            List: All workflows that match the provided parameters.
+        """
 
-        if statuses:
-            params["status"] = statuses
-
-        if labels:
-            params["label"] = labels
+        params = {
+            "submission": submission,
+            "start": start,
+            "end": end,
+            "status": statuses,
+            "name": names,
+            "id": ids,
+            "label": labels,
+            "labelor": labelors,
+            "excludeLabelAnd": excludeLabelAnds,
+            "excludeLabelOr": excludeLabelOrs,
+            "additionalQueryResultFields": additionalQueryResultFields,
+            "includeSubworkflows": includeSubworkflows,
+        }
 
         _, data = self._api_call("/api/workflows/{version}/query", params=params)
         if not "results" in data:
