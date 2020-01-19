@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import pendulum
 
 from collections import defaultdict
@@ -27,11 +28,18 @@ def call(args: Dict):
     if "job_group" in args and args["job_group"]:
         labels.append(f"{constants.OLIVER_JOB_GROUP_KEY}:{args['job_group']}")
 
+    submission = None
+    if "submission_time" in args and args["submission_time"] > 0:
+        submission = (
+            datetime.datetime.now() - datetime.timedelta(hours=args["submission_time"])
+        ).replace(microsecond=0).isoformat("T") + "Z"
+
     workflows = cromwell.get_workflows_query(
         includeSubworkflows=False,
         labels=labels,
         ids=[args["workflow_id"]],
         names=[args["workflow_name"]],
+        submission=submission,
     )
 
     if (
@@ -114,6 +122,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="Show jobs in the 'Running' state.",
         default=False,
         action="store_true",
+    )
+    subcommand.add_argument(
+        "--submission-time",
+        help="Show only jobs which were submitted at most N hours ago.",
+        default=24,
+        type=int,
     )
     subcommand.add_argument(
         "-s",
