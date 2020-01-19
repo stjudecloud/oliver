@@ -59,7 +59,7 @@ def call(args: Dict):
             result["Location"] = args["output_prefix"] + result["Location"]
 
     if "call_name" in args and args["call_name"]:
-        results = list(filter(lambda r: r["Call Name"] == args["call_name"], results))
+        results = list(filter(lambda r: args["call_name"] in r["Call Name"], results))
 
     reporting.print_dicts_as_table(results)
 
