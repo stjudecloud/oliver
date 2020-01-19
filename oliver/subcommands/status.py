@@ -1,7 +1,7 @@
 import argparse
 import pendulum
 
-from typing import Dict
+from typing import Dict, List, Optional
 
 from .. import api, constants, reporting
 
@@ -17,63 +17,24 @@ def call(args: Dict):
         server=args["cromwell_server"], version=args["cromwell_api_version"],
     )
 
-    if args["show_all_statuses"]:
-        statuses = None
-    elif (
-        args["show_running_statuses"]
-        or args["show_failed_statuses"]
-        or args["show_succeeded_statuses"]
-    ):
-        statuses = []
-        if args["show_running_statuses"]:
-            statuses.append("Running")
+    statuses = get_statuses_to_query(args)
 
-        if args["show_failed_statuses"]:
-            statuses.append("Failed")
-
-        if args["show_succeeded_statuses"]:
-            statuses.append("Succeeded")
-    else:
-        statuses = ["Running"]
-
-    labels = None
+    labels = []
     if "job_name" in args and args["job_name"]:
-        if not labels:
-            labels = []
         labels.append(f"{constants.OLIVER_JOB_NAME_KEY}:{args['job_name']}")
 
     if "job_group" in args and args["job_group"]:
-        if not labels:
-            labels = []
         labels.append(f"{constants.OLIVER_JOB_GROUP_KEY}:{args['job_group']}")
 
     workflows = cromwell.get_workflows_query(
-        includeSubworkflows=False, statuses=statuses, labels=labels
+        includeSubworkflows=False,
+        statuses=statuses,
+        labels=labels,
+        ids=[args["workflow_id"]],
+        names=[args["workflow_name"]],
     )
 
-    results = [
-        {
-            "Workflow ID": w["id"] if "id" in w else "",
-            "Workflow Name": w["name"] if "name" in w else "",
-            "Status": w["status"] if "status" in w else "",
-            "Start": pendulum.parse(w["start"]).to_day_datetime_string()
-            if "start" in w
-            else "",
-        }
-        for w in workflows
-    ]
-
-    if "workflow_id" in args and args["workflow_id"]:
-        results = list(
-            filter(lambda r: r["Workflow ID"] == args["workflow_id"], results)
-        )
-
-    if "workflow_name" in args and args["workflow_name"]:
-        results = list(
-            filter(lambda r: r["Workflow Name"] == args["workflow_name"], results)
-        )
-
-    reporting.print_dicts_as_table(results, args["grid_style"])
+    print_workflow_detail(workflows, grid_style=args["grid_style"])
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -139,3 +100,57 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default="fancy_grid",
     )
     subcommand.set_defaults(func=call)
+
+
+def get_statuses_to_query(args: Dict) -> Optional[List[str]]:
+    """Get a list of statues to consider when querying for workflow.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    
+    Returns:
+        Optional[List[str]]: List of statuses to consider or None.
+    """
+
+    if args["show_all_statuses"]:
+        return None
+    elif (
+        args["show_running_statuses"]
+        or args["show_failed_statuses"]
+        or args["show_succeeded_statuses"]
+    ):
+        statuses = []
+        if args["show_running_statuses"]:
+            statuses.append("Running")
+
+        if args["show_failed_statuses"]:
+            statuses.append("Failed")
+
+        if args["show_succeeded_statuses"]:
+            statuses.append("Succeeded")
+
+        return statuses
+
+    return ["Running"]
+
+
+def print_workflow_detail(workflows: List, grid_style="fancy_grid"):
+    """Print a detailed table of workflow statuses.
+    
+    Args:
+        workflows (List): List of workflows returned from the API call.
+    """
+
+    results = [
+        {
+            "Workflow ID": w["id"] if "id" in w else "",
+            "Workflow Name": w["name"] if "name" in w else "",
+            "Status": w["status"] if "status" in w else "",
+            "Start": pendulum.parse(w["start"]).to_day_datetime_string()
+            if "start" in w
+            else "",
+        }
+        for w in workflows
+    ]
+
+    reporting.print_dicts_as_table(results, grid_style)
