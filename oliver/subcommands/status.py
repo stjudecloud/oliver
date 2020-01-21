@@ -4,6 +4,7 @@ import pendulum
 
 from collections import defaultdict
 from typing import Dict, List, Optional
+from tzlocal import get_localzone
 
 from .. import api, constants, reporting, utils
 
@@ -229,7 +230,9 @@ def print_workflow_detail(workflows: List, metadatas: Dict, grid_style="fancy_gr
             "Workflow ID": w["id"] if "id" in w else "",
             "Workflow Name": w["name"] if "name" in w else "",
             "Status": w["status"] if "status" in w else "",
-            "Start": pendulum.parse(w["start"]).to_day_datetime_string()
+            "Start": pendulum.parse(w["start"])
+            .in_tz(get_localzone())
+            .to_day_datetime_string()
             if "start" in w
             else "",
         }
