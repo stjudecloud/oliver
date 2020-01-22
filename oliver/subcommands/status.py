@@ -44,7 +44,7 @@ def call(args: Dict):
             names=[args["workflow_name"]],
             submission=submission,
         ),
-        key=lambda k: k["submission"],
+        key=lambda k: k["submission"]
     )
 
     if args["batch_number_ago"] is not None:
