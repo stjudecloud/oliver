@@ -3,10 +3,11 @@ import datetime
 import pendulum
 
 from collections import defaultdict
+from logzero import logger
 from typing import Dict, List, Optional
 from tzlocal import get_localzone
 
-from .. import api, constants, reporting, utils
+from .. import api, batch, constants, reporting, utils
 
 
 def call(args: Dict):
@@ -35,13 +36,25 @@ def call(args: Dict):
             datetime.datetime.now() - datetime.timedelta(hours=args["submission_time"])
         ).replace(microsecond=0).isoformat("T") + "Z"
 
-    workflows = cromwell.get_workflows_query(
-        includeSubworkflows=False,
-        labels=labels,
-        ids=[args["workflow_id"]],
-        names=[args["workflow_name"]],
-        submission=submission,
+    workflows = sorted(
+        cromwell.get_workflows_query(
+            includeSubworkflows=False,
+            labels=labels,
+            ids=[args["workflow_id"]],
+            names=[args["workflow_name"]],
+            submission=submission,
+        ),
+        key=lambda k: k["submission"],
     )
+
+    if args["batch_number_ago"] is not None:
+        workflows = batch.batch_workflows(workflows, args["batch_interval_mins"])
+        max_batch_number = max([w["batch"] for w in workflows])
+        batch_number_to_target = max_batch_number - args["batch_number_ago"]
+        logger.info(f"Targetting all jobs in batch {batch_number_to_target}.")
+        workflows = list(
+            filter(lambda x: x["batch"] == batch_number_to_target, workflows)
+        )
 
     if statuses:
         workflows = list(filter(lambda x: x["status"] in statuses, workflows))
@@ -72,6 +85,19 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="Show jobs in the 'Aborted' state.",
         default=False,
         action="store_true",
+    )
+    subcommand.add_argument(
+        "-b",
+        "--batch-number-ago",
+        help="(experimental) Show outputs from N batches ago.",
+        default=None,
+        type=int,
+    )
+    subcommand.add_argument(
+        "--batch-interval-mins",
+        help="(experimental) Split batches by any two jobs separated by N minutes.",
+        default=5,
+        type=int,
     )
     subcommand.add_argument(
         "-d",
