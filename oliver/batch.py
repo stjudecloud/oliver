@@ -2,6 +2,8 @@ import pendulum
 
 from typing import List, Dict
 
+from . import errors
+
 
 def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List[Dict]:
     """Batches workflows based on their `submission` key and a time interval.
@@ -26,6 +28,14 @@ def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List
     batch_num = 0
     last_submission_time = None
     for i in range(len(workflows)):
+        if "submission" not in w:
+            errors.report(
+                f"`submission` not in workflow, so we cannot batch.\n{w}",
+                fatal=True,
+                exitcode=errors.ERROR_INTERNAL_ERROR,
+                suggest_report=True,
+            )
+
         w = workflows[i]
         t = pendulum.parse(w["submission"])
         if last_submission_time:
