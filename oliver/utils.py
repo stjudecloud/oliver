@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from urllib.parse import urlparse
 
 from . import constants, reporting
@@ -51,3 +51,12 @@ def get_oliver_group(workflow: Dict) -> Optional[str]:
         return workflow["labels"][constants.OLIVER_JOB_GROUP_KEY]
 
     return None
+
+
+def ask_boolean_question(question: str):
+    choices: List[str] = ["yes", "y", "no", "n"]
+
+    while True:
+        answer = input(question + " (y/n) ").lower()
+        if answer in choices:
+            return answer
