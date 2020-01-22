@@ -136,6 +136,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         action="store_true",
     )
     subcommand.add_argument(
+        "-t",
         "--submission-time",
         help="Show only jobs which were submitted at most N hours ago.",
         default=24,
