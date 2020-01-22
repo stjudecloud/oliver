@@ -43,19 +43,12 @@ def call(args: Dict):
         submission=submission,
     )
 
-    if (
-        args["show_running_statuses"]
-        or args["show_aborted_statuses"]
-        or args["show_failed_statuses"]
-        or args["show_succeeded_statuses"]
-    ):
-        args["detail"] = True
+    if statuses:
+        workflows = list(filter(lambda x: x["status"] in statuses, workflows))
 
     metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
     print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
     if "detail" in args and args["detail"]:
-        if statuses:
-            workflows = filter(lambda x: x["status"] in statuses, workflows)
         print()
         print_workflow_detail(workflows, metadatas, grid_style=args["grid_style"])
 
@@ -77,14 +70,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "--aborted",
         dest="show_aborted_statuses",
         help="Show jobs in the 'Aborted' state.",
-        default=False,
-        action="store_true",
-    )
-    subcommand.add_argument(
-        "-b",
-        "--all",
-        dest="show_all_statuses",
-        help="Show jobs in all states, not just 'Running' jobs.",
         default=False,
         action="store_true",
     )
@@ -156,14 +141,13 @@ def get_statuses_to_query(args: Dict) -> Optional[List[str]]:
         Optional[List[str]]: List of statuses to consider or None.
     """
 
-    if args["show_all_statuses"]:
-        return None
-    elif (
+    if (
         args["show_running_statuses"]
         or args["show_aborted_statuses"]
         or args["show_failed_statuses"]
         or args["show_succeeded_statuses"]
     ):
+
         statuses = []
         if args["show_running_statuses"]:
             statuses.append("Running")
@@ -179,7 +163,7 @@ def get_statuses_to_query(args: Dict) -> Optional[List[str]]:
 
         return statuses
 
-    return ["Running"]
+    return None
 
 
 def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
