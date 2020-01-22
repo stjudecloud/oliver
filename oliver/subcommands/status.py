@@ -135,9 +135,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
     subcommand.set_defaults(func=call)
 
 
-
-
-
 def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
     """Print a summary of workflow statuses.
     
