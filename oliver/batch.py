@@ -28,6 +28,7 @@ def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List
     batch_num = 0
     last_submission_time = None
     for i in range(len(workflows)):
+        w = workflows[i]
         if "submission" not in w:
             errors.report(
                 f"`submission` not in workflow, so we cannot batch.\n{w}",
