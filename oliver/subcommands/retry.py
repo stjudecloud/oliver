@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from .. import api, reporting
+from .. import api, errors, reporting, utils, workflows as _workflows
 
 
 def call(args: Dict):
@@ -15,37 +15,71 @@ def call(args: Dict):
     cromwell = api.CromwellAPI(
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
-    metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
-    workflowUrl = (
-        metadata["submittedFiles"]["workflowUrl"]
-        if "submittedFiles" in metadata and "workflowUrl" in metadata["submittedFiles"]
-        else {}
-    )
-    workflowInputs = (
-        metadata["submittedFiles"]["inputs"]
-        if "submittedFiles" in metadata and "inputs" in metadata["submittedFiles"]
-        else {}
-    )
-    workflowOptions = (
-        metadata["submittedFiles"]["options"]
-        if "submittedFiles" in metadata and "options" in metadata["submittedFiles"]
-        else {}
-    )
-    labels = (
-        metadata["submittedFiles"]["labels"]
-        if "submittedFiles" in metadata and "labels" in metadata["submittedFiles"]
-        else {}
-    )
+    workflow = None
+    show_only_aborted_and_failed = not args["all"]
 
-    results = [
-        cromwell.post_workflows(
-            workflowUrl=workflowUrl,
-            workflowInputs=workflowInputs,
-            workflowOptions=workflowOptions,
-            labels=labels,
+    if args["scope"] == "workflow":
+        workflows = workflows.get_workflows(
+            cromwell, 
+            cromwell_workflow_uuid=args["predicate"], 
+            opt_into_reporting_failed_jobs=show_only_aborted_and_failed, 
+            opt_into_reporting_aborted_jobs=show_only_aborted_and_failed
         )
-    ]
+    elif args["scope"] == "batch":
+        workflows = workflows.get_workflows(
+            cromwell, 
+            batch_number_ago=args["predicate"],
+            opt_into_reporting_failed_jobs=show_only_aborted_and_failed, 
+            opt_into_reporting_aborted_jobs=show_only_aborted_and_failed
+        )
+    else:
+        errors.report(
+            f"Unsupported scope: {args['scope']}!",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT
+        )
+
+
+    if not args["yes"] and not utils.ask_boolean_question(f"Wishing to resubmit {len()} jobs. Continue?") in ["yes", "y"]:
+        errors.report("User cancelled submission.", fatal=True, exitcode=0)
+
+    results = []
+    for w in workflows:
+        metadata = cromwell.get_workflows_metadata(w)
+
+        workflowUrl = (
+            metadata["submittedFiles"]["workflowUrl"]
+            if "submittedFiles" in metadata and "workflowUrl" in metadata["submittedFiles"]
+            else {}
+        )
+
+        workflowInputs = (
+            metadata["submittedFiles"]["inputs"]
+            if "submittedFiles" in metadata and "inputs" in metadata["submittedFiles"]
+            else {}
+        )
+
+        workflowOptions = (
+            metadata["submittedFiles"]["options"]
+            if "submittedFiles" in metadata and "options" in metadata["submittedFiles"]
+            else {}
+        )
+
+        labels = (
+            metadata["submittedFiles"]["labels"]
+            if "submittedFiles" in metadata and "labels" in metadata["submittedFiles"]
+            else {}
+        )
+
+        results.append(
+            cromwell.post_workflows(
+                workflowUrl=workflowUrl,
+                workflowInputs=workflowInputs,
+                workflowOptions=workflowOptions,
+                labels=labels,
+            )
+        )
 
     reporting.print_dicts_as_table(results)
 
@@ -58,9 +92,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
     """
 
     subcommand = subparser.add_parser(
-        "retry", aliases=["re"], help="Resubmit a workflow with the same parameters."
+        "retry", aliases=["re"], help="Resubmit a workflow with the same parameters. By default, only restarts workflows which are 'Failed' or 'Aborted'."
     )
-    subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
+    subcommand.add_argument("scope", help="Currently `workflow` and `batch` are supported.")
+    subcommand.add_argument("predicate", help="If scope is `workflow`, the workflow's UUID. If scope is `batch`, N batches ago to restart.")
+    subcommand.add_argument("-a", "--all", help="Restart all workflows, not just 'Failed' and 'Aborted' workflows.", default=False, action="store_true")
+    subcommand.add_argument("-y", "--yes", help="Instead of prompting, go ahead and resubmit the jobs.", default=False, action="store_true")
     subcommand.add_argument(
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",
