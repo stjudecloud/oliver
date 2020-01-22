@@ -3,7 +3,7 @@ import pendulum
 
 from typing import Dict
 
-from .. import api, errors, reporting, utils
+from .. import api, constants, errors, reporting, utils
 
 
 def report_failure(failure, indent, step=2, offset=2):
@@ -24,6 +24,16 @@ def call(args: Dict):
     )
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
+    oliver_job_name = (
+        metadata["labels"][constants.OLIVER_JOB_NAME_KEY]
+        if "labels" in metadata and constants.OLIVER_JOB_NAME_KEY in metadata["labels"]
+        else ""
+    )
+    oliver_group_name = (
+        metadata["labels"][constants.OLIVER_JOB_GROUP_KEY]
+        if "labels" in metadata and constants.OLIVER_JOB_GROUP_KEY in metadata["labels"]
+        else ""
+    )
     workflow_name = metadata["workflowName"] if "workflowName" in metadata else ""
     workflow_id = metadata["id"] if "id" in metadata else ""
     workflow_language = (
@@ -111,6 +121,10 @@ def call(args: Dict):
     for call in calls:
         call["Start"] = call["Start"].to_day_datetime_string()
 
+    if oliver_job_name:
+        print(f"Job Name: {oliver_job_name}")
+    if oliver_group_name:
+        print(f"Group Name: {oliver_group_name}")
     print(f"Workflow Name: {workflow_name}")
     print(f"Workflow ID: {workflow_id}")
     print(f"Workflow Version: {workflow_language}")
