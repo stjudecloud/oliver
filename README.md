@@ -10,6 +10,8 @@
 
 > An opinionated Cromwell orchestration manager.
 
+![Oliver Example](./docs/oliver-example.gif)
+
 ## Install
 
 ```sh
