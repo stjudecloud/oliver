@@ -7,7 +7,7 @@ from logzero import logger
 from typing import Dict, List, Optional
 from tzlocal import get_localzone
 
-from .. import api, batch, constants, reporting, utils, workflows as _workflows
+from .. import api, batch, constants, errors, reporting, utils, workflows as _workflows
 
 
 def call(args: Dict):
@@ -33,14 +33,21 @@ def call(args: Dict):
         opt_into_reporting_aborted_jobs=args["show_aborted_jobs"],
         opt_into_reporting_failed_jobs=args["show_failed_jobs"],
         opt_into_reporting_running_jobs=args["show_running_jobs"],
-        opt_into_reporting_succeeded_jobs=args["show_succeeded_jobs"]
-    ) 
+        opt_into_reporting_succeeded_jobs=args["show_succeeded_jobs"],
+    )
 
     metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
     print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
-    if "detail" in args and args["detail"]:
+
+    if args.get("steps_view"):
         print()
-        print_workflow_detail(workflows, metadatas, grid_style=args["grid_style"])
+        print_workflow_steps_view(
+            workflows, metadatas, grid_style=args.get("grid_style")
+        )
+
+    if args.get("detail_view"):
+        print()
+        print_workflow_detail_view(workflows, metadatas, grid_style=args["grid_style"])
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -78,7 +85,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
     )
     subcommand.add_argument(
         "-d",
-        "--detail",
+        "--detail-view",
         help="Show detailed view.",
         default=False,
         action="store_true",
@@ -92,12 +99,25 @@ def register_subparser(subparser: argparse._SubParsersAction):
         action="store_true",
     )
     subcommand.add_argument(
-        "-g", "--oliver-job-group-name", help="Job group name assigned by user and attached to the job.", type=str, default=None
+        "-g",
+        "--oliver-job-group-name",
+        help="Job group name assigned by user and attached to the job.",
+        type=str,
+        default=None,
     )
     subcommand.add_argument(
-        "-i", "--cromwell-workflow-uuid", type=str, help="Filter by workflow id matching argument."
+        "-i",
+        "--cromwell-workflow-uuid",
+        type=str,
+        help="Filter by workflow id matching argument.",
     )
-    subcommand.add_argument("-j", "--oliver-job-name", help="Job name assigned by user and attached to the job.", type=str, default=None)
+    subcommand.add_argument(
+        "-j",
+        "--oliver-job-name",
+        help="Job name assigned by user and attached to the job.",
+        type=str,
+        default=None,
+    )
     subcommand.add_argument(
         "-n",
         "--cromwell-workflow-name",
@@ -124,6 +144,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "--succeeded",
         dest="show_succeeded_jobs",
         help="Show jobs in the 'Succeeded' state.",
+        default=False,
+        action="store_true",
+    )
+    subcommand.add_argument(
+        "--steps-view",
+        help="Show the 'steps' view.",
         default=False,
         action="store_true",
     )
@@ -170,7 +196,9 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
     reporting.print_dicts_as_table(results, grid_style)
 
 
-def print_workflow_detail(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
+def print_workflow_detail_view(
+    workflows: List, metadatas: Dict, grid_style="fancy_grid"
+):
     """Print a detailed table of workflow statuses.
     
     Args:
@@ -193,3 +221,42 @@ def print_workflow_detail(workflows: List, metadatas: Dict, grid_style="fancy_gr
     ]
 
     reporting.print_dicts_as_table(results, grid_style)
+
+
+def print_workflow_steps_view(
+    workflows: List, metadatas: Dict, grid_style="fancy_grid"
+):
+    """Print a table summarizing which steps (calls) are in progress.
+    
+    Args:
+        workflows (List): List of workflows returned from the API call.
+        metadatas (Dict): Dictionary of metadatas indexed by workflow id.
+    """
+
+    results = defaultdict(lambda: defaultdict(int))
+
+    for w in workflows:
+        uuid = w.get("id")
+        if not uuid:
+            errors.report(
+                "`id` not found for workflow.",
+                fatal=True,
+                exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+            )
+
+        m = metadatas.get(uuid)
+        if not m:
+            errors.report(
+                f"'{uuid}' not found in metadatas.",
+                fatal=True,
+                exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+            )
+
+        for call_name, calls in m.get("calls").items():
+            most_recent_call = sorted(calls, key=lambda x: x["start"])[-1]
+            results[call_name][most_recent_call.get("executionStatus")] += 1
+
+    _results = [
+        {"Call Name": call_name, **results[call_name]} for call_name in results.keys()
+    ]
+    reporting.print_dicts_as_table(_results, grid_style)
