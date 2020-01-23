@@ -1,5 +1,6 @@
 import sys
 
+from collections import OrderedDict
 from tabulate import tabulate
 from typing import List, Dict
 
@@ -7,7 +8,10 @@ from . import errors
 
 
 def print_dicts_as_table(
-    data: List[Dict], grid_style: str = "fancy_grid", clean_shard_col: bool = True
+    data: List[Dict],
+    grid_style: str = "fancy_grid",
+    clean_shard_col: bool = True,
+    fill=0,
 ):
     """Format a list of dicts and print as a table using `tabulate`.
     
@@ -18,6 +22,7 @@ def print_dicts_as_table(
                                     for more information. Defaults to "fancy_grid".
         clean_shard_col (bool, optional): Remove the column named "Shard" if all values are -1.
                                           Defaults to True.
+        fill: value to fill for missing cells.
     """
 
     if len(data) <= 0:
@@ -44,11 +49,23 @@ def print_dicts_as_table(
                 if "Shard" in item:
                     del item["Shard"]
 
-    print(
-        tabulate(
-            [d.values() for d in data], headers=data[0].keys(), tablefmt=grid_style
-        )
-    )
+    # todo: this part could be much cleaner, but can't be bothered to
+    # to make an elegant solution at this moment.
+
+    # use ordered dict as ordered set (again, laziness)
+    ordered_set = OrderedDict()
+    for d in data:
+        for k in d.keys():
+            ordered_set[k] = None
+
+    headers = list(ordered_set.keys())
+
+    for d in data:
+        for k in headers:
+            if not d.get(k):
+                d[k] = fill
+
+    print(tabulate([d.values() for d in data], headers=headers, tablefmt=grid_style))
 
 
 def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
