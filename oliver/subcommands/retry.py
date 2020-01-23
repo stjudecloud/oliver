@@ -30,6 +30,7 @@ def call(args: Dict):
         workflows = _workflows.get_workflows(
             cromwell,
             batch_number_ago=int(args["predicate"]),
+            batch_interval_mins=args["batch_interval_mins"],
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
@@ -111,6 +112,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="Restart all workflows, not just 'Failed' and 'Aborted' workflows.",
         default=False,
         action="store_true",
+    )
+    subcommand.add_argument(
+        "--batch-interval-mins",
+        help="(experimental) Split batches by any two jobs separated by N minutes.",
+        default=5,
+        type=int,
     )
     subcommand.add_argument(
         "-y",
