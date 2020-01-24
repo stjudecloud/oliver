@@ -47,7 +47,13 @@ def call(args: Dict):
 
     if args.get("detail_view"):
         print()
-        print_workflow_detail_view(workflows, metadatas, grid_style=args["grid_style"])
+        print_workflow_detail_view(
+            workflows,
+            metadatas,
+            show_job_name=args.get("show_job_name"),
+            show_job_group=args.get("show_job_group"),
+            grid_style=args["grid_style"],
+        )
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -197,21 +203,29 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
 
 
 def print_workflow_detail_view(
-    workflows: List, metadatas: Dict, grid_style="fancy_grid"
+    workflows: List,
+    metadatas: Dict,
+    show_job_name: bool = False,
+    show_job_group: bool = False,
+    grid_style="fancy_grid",
 ):
     """Print a detailed table of workflow statuses.
     
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
+        show_job_name(bool): include Oliver job name in results.
+        show_job_group(bool): include Oliver job group in results.
     """
 
     results = [
         {
-            "Workflow ID": w["id"] if "id" in w else "",
-            "Workflow Name": w["name"] if "name" in w else "",
-            "Status": w["status"] if "status" in w else "",
-            "Start": pendulum.parse(w["start"])
+            "Job Name": utils.get_oliver_name(metadatas.get(w.get("id"))),
+            "Job Group": utils.get_oliver_group(metadatas.get(w.get("id"))),
+            "Workflow ID": w.get("id", ""),
+            "Workflow Name": w.get("name", ""),
+            "Status": w.get("status", ""),
+            "Start": pendulum.parse(w.get("start"))
             .in_tz(get_localzone())
             .to_day_datetime_string()
             if "start" in w
