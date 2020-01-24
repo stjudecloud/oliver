@@ -8,6 +8,7 @@ from oliver import errors
 from oliver.config import read_config
 from oliver.subcommands import (
     aggregate,
+    azbatch,
     configure,
     config,
     cosmos,
@@ -24,6 +25,7 @@ from oliver.subcommands import (
 
 SUBCOMMANDS = {
     "aggregate": aggregate,
+    "azbatch": azbatch,
     "configure": configure,
     "config": config,
     "cosmos": cosmos,
