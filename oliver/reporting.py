@@ -1,10 +1,33 @@
 import sys
+import pendulum
 
 from collections import OrderedDict
 from tabulate import tabulate
 from typing import List, Dict
+from tzlocal import get_localzone
 
 from . import errors
+
+def localize_date(given_date: str):
+    "Returns a localized date given any date that is parsable by pedulum."
+    return pendulum.parse(given_date).in_tz(get_localzone()).to_day_datetime_string()
+
+
+def duration_to_text(duration):
+    parts = []
+    attrs = ["years", "months", "days", "hours", "minutes", "remaining_seconds"]
+    for attr in attrs:
+        if hasattr(duration, attr):
+            value = getattr(duration, attr)
+            # hack to get the correct formatting out. Pendulum appears to inconsistently
+            # name its methods: https://github.com/sdispater/pendulum/blob/master/pendulum/duration.py#L163
+            if attr == "remaining_seconds":
+                attr = "seconds"
+
+            if value > 0:
+                parts.append(f"{value} {attr}")
+
+    return " ".join(parts)
 
 
 def print_dicts_as_table(
