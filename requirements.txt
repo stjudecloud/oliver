@@ -1,3 +1,4 @@
+azure-batch==8.0.0
 azure-cosmos==3.1.2
 logzero==1.5.0
 pendulum==2.0.5
