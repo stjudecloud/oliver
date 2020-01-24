@@ -31,65 +31,72 @@ def duration_to_text(duration):
 
 
 def print_dicts_as_table(
-    data: List[Dict],
+    rows: List[Dict],
     grid_style: str = "fancy_grid",
-    clean_shard_col: bool = True,
-    fill=0,
+    clean: bool = True,
+    fill = None,
+    header_order: list = ["Job Name", "Job Group", "Call Name", "QueuedInCromwell", "Starting", "Running", "Aborted", "Failed", "Succeeded"]
 ):
     """Format a list of dicts and print as a table using `tabulate`.
     
     Args:
-        data (List[Dict]): Data to be printed structured as a list of dicts.
+        rows (List[Dict]): Data to be printed structured as a list of dicts.
         grid_style (str, optional): Any valid `tabulate` table format. 
                                     See https://github.com/astanin/python-tabulate#table-format 
                                     for more information. Defaults to "fancy_grid".
-        clean_shard_col (bool, optional): Remove the column named "Shard" if all values are -1.
-                                          Defaults to True.
+        clean (bool, optional): Remove all columns consisting of -1 or None.
         fill: value to fill for missing cells.
+        header_order (list, optional): if headers exist, these will be put in
+        the front.
     """
 
-    if len(data) <= 0:
+    if len(rows) <= 0:
         return
 
-    if not isinstance(data, list) or not isinstance(data[0], dict):
+    if not isinstance(rows, list) or not isinstance(rows[0], dict):
         errors.report(
             "Expected 'data' to be a list of dicts!",
             fatal=True,
             exitcode=errors.ERROR_INTERNAL_ERROR,
         )
 
-    # Remove Shard column if all values are -1, it's generally
-    # not helpful if this is the case.
-    if clean_shard_col:
-        to_remove = True
-        for item in data:
-            shard = item.get("Shard")
-            if shard and shard != -1:
-                to_remove = False
-                break
-
-        if to_remove:
-            for item in data:
-                if item.get("Shard"):
-                    del item["Shard"]
-
-    # todo: this part could be much cleaner, but can't be bothered to
+    # TODO(clay): this part could be much cleaner, but can't be bothered to
     # to make an elegant solution at this moment.
 
     # use ordered dict as ordered set (again, laziness)
-    ordered_set = OrderedDict()
-    for d in data:
-        for k in d.keys():
-            ordered_set[k] = None
+    ordered_set: OrderedDict[str, None] = OrderedDict()
+    for row in rows:
+        for h in row.keys():
+            ordered_set[h] = None
 
     headers = list(ordered_set.keys())
+    for _h in reversed(header_order):
+        if _h in headers:
+            headers.remove(_h)
+            headers = [_h] + headers
 
-    for d in data:
-        for k in headers:
-            if not d.get(k):
-                d[k] = fill
+    # clean uninteresting columns
+    uninteresting_values = [-1, None]
 
-    print(tabulate([d.values() for d in data], headers=headers, tablefmt=grid_style))
+    if clean:
+        for header in headers:
+            results = [row.get(header) in uninteresting_values for row in rows]
+            to_remove = all(results)
+            if to_remove:
+                headers.remove(header)
+                for row in rows:
+                    del row[header]
+
+    results = []
+
+    # definitely a more elegant solution for this...
+    for row in rows:
+        r = {}
+        for header in headers:
+            r[header] = row.get(header, fill)
+        results.append(r) 
+
+    print(tabulate([result.values() for result in results], headers=headers, tablefmt=grid_style))
 
 
 def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
