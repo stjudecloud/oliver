@@ -270,4 +270,5 @@ def print_workflow_steps_view(
     _results = [
         {"Call Name": call_name, **results[call_name]} for call_name in results.keys()
     ]
+    
     reporting.print_dicts_as_table(_results, grid_style)

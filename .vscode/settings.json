@@ -3,5 +3,6 @@
     "autoDocstring.docstringFormat": "google",
     "autoDocstring.includeExtendedSummary": true,
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.pythonPath": "/Users/cmcleod/anaconda3/envs/oliver-dev/bin/python"
 }
