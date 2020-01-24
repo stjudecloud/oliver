@@ -5,9 +5,8 @@ import pendulum
 from collections import defaultdict
 from logzero import logger
 from typing import Dict, List, Optional
-from tzlocal import get_localzone
 
-from .. import api, batch, constants, errors, reporting, utils, workflows as _workflows
+from .. import api, batch, constants, errors, reporting, oliver, workflows as _workflows
 
 
 def call(args: Dict):
@@ -179,7 +178,7 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
 
     for w in workflows:
         m = metadatas[w["id"]]
-        job_group = utils.get_oliver_group(m)
+        job_group = oliver.get_oliver_group(m)
         if not job_group:
             job_group = "<not set>"
 
@@ -220,14 +219,12 @@ def print_workflow_detail_view(
 
     results = [
         {
-            "Job Name": utils.get_oliver_name(metadatas.get(w.get("id"))),
-            "Job Group": utils.get_oliver_group(metadatas.get(w.get("id"))),
+            "Job Name": oliver.get_oliver_name(metadatas.get(w.get("id"))),
+            "Job Group": oliver.get_oliver_group(metadatas.get(w.get("id"))),
             "Workflow ID": w.get("id", ""),
             "Workflow Name": w.get("name", ""),
             "Status": w.get("status", ""),
-            "Start": pendulum.parse(w.get("start"))
-            .in_tz(get_localzone())
-            .to_day_datetime_string()
+            "Start": reporting.localize_date(w.get("start"))
             if "start" in w
             else "",
         }
