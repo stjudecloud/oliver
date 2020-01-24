@@ -17,15 +17,15 @@ def call(args: Dict):
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
-    if not "calls" in metadata:
+    if not metadata.get("calls"):
         reporting.print_error_as_table(metadata["status"], metadata["message"])
         return
 
     calls_that_match = []
     for name, call in metadata["calls"].items():
         for process in call:
-            attempt = process["attempt"] if "attempt" in process else None
-            shard = process["shardIndex"] if "shardIndex" in process else None
+            attempt = process.get("attempt")
+            shard = process.get("shardIndex")
 
             # TODO: experimental, this code can be removed in the future if no
             # runtime errors are raised. If they are raised, we'll need to
@@ -42,7 +42,7 @@ def call(args: Dict):
                 and shard == args["shard"]
                 and name == args["call-name"]
             ):
-                if "runtimeAttributes" not in process:
+                if not process.get("runtimeAttributes"):
                     calls_that_match.append(
                         [
                             {

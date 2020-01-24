@@ -18,7 +18,7 @@ def call(args: Dict):
     )
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
-    if not "submittedFiles" in metadata or "inputs" not in metadata["submittedFiles"]:
+    if not metadata.get("submittedFiles", {}).get("inputs"):
         errors.report(
             "Could not retrieve inputs!",
             fatal=True,

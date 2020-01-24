@@ -63,13 +63,14 @@ def print_dicts_as_table(
     if clean_shard_col:
         to_remove = True
         for item in data:
-            if "Shard" in item and item["Shard"] != -1:
+            shard = item.get("Shard")
+            if shard and shard != -1:
                 to_remove = False
                 break
 
         if to_remove:
             for item in data:
-                if "Shard" in item:
+                if item.get("Shard"):
                     del item["Shard"]
 
     # todo: this part could be much cleaner, but can't be bothered to

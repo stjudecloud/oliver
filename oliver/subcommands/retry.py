@@ -50,30 +50,10 @@ def call(args: Dict):
     for w in workflows:
         metadata = cromwell.get_workflows_metadata(w["id"])
 
-        workflowUrl = (
-            metadata["submittedFiles"]["workflowUrl"]
-            if "submittedFiles" in metadata
-            and "workflowUrl" in metadata["submittedFiles"]
-            else {}
-        )
-
-        workflowInputs = (
-            metadata["submittedFiles"]["inputs"]
-            if "submittedFiles" in metadata and "inputs" in metadata["submittedFiles"]
-            else {}
-        )
-
-        workflowOptions = (
-            metadata["submittedFiles"]["options"]
-            if "submittedFiles" in metadata and "options" in metadata["submittedFiles"]
-            else {}
-        )
-
-        labels = (
-            metadata["submittedFiles"]["labels"]
-            if "submittedFiles" in metadata and "labels" in metadata["submittedFiles"]
-            else {}
-        )
+        workflowUrl = metadata.get("submittedFiles", {}).get("workflowUrl", {})
+        workflowInputs = metadata.get("submittedFiles", {}).get("inputs", {})
+        workflowOptions = metadata.get("submittedFiles", {}).get("options", {})
+        workflowLabels = metadata.get("submittedFiles", {}).get("labels", {})
 
         results.append(
             cromwell.post_workflows(
