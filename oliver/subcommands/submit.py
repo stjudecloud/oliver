@@ -26,7 +26,7 @@ def call(args: Dict):
         workflow_args["labels"],
     ) = prepare_workflow_inputs(args)
 
-    if "dry_run" in args and args["dry_run"]:
+    if args.get("dry_run"):
         for key, value in workflow_args.items():
             print(f"{key} = {value}")
         return
@@ -69,13 +69,13 @@ def prepare_workflow_inputs(args):
         elif arg_type == "label":
             labels.update(result)
 
-    if "job_name" in args and args["job_name"]:
+    if args.get("job_name"):
         labels[constants.OLIVER_JOB_NAME_KEY] = args["job_name"]
 
-    if "job_group" in args and args["job_group"]:
+    if args.get("job_group"):
         labels[constants.OLIVER_JOB_GROUP_KEY] = args["job_group"]
 
-    if "output_dir" in args and args["output_dir"]:
+    if args.get("output_dir"):
         options["final_workflow_outputs_dir"] = args["output_dir"]
 
     return json.dumps(inputs), json.dumps(options), json.dumps(labels)
