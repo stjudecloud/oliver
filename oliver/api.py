@@ -2,7 +2,7 @@ import datetime
 import json
 import sys
 
-from typing import List
+from typing import Dict, List
 from requests import request
 from urllib.parse import urljoin
 
@@ -31,7 +31,7 @@ class CromwellAPI:
         content = json.loads(response.content)
 
         if not str(status_code).startswith("2"):
-            if "status" in content and content["status"] == "fail":
+            if content.get("status") == "fail":
                 reporting.print_error_as_table(
                     content["status"].capitalize(), content["message"].capitalize()
                 )
@@ -158,7 +158,7 @@ class CromwellAPI:
         }
 
         _, data = self._api_call("/api/workflows/{version}/query", params=params)
-        if not "results" in data:
+        if not data.get("results"):
             errors.report(
                 "Expected 'results' key in response!",
                 fatal=True,
@@ -181,7 +181,7 @@ class CromwellAPI:
         includeKey: List[str] = None,
         excludeKey: List[str] = None,
         expandSubWorkflows: bool = False,
-    ) -> List:
+    ) -> Dict:
         """GET /api/workflows/{version}/{id}/metadata
         
         Args:

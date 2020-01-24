@@ -24,29 +24,16 @@ def call(args: Dict):
     )
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
-    oliver_job_name = (
-        metadata["labels"][constants.OLIVER_JOB_NAME_KEY]
-        if "labels" in metadata and constants.OLIVER_JOB_NAME_KEY in metadata["labels"]
-        else ""
-    )
-    oliver_group_name = (
-        metadata["labels"][constants.OLIVER_JOB_GROUP_KEY]
-        if "labels" in metadata and constants.OLIVER_JOB_GROUP_KEY in metadata["labels"]
-        else ""
-    )
-    workflow_name = metadata["workflowName"] if "workflowName" in metadata else ""
-    workflow_id = metadata["id"] if "id" in metadata else ""
-    workflow_language = (
-        metadata["actualWorkflowLanguage"]
-        if "actualWorkflowLanguage" in metadata
-        else ""
-    )
+    oliver_job_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_NAME_KEY, "")
+    oliver_group_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_GROUP_KEY, "")
+
+    workflow_name = metadata.get("workflowName", "")
+    workflow_id = metadata.get("id", "")
+    workflow_language = metadata.get("actualWorkflowLanguage", "")
+
     if workflow_language:
-        workflow_language += (
-            " " + metadata["actualWorkflowLanguageVersion"]
-            if "actualWorkflowLanguageVersion" in metadata
-            else ""
-        )
+        workflow_language += (" " + metadata.get("actualWorkflowLanguageVersion", ""))
+
     workflow_submission_date = metadata.get("submission")
     workflow_start_date = metadata.get("start")
     workflow_end_date = metadata.get("end")
@@ -61,15 +48,15 @@ def call(args: Dict):
         )
 
     if workflow_start_date and workflow_end_date:
-        workflow_duration = reporting.duration_to_text(
+        workflow_duration_to_report = reporting.duration_to_text(
             pendulum.parse(workflow_end_date) - pendulum.parse(workflow_start_date)
         )
 
     calls = []
     for name, call in metadata["calls"].items():
         for process in call:
-            attempt = process["attempt"] if "attempt" in process else None
-            shard = process["shardIndex"] if "shardIndex" in process else None
+            attempt = process.get("attempt")
+            shard = process.get("shardIndex")
 
             # TODO: experimental, this code can be removed in the future if no
             # runtime errors are raised. If they are raised, we'll need to
@@ -99,9 +86,7 @@ def call(args: Dict):
                 "Call Name": name,
                 "Attempt": attempt,
                 "Shard": shard,
-                "Status": process["executionStatus"]
-                if "executionStatus" in process
-                else "",
+                "Status": process.get("executionStatus", ""),
                 "Start": call_start_date,
                 "Duration": call_duration_to_report,
             }
@@ -126,7 +111,7 @@ def call(args: Dict):
 
     # Show labels if they exist
     if args["show_labels"]:
-        if "labels" not in metadata:
+        if not metadata.get("labels"):
             print("Labels: None")
         else:
             print("Labels:")
@@ -136,7 +121,7 @@ def call(args: Dict):
             print()
 
     # Show failures if they exist
-    if "failures" in metadata and len(metadata["failures"]) > 0:
+    if len(metadata.get("failures", [])) > 0:
         print("Failures:")
         print()
         for i, failure in enumerate(metadata["failures"]):
