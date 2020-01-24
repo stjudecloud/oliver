@@ -189,7 +189,7 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
     for group in agg.keys():
         for k in agg[group]:
             keys.add(k)
-        obj = {"Group Name": group}
+        obj = {"Job Group": group}
         obj.update(agg[group])
         results.append(obj)
 
