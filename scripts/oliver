@@ -7,6 +7,7 @@ import sys
 from oliver import errors
 from oliver.config import read_config
 from oliver.subcommands import (
+    aws,
     aggregate,
     configure,
     config,
@@ -23,6 +24,7 @@ from oliver.subcommands import (
 )
 
 SUBCOMMANDS = {
+    "aws": aws,
     "aggregate": aggregate,
     "configure": configure,
     "config": config,
