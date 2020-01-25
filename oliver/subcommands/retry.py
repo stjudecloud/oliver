@@ -60,7 +60,7 @@ def call(args: Dict):
                 workflowUrl=workflowUrl,
                 workflowInputs=workflowInputs,
                 workflowOptions=workflowOptions,
-                labels=labels,
+                labels=workflowLabels,
             )
         )
 
