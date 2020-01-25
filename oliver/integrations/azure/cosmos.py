@@ -1,9 +1,13 @@
+import argparse
 import azure.cosmos.cosmos_client as cosmos_client
 import azure.cosmos.errors as errors
 import azure.cosmos.http_constants as http_constants
-
 import json
 import os
+
+from typing import Dict
+
+from ... import reporting
 
 
 class CosmosAPI:
@@ -42,3 +46,53 @@ class CosmosAPI:
             "SELECT * FROM " + container_id + " r " + where,
             {"enableCrossPartitionQuery": True},
         )
+
+
+def call(args: Dict):
+    """Execute the subcommand.
+    
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
+
+    client = CosmosAPI(
+        cosmos_name=args["cosmos_account_name"],
+        resource_group=args["azure_resource_group"],
+    )
+    workflow_prefix = args["workflow-id"][0:8]
+    res = []
+
+    query = 'WHERE STARTSWITH(r.description, "' + workflow_prefix + '")'
+    if args["failures"]:
+        query += " AND r.state = 'SYSTEM_ERROR'"
+    results = client.query("TES", "Tasks", query)
+
+    if args["json"]:
+        output = ""
+        for item in results:
+            output += json.dumps(item, indent=True)
+        if args["outfile"] and args["outfile"] is not None:
+            f = open(args["outfile"], "w")
+            f.write(output)
+            f.close()
+        else:
+            print(output)
+    else:
+        for item in results:
+            log = ""
+            if item.get("logs"):
+                log = item.get("logs", [])[0]["system_logs"][0]
+            size = ""
+            if item.get("resources"):
+                size = item.get("resources", {})["vm_info"]["vm_size"]
+
+            res.append(
+                {
+                    "Call Name": item["name"],
+                    "State": item["state"],
+                    "VM": size,
+                    "Log": log,
+                }
+            )
+
+        reporting.print_dicts_as_table(res)

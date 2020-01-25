@@ -8,11 +8,11 @@ from oliver import errors
 from oliver.config import read_config
 from oliver.subcommands import (
     aws,
+    azure,
     aggregate,
     azbatch,
     configure,
     config,
-    cosmos,
     inputs,
     inspect,
     kill,
@@ -26,11 +26,11 @@ from oliver.subcommands import (
 
 SUBCOMMANDS = {
     "aws": aws,
+    "azure": azure,
     "aggregate": aggregate,
     "azbatch": azbatch,
     "configure": configure,
     "config": config,
-    "cosmos": cosmos,
     "inputs": inputs,
     "inspect": inspect,
     "kill": kill,
