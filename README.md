@@ -29,10 +29,11 @@ The following subcommands are currently supported.
 
 | Subcommand  | Short Command | Description                                                 |
 | ----------- | ------------- | ----------------------------------------------------------- |
+| `aws`       |               | All subcommands related to Cromwell on AWS.                 |
+| `azure`     |               | All subcommands related to Cromwell on Azure.               |
 | `aggregate` | `a`           | Aggregate all results to a local or cloud folder for a run. |
 | `configure` |               | Configure Oliver with default options.                      |
 | `config`    |               | Set or get a single config value from Oliver.               |
-| `cosmos`    |               | Get cosmos DB entries for a workflow.                       |
 | `inputs`    |               | Find all reported outputs for a given workflow.             |
 | `inspect`   | `i`           | Describe the state of a Cromwell workflow.                  |
 | `kill`      | `k`           | Kill a workflow running on a Cromwell server.               |
