@@ -61,6 +61,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=None,
         type=int,
     )
+    subcommand.add_argument(
+        "-x",
+        "--batch-interval-mins",
+        help="Split batches by any two jobs separated by N minutes.",
+        type=int,
+    )
     debug.add_argument(
         "-o",
         "--output-folder",
