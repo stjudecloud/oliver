@@ -148,4 +148,5 @@ def get_workflows(
     if statuses:
         workflows = list(filter(lambda x: x["status"] in statuses, workflows))
 
+    logger.info(f"Found {len(workflows)} eligible workflows given search criteria.")
     return workflows
