@@ -32,6 +32,7 @@ The following subcommands are currently supported.
 | `aws`       |               | All subcommands related to Cromwell on AWS.                 |
 | `azure`     |               | All subcommands related to Cromwell on Azure.               |
 | `aggregate` | `a`           | Aggregate all results to a local or cloud folder for a run. |
+| `batches`   | `b`           | Explore batches of jobs submitted to Cromwell.              |
 | `configure` |               | Configure Oliver with default options.                      |
 | `config`    |               | Set or get a single config value from Oliver.               |
 | `inputs`    |               | Find all reported outputs for a given workflow.             |
