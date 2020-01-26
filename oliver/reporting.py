@@ -8,9 +8,19 @@ from tzlocal import get_localzone
 
 from . import errors
 
+
 def localize_date(given_date: str):
     "Returns a localized date given any date that is parsable by pedulum."
     return pendulum.parse(given_date).in_tz(get_localzone()).to_day_datetime_string()
+
+
+def localize_date_from_timestamp(timestamp: int):
+    "Returns a localized date given a UNIX timestamp."
+    return (
+        pendulum.from_timestamp(timestamp)
+        .in_tz(get_localzone())
+        .to_day_datetime_string()
+    )
 
 
 def duration_to_text(duration):
@@ -34,8 +44,18 @@ def print_dicts_as_table(
     rows: List[Dict],
     grid_style: str = "fancy_grid",
     clean: bool = True,
-    fill = None,
-    header_order: list = ["Job Name", "Job Group", "Call Name", "QueuedInCromwell", "Starting", "Running", "Aborted", "Failed", "Succeeded"]
+    fill=None,
+    header_order: list = [
+        "Job Name",
+        "Job Group",
+        "Call Name",
+        "QueuedInCromwell",
+        "Starting",
+        "Running",
+        "Aborted",
+        "Failed",
+        "Succeeded",
+    ],
 ):
     """Format a list of dicts and print as a table using `tabulate`.
     
@@ -94,9 +114,15 @@ def print_dicts_as_table(
         r = {}
         for header in headers:
             r[header] = row.get(header, fill)
-        results.append(r) 
+        results.append(r)
 
-    print(tabulate([result.values() for result in results], headers=headers, tablefmt=grid_style))
+    print(
+        tabulate(
+            [result.values() for result in results],
+            headers=headers,
+            tablefmt=grid_style,
+        )
+    )
 
 
 def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
