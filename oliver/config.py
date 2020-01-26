@@ -5,6 +5,7 @@ DEFAULT_LOCATION = "~/.oliver_config"
 DEFAULT_CONFIG = {
     "cromwell_server": "http://localhost:8000",
     "cromwell_api_version": "v1",
+    "batch_interval_mins": 2,
 }
 
 

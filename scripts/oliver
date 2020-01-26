@@ -42,7 +42,7 @@ SUBCOMMANDS = {
     "submit": submit,
 }
 
-REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version"]
+REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version", "batch_interval_mins"]
 
 
 def ensure_required_args(args):
@@ -54,9 +54,9 @@ def ensure_required_args(args):
 
     if missing_args:
         errors.report(
-            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n"
-            + "We recommend you run 'oliver configure' to ensure all required arguments are cached.\n"
-            + "If you choose not to do this, you will need to pass their respective flags on the command line.",
+            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n" + \
+            "We recommend you run 'oliver configure' to ensure all required arguments are cached in the oliver configuration file.\n" + \
+            "If you choose not to do this, you will need to pass their respective flags on the command line.",
             fatal=True,
             exitcode=errors.ERROR_PRECAUTION,
         )

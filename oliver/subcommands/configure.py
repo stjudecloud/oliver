@@ -7,6 +7,7 @@ from ..config import get_default_config, read_config, write_config
 QUESTION_MAPPING = {
     "cromwell_server": "What is the Cromwell server address",
     "cromwell_api_version": "What is the Cromwell API version",
+    "batch_interval_mins": "When splitting batches, how many minutes apart should two jobs be",
 }
 
 
