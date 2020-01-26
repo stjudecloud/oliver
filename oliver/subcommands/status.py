@@ -20,6 +20,16 @@ def call(args: Dict):
         server=args["cromwell_server"], version=args["cromwell_api_version"],
     )
 
+    batches = None
+    relative = None
+
+    if args.get("batches_relative"):
+        batches = args.get("batches_relative")
+        relative = True
+    elif args.get("batches_absolute"):
+        batches = args.get("batches_absolute")
+        relative = False
+
     workflows = _workflows.get_workflows(
         cromwell=cromwell,
         submission_time_hours_ago=args["submission_time"],
@@ -27,8 +37,9 @@ def call(args: Dict):
         oliver_job_group_name=args["oliver_job_group_name"],
         cromwell_workflow_uuid=args["cromwell_workflow_uuid"],
         cromwell_workflow_name=args["cromwell_workflow_name"],
-        batch_number_ago=args["batch_number_ago"],
+        batches=batches,
         batch_interval_mins=args["batch_interval_mins"],
+        relative_batching=relative,
         opt_into_reporting_aborted_jobs=args["show_aborted_jobs"],
         opt_into_reporting_failed_jobs=args["show_failed_jobs"],
         opt_into_reporting_running_jobs=args["show_running_jobs"],
@@ -75,14 +86,25 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=False,
         action="store_true",
     )
-    subcommand.add_argument(
+    batches = subcommand.add_mutually_exclusive_group(required=True)
+    batches.add_argument(
         "-b",
-        "--batch-number-ago",
-        help="(experimental) Show outputs from N batches ago.",
+        "--batches-relative",
+        help="Starting with the _most recent_ batch, compute batches separated by `batch-interval-mins`. Any batches not contained in `batches` are filtered.",
+        default=None,
+        nargs="+",
+        type=int,
+    )
+    batches.add_argument(
+        "-B",
+        "--batches-absolute",
+        help="Starting with the _first batch in time_, compute batches separated by `batch-interval-mins`. Any batches not contained in `batches` are filtered.",
+        nargs="+",
         default=None,
         type=int,
     )
     subcommand.add_argument(
+        "-x",
         "--batch-interval-mins",
         help="(experimental) Split batches by any two jobs separated by N minutes.",
         default=5,
@@ -141,7 +163,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "-t",
         "--submission-time",
         help="Show only jobs which were submitted at most N hours ago.",
-        default=24,
+        default=None,
         type=int,
     )
     subcommand.add_argument(
@@ -224,9 +246,7 @@ def print_workflow_detail_view(
             "Workflow ID": w.get("id", ""),
             "Workflow Name": w.get("name", ""),
             "Status": w.get("status", ""),
-            "Start": reporting.localize_date(w.get("start"))
-            if "start" in w
-            else "",
+            "Start": reporting.localize_date(w.get("start")) if "start" in w else "",
         }
         for w in workflows
     ]
@@ -270,5 +290,5 @@ def print_workflow_steps_view(
     _results = [
         {"Call Name": call_name, **results[call_name]} for call_name in results.keys()
     ]
-    
+
     reporting.print_dicts_as_table(_results, grid_style)
