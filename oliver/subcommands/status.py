@@ -86,7 +86,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=False,
         action="store_true",
     )
-    batches = subcommand.add_mutually_exclusive_group(required=True)
+    batches = subcommand.add_mutually_exclusive_group()
     batches.add_argument(
         "-b",
         "--batches-relative",
