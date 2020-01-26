@@ -201,9 +201,6 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
     for w in workflows:
         m = metadatas[w["id"]]
         job_group = oliver.get_oliver_group(m)
-        if not job_group:
-            job_group = "<not set>"
-
         agg[job_group][m["status"]] += 1
 
     results = []
