@@ -26,15 +26,15 @@ def call(args: Dict):
     starting_config.update(read_config())
     final_config = {}
 
-    for k, v in starting_config.items():
+    for k, _default in starting_config.items():
         question = "What is the value for '{k}'"
         if k in QUESTION_MAPPING:
             question = QUESTION_MAPPING[k]
 
-        answer = ask(question, v)
+        answer = ask(question, _default)
         if answer:
-            v = answer
-        final_config[k] = v
+            _default = answer
+        final_config[k] = _default
 
     write_config(final_config)
 
