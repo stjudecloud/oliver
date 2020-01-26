@@ -6,7 +6,7 @@ from collections import defaultdict
 from logzero import logger
 from typing import Dict
 
-from .. import api, constants, reporting, workflows as _workflows
+from .. import api, constants, oliver, reporting, workflows as _workflows
 
 SUBCOMMAND_NAME = "batches"
 SUBCOMMAND_ALIASES = ["b"]
@@ -74,9 +74,7 @@ def call(args: Dict):
                 list(
                     set(
                         [
-                            metadatas.get(x.get("id"), {})
-                            .get("labels", {})
-                            .get(constants.OLIVER_JOB_GROUP_KEY, "<not set>")
+                            oliver.get_oliver_group(metadatas.get(x.get("id")))
                             for x in batch_workflows
                         ]
                     )
