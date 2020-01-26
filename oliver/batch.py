@@ -17,9 +17,9 @@ def get_workflow_batches(
     args:
         workflows (List[dict]): list of workflows returned from cromwell. must
                                 contain the `submission` key.
-        batches(Union[int, List[int]]): batches to be returned. this can be either
-                                        a single integer or a list of integers describing
-                                        the batch numbers.
+        batches(Union[bool, int, List[int]]): batches to be returned. if `True`, returns all batches. 
+                                        if a single integer, returns a single batch. if a list of integers,
+                                        batches that match the specified numbers. 
         batch_interval_mins (int, optional): interval to constitute a new batch 
                                              in minutes. defaults to 5.
         relative(bool): if True, batches will be considered as "N batches ago" (e.g.
@@ -29,7 +29,7 @@ def get_workflow_batches(
         List[dict]: the `workflows` filtered by batch number.
     """
 
-    if isinstance(batches, int):
+    if not isinstance(batches, bool) and isinstance(batches, int):
         batches = [batches]
 
     _workflows, _max_batch_num = batch_workflows(
@@ -46,10 +46,14 @@ def get_workflow_batches(
                 exitcode=errors.ERROR_INVALID_INPUT,
             )
 
-    logger.info(
-        f"Targetting all jobs in batch(es): {', '.join([str(b) for b in _batches])} (original={', '.join([str(b) for b in batches])}, relative={relative})."
-    )
-    return list(filter(lambda w: w.get("batch") in _batches, _workflows))
+    if isinstance(batches, bool) and batches == True:
+        logger.info("Targetting all batches.")
+        return _workflows
+    else:
+        logger.info(
+            f"Targetting all jobs in batch(es): {', '.join([str(b) for b in _batches])} (original={', '.join([str(b) for b in batches])}, relative={relative})."
+        )
+        return list(filter(lambda w: w.get("batch") in _batches, _workflows))
 
 
 def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List[Dict]:
