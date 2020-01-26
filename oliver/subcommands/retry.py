@@ -29,8 +29,9 @@ def call(args: Dict):
     elif args["scope"] == "batch":
         workflows = _workflows.get_workflows(
             cromwell,
-            batch_number_ago=int(args["predicate"]),
+            batches=int(args["predicate"]),
             batch_interval_mins=args["batch_interval_mins"],
+            relative_batching=True,
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
