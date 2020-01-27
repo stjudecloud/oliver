@@ -10,7 +10,9 @@ ERROR_INVALID_INPUT = 3
 ERROR_INTERNAL_ERROR = 255
 
 
-def report(message: str, fatal: bool = True, exitcode: int = 1, suggest_report: bool = False):
+def report(
+    message: str, fatal: bool = True, exitcode: int = 1, suggest_report: bool = False
+):
     """Reports an error to terminal and exits (if specified).
     
     Args:
@@ -24,7 +26,7 @@ def report(message: str, fatal: bool = True, exitcode: int = 1, suggest_report: 
 
     logger.error(message)
     if suggest_report:
-        logger.error()
+        logger.error("")
         logger.error(f"Please report this error at {constants.OLIVER_ISSUE_URL}")
     if fatal:
         sys.exit(exitcode)
