@@ -108,8 +108,10 @@ def print_dicts_as_table(
 
     for header in headers_to_remove:
         for row in rows:
-            headers.remove(header)
-            del row[header]
+            if header in headers:
+                headers.remove(header)
+            if header in row:
+                del row[header]
 
     results = []
 
