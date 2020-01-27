@@ -3,7 +3,7 @@ import os
 
 from typing import Dict
 
-from ..integrations.azure import cosmos
+from ..integrations.azure import batch, cosmos
 from .. import errors
 
 
@@ -16,7 +16,9 @@ def call(args: Dict):
 
     azure_subcommand = args.get("azure-subcommand")
 
-    if azure_subcommand == "debug-failures":
+    if azure_subcommand == "batch":
+        batch.call(args)
+    elif azure_subcommand == "cosmos":
         cosmos.call(args)
     else:
         errors.report(
@@ -39,6 +41,14 @@ def register_subparser(subparser: argparse._SubParsersAction):
 
     azure_subcommands = subcommand.add_subparsers(
         dest="azure-subcommand", required=True
+    )
+
+    batch = subparser.add_parser("batch", help="Get azure batch information.")
+    # batch.add_argument("workflow-id", help="Cromwell workflow ID.")
+    batch.add_argument(
+        "--grid-style",
+        help="Any valid `tablefmt` for python-tabulate.",
+        default="fancy_grid",
     )
 
     cosmos = azure_subcommands.add_parser(
