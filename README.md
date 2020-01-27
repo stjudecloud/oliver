@@ -14,12 +14,20 @@
 
 ![Oliver Example](./docs/oliver-example.gif)
 
-## Install
+## Getting Started
 
 ```sh
 # Package install
 python setup.py install
 ```
+
+Please refer to the guides in the `docs/` folder for more information.
+
+| Guide Name     | Link                             |
+| -------------- | -------------------------------- |
+| Advanced Usage | [Link](./docs/ADVANCED_USAGE.md) |
+| Configuration  | [Link](./docs/CONFIGURATION.md)  |
+| Development    | [Link](./docs/DEVELOPMENT.md)    |
 
 ## Usage
 
@@ -81,17 +89,6 @@ oliver submit workflow.wdl \
     @option_key=value \        # adds `option_key=value` to the options object (overwrites the value if `option_key` set in default-options.json).
     %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
 ```
-
-## Further Documentation
-
-Please refer to the guides in the `docs/` folder for more in-depth
-documentation.
-
-| Guide Name     | Link                             |
-| -------------- | -------------------------------- |
-| Advanced Usage | [Link](./docs/ADVANCED_USAGE.md) |
-| Configuration  | [Link](./docs/CONFIGURATION.md)  |
-| Development    | [Link](./docs/DEVELOPMENT.md)    |
 
 ## Author
 
