@@ -1,0 +1,16 @@
+name: Black Code Formatter
+on: 
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint Python with Black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: lgeiger/black-action@v1.0.1
+        with:
+          args: "oliver --check"

@@ -33,9 +33,7 @@ def call(args: Dict):
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
     outputs = _outputs.get_outputs(
-        cromwell,
-        args["workflow-id"],
-        output_prefix=args.get("output_prefix"),
+        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix"),
     )
 
     for output in outputs:
