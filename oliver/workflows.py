@@ -1,4 +1,5 @@
 import datetime
+import pendulum
 
 from logzero import logger
 from typing import Optional, List, Dict
@@ -126,15 +127,19 @@ def get_workflows(
             - datetime.timedelta(hours=submission_time_hours_ago)
         ).replace(microsecond=0).isoformat("T") + "Z"
 
+    workflows = cromwell.get_workflows_query(
+        includeSubworkflows=False,
+        labels=labels,
+        ids=[cromwell_workflow_uuid],
+        names=[cromwell_workflow_name],
+        submission=submission,
+    )
+
     workflows = sorted(
-        cromwell.get_workflows_query(
-            includeSubworkflows=False,
-            labels=labels,
-            ids=[cromwell_workflow_uuid],
-            names=[cromwell_workflow_name],
-            submission=submission,
-        ),
-        key=lambda k: k["submission"],
+        workflows,
+        key=lambda k: pendulum.parse(k.get("submission")).timestamp()
+        if "submission" in k
+        else 0,
     )
 
     if batches is not None:

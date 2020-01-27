@@ -84,12 +84,15 @@ def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List
         w = workflows[i]
         submission = w.get("submission")
         if not submission:
-            errors.report(
-                f"`submission` not in workflow, so we cannot batch.\n{w}",
-                fatal=True,
-                exitcode=errors.ERROR_INTERNAL_ERROR,
-                suggest_report=True,
-            )
+            # fall back to start time if submission not available.
+            submission = w.get("start")
+            if not submission:
+                errors.report(
+                    f"`submission` and `start` not in workflow, so we cannot determine batches.\n{w}",
+                    fatal=True,
+                    exitcode=errors.ERROR_INTERNAL_ERROR,
+                    suggest_report=True,
+                )
 
         t = pendulum.parse(submission)
         if last_submission_time:
