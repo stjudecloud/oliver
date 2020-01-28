@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from ..config import get_default_config, read_config, write_config
+from ..lib.config import get_default_config, read_config, write_config
 
 QUESTION_MAPPING = {
     "cromwell_server": "What is the Cromwell server address",

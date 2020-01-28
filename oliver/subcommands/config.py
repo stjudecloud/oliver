@@ -3,8 +3,8 @@ import sys
 
 from typing import Dict
 
-from .. import errors
-from ..config import get_default_config, read_config, write_config
+from ..lib import errors
+from ..lib.config import get_default_config, read_config, write_config
 
 
 def call(args: Dict):

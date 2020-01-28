@@ -18,6 +18,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!oliver/lib/
 lib64/
 parts/
 sdist/

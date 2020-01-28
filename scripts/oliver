@@ -4,8 +4,8 @@ import logging
 import logzero
 import sys
 
-from oliver import errors
-from oliver.config import read_config
+from oliver.lib import errors
+from oliver.lib.config import read_config
 from oliver.subcommands import (
     aws,
     azure,

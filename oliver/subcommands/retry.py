@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from .. import api, errors, reporting, utils, workflows as _workflows
+from ..lib import api, errors, reporting, utils, workflows as _workflows
 
 
 def call(args: Dict):

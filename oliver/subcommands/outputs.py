@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from .. import api, reporting
+from ..lib import api, reporting
 
 
 def get_outputs(
