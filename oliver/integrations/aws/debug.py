@@ -8,7 +8,7 @@ import sys
 from logzero import logger
 from typing import Dict
 
-from ... import api, errors, reporting, workflows as _workflows
+from ...lib import api, errors, reporting, workflows as _workflows
 
 
 def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):

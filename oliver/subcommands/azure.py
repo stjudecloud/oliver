@@ -4,7 +4,7 @@ import os
 from typing import Dict
 
 from ..integrations.azure import cosmos
-from .. import errors
+from ..lib import errors
 
 
 def call(args: Dict):
@@ -38,8 +38,10 @@ def register_subparser(subparser: argparse._SubParsersAction):
     )
 
     azure_subcommands = subcommand.add_subparsers(
-        dest="azure-subcommand", required=True
+        dest="azure-subcommand"
     )
+    # https://bugs.python.org/issue9253#msg186387
+    azure_subcommands.required = True
 
     cosmos = azure_subcommands.add_parser(
         "cosmos",

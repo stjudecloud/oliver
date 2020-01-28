@@ -7,7 +7,7 @@ import os
 
 from typing import Dict
 
-from ... import reporting
+from ...lib import reporting
 
 
 class CosmosAPI:

@@ -6,7 +6,7 @@ from collections import defaultdict
 from logzero import logger
 from typing import Dict, List, Optional
 
-from .. import api, batch, constants, errors, reporting, oliver, workflows as _workflows
+from ..lib import api, batch, constants, errors, reporting, oliver, workflows as _workflows
 
 
 def call(args: Dict):

@@ -3,7 +3,7 @@ import pendulum
 
 from typing import Dict
 
-from .. import api, constants, errors, reporting, utils
+from ..lib import api, constants, errors, reporting, utils
 
 
 def report_failure(failure, indent, step=2, offset=2):

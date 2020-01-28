@@ -3,7 +3,7 @@ import json
 
 from typing import Dict
 
-from .. import api, errors
+from ..lib import api, errors
 
 
 def call(args: Dict):

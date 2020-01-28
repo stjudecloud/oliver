@@ -3,7 +3,7 @@ import os
 
 from typing import Dict
 
-from .. import api, errors, reporting
+from ..lib import api, errors, reporting
 from . import outputs as _outputs
 
 
