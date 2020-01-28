@@ -8,14 +8,18 @@ from . import outputs as _outputs
 
 
 def process_output(dest_folder: str, output: str):
-    if not output.startswith("s3://"):
-        errors.warn(
-            f"Could not copy {output}. Only s3 buckets are currently supported!",
-            fatal=False,
-            int=errors.ERROR_INVALID_INPUT,
-        )
+    if isinstance(output, list):
+        for o in output:
+            process_output(dest_folder, o)
+    else:
+        if not output.startswith("s3://"):
+            errors.report(
+                f"Could not copy {output}. Only s3 buckets are currently supported!",
+                fatal=False,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
 
-    return f"aws s3 cp --sse AES256 {output} {dest_folder}"
+        os.system(f"aws s3 cp --sse AES256 {output} {dest_folder}")
 
 
 def call(args: Dict):
@@ -31,11 +35,11 @@ def call(args: Dict):
     outputs = _outputs.get_outputs(
         cromwell,
         args["workflow-id"],
-        output_prefix=None if "output_prefix" not in args else args["output_prefix"],
+        output_prefix=args.get("output_prefix"),
     )
 
     for output in outputs:
-        os.system(process_output(args["output-folder"], output["Location"]))
+        process_output(args["output-folder"], output["Location"])
 
 
 def register_subparser(subparser: argparse._SubParsersAction):

@@ -29,7 +29,9 @@ def call(args: Dict):
     elif args["scope"] == "batch":
         workflows = _workflows.get_workflows(
             cromwell,
-            batch_number_ago=int(args["predicate"]),
+            batches=int(args["predicate"]),
+            batch_interval_mins=args["batch_interval_mins"],
+            relative_batching=True,
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
@@ -49,37 +51,17 @@ def call(args: Dict):
     for w in workflows:
         metadata = cromwell.get_workflows_metadata(w["id"])
 
-        workflowUrl = (
-            metadata["submittedFiles"]["workflowUrl"]
-            if "submittedFiles" in metadata
-            and "workflowUrl" in metadata["submittedFiles"]
-            else {}
-        )
-
-        workflowInputs = (
-            metadata["submittedFiles"]["inputs"]
-            if "submittedFiles" in metadata and "inputs" in metadata["submittedFiles"]
-            else {}
-        )
-
-        workflowOptions = (
-            metadata["submittedFiles"]["options"]
-            if "submittedFiles" in metadata and "options" in metadata["submittedFiles"]
-            else {}
-        )
-
-        labels = (
-            metadata["submittedFiles"]["labels"]
-            if "submittedFiles" in metadata and "labels" in metadata["submittedFiles"]
-            else {}
-        )
+        workflowUrl = metadata.get("submittedFiles", {}).get("workflowUrl", {})
+        workflowInputs = metadata.get("submittedFiles", {}).get("inputs", {})
+        workflowOptions = metadata.get("submittedFiles", {}).get("options", {})
+        workflowLabels = metadata.get("submittedFiles", {}).get("labels", {})
 
         results.append(
             cromwell.post_workflows(
                 workflowUrl=workflowUrl,
                 workflowInputs=workflowInputs,
                 workflowOptions=workflowOptions,
-                labels=labels,
+                labels=workflowLabels,
             )
         )
 
@@ -111,6 +93,11 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="Restart all workflows, not just 'Failed' and 'Aborted' workflows.",
         default=False,
         action="store_true",
+    )
+    subcommand.add_argument(
+        "--batch-interval-mins",
+        help="Split batches by any two jobs separated by N minutes.",
+        type=int,
     )
     subcommand.add_argument(
         "-y",

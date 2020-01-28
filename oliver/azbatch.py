@@ -1,4 +1,4 @@
-import azure.batch._batch_service_client as batch
+import azure.batch.batch_service_client as batch
 import azure.batch.batch_auth as batchauth
 import azure.batch.models as batchmodels
 

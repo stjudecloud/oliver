@@ -7,11 +7,13 @@ import sys
 from oliver import errors
 from oliver.config import read_config
 from oliver.subcommands import (
+    aws,
+    azure,
     aggregate,
     azbatch,
+    batches,
     configure,
     config,
-    cosmos,
     inputs,
     inspect,
     kill,
@@ -24,11 +26,13 @@ from oliver.subcommands import (
 )
 
 SUBCOMMANDS = {
+    "aws": aws,
+    "azure": azure,
     "aggregate": aggregate,
     "azbatch": azbatch,
+    "batches": batches,
     "configure": configure,
     "config": config,
-    "cosmos": cosmos,
     "inputs": inputs,
     "inspect": inspect,
     "kill": kill,
@@ -40,7 +44,7 @@ SUBCOMMANDS = {
     "submit": submit,
 }
 
-REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version"]
+REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version", "batch_interval_mins"]
 
 
 def ensure_required_args(args):
@@ -52,9 +56,9 @@ def ensure_required_args(args):
 
     if missing_args:
         errors.report(
-            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n"
-            + "We recommend you run 'oliver configure' to ensure all required arguments are cached.\n"
-            + "If you choose not to do this, you will need to pass their respective flags on the command line.",
+            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n" + \
+            "We recommend you run 'oliver configure' to ensure all required arguments are cached in the oliver configuration file.\n" + \
+            "If you choose not to do this, you will need to pass their respective flags on the command line.",
             fatal=True,
             exitcode=errors.ERROR_PRECAUTION,
         )
@@ -96,10 +100,10 @@ if __name__ == "__main__":
         if not k in args or not args[k]:
             args[k] = v
 
-    if "subcommand" in args and args["subcommand"] != "configure":
+    if args.get("subcommand") != "configure":
         ensure_required_args(args)
 
-    if not "subcommand" in args or not args["subcommand"]:
+    if not args.get("subcommand"):
         parser.print_help()
         sys.exit(1)
 

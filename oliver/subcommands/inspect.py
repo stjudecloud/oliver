@@ -24,57 +24,39 @@ def call(args: Dict):
     )
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
-    oliver_job_name = (
-        metadata["labels"][constants.OLIVER_JOB_NAME_KEY]
-        if "labels" in metadata and constants.OLIVER_JOB_NAME_KEY in metadata["labels"]
-        else ""
-    )
-    oliver_group_name = (
-        metadata["labels"][constants.OLIVER_JOB_GROUP_KEY]
-        if "labels" in metadata and constants.OLIVER_JOB_GROUP_KEY in metadata["labels"]
-        else ""
-    )
-    workflow_name = metadata["workflowName"] if "workflowName" in metadata else ""
-    workflow_id = metadata["id"] if "id" in metadata else ""
-    workflow_language = (
-        metadata["actualWorkflowLanguage"]
-        if "actualWorkflowLanguage" in metadata
-        else ""
-    )
-    if workflow_language:
-        workflow_language += (
-            " " + metadata["actualWorkflowLanguageVersion"]
-            if "actualWorkflowLanguageVersion" in metadata
-            else ""
-        )
-    workflow_submission = pendulum.parse(
-        metadata["submission"] if "submission" in metadata else ""
-    ).to_day_datetime_string()
+    oliver_job_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_NAME_KEY, "")
+    oliver_group_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_GROUP_KEY, "")
 
-    workflow_start_date = (
-        pendulum.parse(metadata["start"]) if "start" in metadata else None
-    )
-    workflow_end_date = pendulum.parse(metadata["end"]) if "end" in metadata else None
-    workflow_start = ""
-    workflow_duration = ""
+    workflow_name = metadata.get("workflowName", "")
+    workflow_id = metadata.get("id", "")
+    workflow_language = metadata.get("actualWorkflowLanguage", "")
+
+    if workflow_language:
+        workflow_language += (" " + metadata.get("actualWorkflowLanguageVersion", ""))
+
+    workflow_submission_date = metadata.get("submission")
+    workflow_start_date = metadata.get("start")
+    workflow_end_date = metadata.get("end")
+    workflow_start_to_report = ""
+    workflow_duration_to_report = ""
 
     if workflow_start_date:
-        workflow_start = workflow_start_date.to_day_datetime_string()
-        workflow_duration = (
-            utils.duration_to_text(pendulum.now() - workflow_start_date)
+        workflow_start_to_report = reporting.localize_date(workflow_start_date)
+        workflow_duration_to_report = (
+            reporting.duration_to_text(pendulum.now() - pendulum.parse(workflow_start_date))
             + " (In progress)"
         )
 
     if workflow_start_date and workflow_end_date:
-        workflow_duration = utils.duration_to_text(
-            workflow_end_date - workflow_start_date
+        workflow_duration_to_report = reporting.duration_to_text(
+            pendulum.parse(workflow_end_date) - pendulum.parse(workflow_start_date)
         )
 
     calls = []
     for name, call in metadata["calls"].items():
         for process in call:
-            attempt = process["attempt"] if "attempt" in process else None
-            shard = process["shardIndex"] if "shardIndex" in process else None
+            attempt = process.get("attempt")
+            shard = process.get("shardIndex")
 
             # TODO: experimental, this code can be removed in the future if no
             # runtime errors are raised. If they are raised, we'll need to
@@ -86,32 +68,27 @@ def call(args: Dict):
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
 
-            call_start_date = (
-                pendulum.parse(process["start"]) if "start" in process else None
-            )
-            call_end_date = pendulum.parse(process["end"]) if "end" in process else None
+            call_start_date = process.get("start")
+            call_end_date = process.get("end")
 
-            call_start = ""
-            duration = ""
+            call_duration_to_report = ""
 
             if call_start_date:
-                duration = (
-                    utils.duration_to_text(pendulum.now() - call_start_date)
+                call_duration_to_report = (
+                    reporting.duration_to_text(pendulum.now() - pendulum.parse(call_start_date))
                     + " (In progress)"
                 )
 
             if call_start_date and call_end_date:
-                duration = utils.duration_to_text(call_end_date - call_start_date)
+                call_duration_to_report = reporting.duration_to_text(pendulum.parse(call_end_date) - pendulum.parse(call_start_date))
 
             result = {
                 "Call Name": name,
                 "Attempt": attempt,
                 "Shard": shard,
-                "Status": process["executionStatus"]
-                if "executionStatus" in process
-                else "",
+                "Status": process.get("executionStatus", ""),
                 "Start": call_start_date,
-                "Duration": duration,
+                "Duration": call_duration_to_report,
             }
 
             calls.append(result)
@@ -119,7 +96,7 @@ def call(args: Dict):
     calls = sorted(calls, key=lambda k: k["Start"])
 
     for call in calls:
-        call["Start"] = call["Start"].to_day_datetime_string()
+        call["Start"] = reporting.localize_date(call_start_date)
 
     if oliver_job_name:
         print(f"Job Name: {oliver_job_name}")
@@ -128,12 +105,13 @@ def call(args: Dict):
     print(f"Workflow Name: {workflow_name}")
     print(f"Workflow ID: {workflow_id}")
     print(f"Workflow Version: {workflow_language}")
-    print(f"Submission: {workflow_submission}")
-    print(f"Duration: {workflow_duration}")
+    print(f"Submission: {reporting.localize_date(workflow_submission_date)}")
+    print(f"Start: {workflow_start_to_report}")
+    print(f"Duration: {workflow_duration_to_report}")
 
     # Show labels if they exist
     if args["show_labels"]:
-        if "labels" not in metadata:
+        if not metadata.get("labels"):
             print("Labels: None")
         else:
             print("Labels:")
@@ -143,7 +121,7 @@ def call(args: Dict):
             print()
 
     # Show failures if they exist
-    if "failures" in metadata and len(metadata["failures"]) > 0:
+    if len(metadata.get("failures", [])) > 0:
         print("Failures:")
         print()
         for i, failure in enumerate(metadata["failures"]):

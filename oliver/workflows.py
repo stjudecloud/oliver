@@ -1,9 +1,11 @@
 import datetime
+import pendulum
 
 from logzero import logger
 from typing import Optional, List, Dict
 
 from . import api, batch, constants
+
 
 def get_workflows(
     cromwell: api.CromwellAPI,
@@ -12,12 +14,13 @@ def get_workflows(
     oliver_job_group_name: str = None,
     cromwell_workflow_uuid: str = None,
     cromwell_workflow_name: str = None,
-    batch_number_ago: int = None,
+    batches: List[int] = None,
     batch_interval_mins: int = 5,
+    relative_batching: bool = False,
     opt_into_reporting_running_jobs: bool = False,
     opt_into_reporting_aborted_jobs: bool = False,
     opt_into_reporting_failed_jobs: bool = False,
-    opt_into_reporting_succeeded_jobs: bool = False
+    opt_into_reporting_succeeded_jobs: bool = False,
 ) -> List[Dict]:
     """Retrieves a list of workflows and filter based on provided parameters.
     
@@ -60,11 +63,16 @@ def get_workflows(
         cromwell_workflow_name (str, optional): filter by workflow (pipeline)
         name.
 
-        batch_number_ago(int, optional): split workflows into batches using
-        `batch.batch_workflows` and select jobs from N batches ago.
+        batches(List[int], optional): split workflows into batches using
+        and select only jobs in the specified batches. If `relative_batching` 
+        is True, this behavior changes to selecting "N batch ago".
 
         batch_interval_mins(int, optional): any two jobs separated by N 
         minutes or more constitutes a new batch. Defaults to 5 minutes.
+
+        relative_batching(bool): Calculate batches relative to the most recent 
+        batch (e.g. `0` is the most recent batch, `1` is the second most recent
+        batch). Defaults to False.
 
         opt_into_reporting_running_jobs (bool, optional): Whether the user
         explicitly opted into seeing `Running` statuses. See the method's
@@ -87,14 +95,23 @@ def get_workflows(
         the given parameters.
     """
 
-    statuses = None # none will show everything by default.
+    statuses = None  # none will show everything by default.
 
-    if opt_into_reporting_running_jobs or opt_into_reporting_aborted_jobs or opt_into_reporting_failed_jobs or opt_into_reporting_succeeded_jobs:
+    if (
+        opt_into_reporting_running_jobs
+        or opt_into_reporting_aborted_jobs
+        or opt_into_reporting_failed_jobs
+        or opt_into_reporting_succeeded_jobs
+    ):
         statuses = []
-        if opt_into_reporting_running_jobs: statuses.append("Running")
-        if opt_into_reporting_aborted_jobs: statuses.append("Aborted")
-        if opt_into_reporting_failed_jobs: statuses.append("Failed")
-        if opt_into_reporting_succeeded_jobs: statuses.append("Succeeded")
+        if opt_into_reporting_running_jobs:
+            statuses.append("Running")
+        if opt_into_reporting_aborted_jobs:
+            statuses.append("Aborted")
+        if opt_into_reporting_failed_jobs:
+            statuses.append("Failed")
+        if opt_into_reporting_succeeded_jobs:
+            statuses.append("Succeeded")
 
     labels = []
     if oliver_job_name:
@@ -106,28 +123,35 @@ def get_workflows(
     submission = None
     if isinstance(submission_time_hours_ago, int) and submission_time_hours_ago > 0:
         submission = (
-            datetime.datetime.now() - datetime.timedelta(hours=submission_time_hours_ago)
+            datetime.datetime.now()
+            - datetime.timedelta(hours=submission_time_hours_ago)
         ).replace(microsecond=0).isoformat("T") + "Z"
 
-    workflows = sorted(
-        cromwell.get_workflows_query(
-            includeSubworkflows=False,
-            labels=labels,
-            ids=[cromwell_workflow_uuid],
-            names=[cromwell_workflow_name],
-            submission=submission,
-        ),
-        key=lambda k: k["submission"],
+    workflows = cromwell.get_workflows_query(
+        includeSubworkflows=False,
+        labels=labels,
+        ids=[cromwell_workflow_uuid],
+        names=[cromwell_workflow_name],
+        submission=submission,
     )
 
-    if batch_number_ago is not None:
-        workflows = batch.batch_workflows(workflows, batch_interval_mins)
-        max_batch_number = max([w["batch"] for w in workflows])
-        batch_number_to_target = max_batch_number - batch_number_ago
-        logger.info(f"Targetting all jobs in batch {batch_number_to_target}.")
-        workflows = list(filter(lambda x: x["batch"] == batch_number_to_target, workflows))
+    workflows = sorted(
+        workflows,
+        key=lambda k: pendulum.parse(k.get("submission")).timestamp()
+        if "submission" in k
+        else 0,
+    )
+
+    if batches is not None:
+        workflows = batch.get_workflow_batches(
+            workflows,
+            batches,
+            batch_interval_mins=batch_interval_mins,
+            relative=relative_batching,
+        )
 
     if statuses:
         workflows = list(filter(lambda x: x["status"] in statuses, workflows))
 
+    logger.info(f"Found {len(workflows)} eligible workflows given search criteria.")
     return workflows

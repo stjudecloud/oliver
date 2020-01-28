@@ -20,8 +20,8 @@ def call(args: Dict):
 
     for name, call in logs["calls"].items():
         for process in call:
-            attempt = process["attempt"] if "attempt" in process else None
-            shard = process["shardIndex"] if "shardIndex" in process else None
+            attempt = process.get("attempt")
+            shard = process.get("shardIndex")
 
             # TODO: experimental, this code can be removed in the future if no
             # runtime errors are raised. If they are raised, we'll need to
@@ -33,8 +33,8 @@ def call(args: Dict):
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
 
-            stdout = process["stdout"] if "stdout" in process else ""
-            stderr = process["stderr"] if "stderr" in process else ""
+            stdout = process.get("stdout", "")
+            stderr = process.get("stderr", "")
             results.append(
                 {
                     "Call Name": name,
@@ -54,11 +54,11 @@ def call(args: Dict):
                 }
             )
 
-    if "output_prefix" in args:
+    if args.get("output_prefix"):
         for result in results:
             result["Location"] = args["output_prefix"] + result["Location"]
 
-    if "call_name" in args and args["call_name"]:
+    if args.get("call_name"):
         results = list(filter(lambda r: args["call_name"] in r["Call Name"], results))
 
     reporting.print_dicts_as_table(results)

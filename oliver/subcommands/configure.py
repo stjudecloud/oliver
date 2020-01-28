@@ -7,6 +7,7 @@ from ..config import get_default_config, read_config, write_config
 QUESTION_MAPPING = {
     "cromwell_server": "What is the Cromwell server address",
     "cromwell_api_version": "What is the Cromwell API version",
+    "batch_interval_mins": "When splitting batches, how many minutes apart should two jobs be",
 }
 
 
@@ -25,15 +26,15 @@ def call(args: Dict):
     starting_config.update(read_config())
     final_config = {}
 
-    for k, v in starting_config.items():
+    for k, _default in starting_config.items():
         question = "What is the value for '{k}'"
         if k in QUESTION_MAPPING:
             question = QUESTION_MAPPING[k]
 
-        answer = ask(question, v)
+        answer = ask(question, _default)
         if answer:
-            v = answer
-        final_config[k] = v
+            _default = answer
+        final_config[k] = _default
 
     write_config(final_config)
 

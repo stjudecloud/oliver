@@ -31,7 +31,7 @@ def call(args: Dict):
     results = get_outputs(
         cromwell,
         args["workflow-id"],
-        output_prefix=None if "output_prefix" not in args else args["output_prefix"],
+        output_prefix=args.get("output_prefix"),
     )
     reporting.print_dicts_as_table(results)
 

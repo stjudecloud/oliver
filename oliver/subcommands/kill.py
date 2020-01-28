@@ -17,7 +17,7 @@ def call(args: Dict):
     )
     resp = cromwell.post_workflows_abort(args["workflow-id"])
 
-    if not "id" in resp:
+    if not resp.get("id"):
         reporting.print_error_as_table(resp["status"], resp["message"])
         return
 
