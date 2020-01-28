@@ -43,8 +43,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         dest="azure-subcommand", required=True
     )
 
-    batch = subparser.add_parser("batch", help="Get azure batch information.")
-    # batch.add_argument("workflow-id", help="Cromwell workflow ID.")
+    batch = azure_subcommands.add_parser("batch", help="Get azure batch information.")
     batch.add_argument(
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",

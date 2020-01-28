@@ -1,41 +1,12 @@
-import azure.batch.batch_service_client as batch
-import azure.batch.batch_auth as batchauth
-import azure.batch.models as batchmodels
-
+import argparse
 import json
 import os
-import re
-import sys
 
 from typing import Dict
 
-from ... import reporting
-
-
-class AzureBatchAPI:
-    def __init__(self, batch_name="", resource_group=""):
-        stream = os.popen(
-            "az batch account keys list --name "
-            + batch_name
-            + " --resource-group "
-            + resource_group
-        )
-        key = stream.read()
-        key = json.loads(key)
-        self.key = key["primary"]
-        stream = os.popen(
-            "az batch account show --name "
-            + batch_name
-            + " --resource-group "
-            + resource_group
-        )
-        url = stream.read()
-        url = json.loads(url)
-        self.url = "https://" + url["accountEndpoint"]
-
-        self.credentials = batchauth.SharedKeyCredentials(batch_name, self.key)
-
-        self.client = batch.BatchServiceClient(self.credentials, base_url=self.url)
+from .. import azbatch, reporting
+import azure.batch.models as batchmodels
+import re
 
 
 def call(args: Dict):
@@ -45,7 +16,7 @@ def call(args: Dict):
         args (Dict): Arguments parsed from the command line.
     """
 
-    client = AzureBatchAPI(
+    client = azbatch.AzureBatchAPI(
         batch_name=args["batch_account_name"],
         resource_group=args["azure_resource_group"],
     )
@@ -70,3 +41,21 @@ def call(args: Dict):
                 }
             )
     reporting.print_dicts_as_table(results)
+
+
+def register_subparser(subparser: argparse._SubParsersAction):
+    """Registers a subparser for the current command.
+    
+    Args:
+        subparser (argparse._SubParsersAction): Subparsers action.
+    """
+
+    subcommand = subparser.add_parser("azbatch", help="Get azure batch information.")
+    # subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
+    # )
+    subcommand.add_argument(
+        "--grid-style",
+        help="Any valid `tablefmt` for python-tabulate.",
+        default="fancy_grid",
+    )
+    subcommand.set_defaults(func=call)
