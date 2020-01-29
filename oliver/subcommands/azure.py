@@ -37,9 +37,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "azure", help="All subcommands related to Cromwell on Azure.",
     )
 
-    azure_subcommands = subcommand.add_subparsers(
-        dest="azure-subcommand"
-    )
+    azure_subcommands = subcommand.add_subparsers(dest="azure-subcommand")
     # https://bugs.python.org/issue9253#msg186387
     azure_subcommands.required = True
 
