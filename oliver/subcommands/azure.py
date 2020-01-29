@@ -16,7 +16,7 @@ def call(args: Dict):
 
     azure_subcommand = args.get("azure-subcommand")
 
-    if azure_subcommand == "debug-failures":
+    if azure_subcommand == "cosmos":
         cosmos.call(args)
     else:
         errors.report(
