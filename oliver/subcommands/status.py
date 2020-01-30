@@ -182,7 +182,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         action="store_true",
     )
     subcommand.add_argument(
-        "--steps-view",
+        "-z", "--steps-view",
         help="Show the 'steps' view.",
         default=False,
         action="store_true",
