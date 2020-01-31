@@ -1,15 +1,19 @@
+"""This command submits jobs to the cromwell server.
+
+Input files can be passed or inputs can be directly added via the command line.
+"""
+
 import argparse
-import os
 
 from typing import Dict
 
-from ..lib import api, args as _args, errors, reporting, utils
+from ..lib import api, args as _args, reporting
 from ..lib.parsing import parse_workflow, parse_workflow_inputs
 
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -35,9 +39,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     reporting.print_dicts_as_table(results, args["grid_style"])
 
 
+# _SubParsersAction is the return type by add_subparser
+# pylint: disable=protected-access
 def register_subparser(subparser: argparse._SubParsersAction):
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """
@@ -49,7 +55,8 @@ def register_subparser(subparser: argparse._SubParsersAction):
     subcommand.add_argument(
         "workflowInputs",
         nargs="+",
-        help="JSON files or key=value pairs to add to inputs, options, or labels (see documentation for more information).",
+        help="""JSON files or key=value pairs to add to inputs, options, \
+          or labels (see documentation for more information).""",
     )
     subcommand.add_argument(
         "-d",
