@@ -4,7 +4,7 @@ import os
 from typing import Dict
 
 from ..integrations.aws import debug
-from .. import errors
+from ..lib import errors
 
 
 def call(args: Dict):
@@ -37,7 +37,9 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "aws", help="All subcommands related to Cromwell on AWS.",
     )
 
-    aws_subcommands = subcommand.add_subparsers(dest="aws-subcommand", required=True)
+    aws_subcommands = subcommand.add_subparsers(dest="aws-subcommand")
+    # https://bugs.python.org/issue9253#msg186387
+    aws_subcommands.required = True
 
     # debug-failures subcommand
     debug = aws_subcommands.add_parser(

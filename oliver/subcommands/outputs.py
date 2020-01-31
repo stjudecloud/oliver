@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from .. import api, reporting
+from ..lib import api, reporting
 
 
 def get_outputs(
@@ -29,9 +29,7 @@ def call(args: Dict):
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
     results = get_outputs(
-        cromwell,
-        args["workflow-id"],
-        output_prefix=args.get("output_prefix"),
+        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix"),
     )
     reporting.print_dicts_as_table(results)
 

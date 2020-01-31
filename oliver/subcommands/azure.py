@@ -6,7 +6,6 @@ from typing import Dict
 from ..integrations.azure import batch, cosmos
 from .. import errors
 
-
 def call(args: Dict):
     """Execute the cosmos.
     
@@ -39,9 +38,9 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "azure", help="All subcommands related to Cromwell on Azure.",
     )
 
-    azure_subcommands = subcommand.add_subparsers(
-        dest="azure-subcommand", required=True
-    )
+    azure_subcommands = subcommand.add_subparsers(dest="azure-subcommand")
+    # https://bugs.python.org/issue9253#msg186387
+    azure_subcommands.required = True
 
     batch = azure_subcommands.add_parser("batch", help="Get azure batch information.")
     batch.add_argument(

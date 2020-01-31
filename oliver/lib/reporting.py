@@ -80,7 +80,7 @@ def print_dicts_as_table(
             exitcode=errors.ERROR_INTERNAL_ERROR,
         )
 
-    # TODO(clay): this part could be much cleaner, but can't be bothered to
+    # TODO: this part could be much cleaner, but can't be bothered to
     # to make an elegant solution at this moment.
 
     # use ordered dict as ordered set (again, laziness)
@@ -96,16 +96,22 @@ def print_dicts_as_table(
             headers = [_h] + headers
 
     # clean uninteresting columns
-    uninteresting_values = [-1, None]
+    uninteresting_values = [-1, None, "<not set>"]
+    headers_to_remove = []
 
     if clean:
         for header in headers:
             results = [row.get(header) in uninteresting_values for row in rows]
             to_remove = all(results)
             if to_remove:
+                headers_to_remove.append(header)
+
+    for header in headers_to_remove:
+        for row in rows:
+            if header in headers:
                 headers.remove(header)
-                for row in rows:
-                    del row[header]
+            if header in row:
+                del row[header]
 
     results = []
 

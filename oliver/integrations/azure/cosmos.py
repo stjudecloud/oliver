@@ -7,7 +7,7 @@ import os
 
 from typing import Dict
 
-from ... import reporting
+from ...lib import reporting
 
 
 class CosmosAPI:
@@ -84,7 +84,10 @@ def call(args: Dict):
                 log = item.get("logs", [])[0]["system_logs"][0]
             size = ""
             if item.get("resources"):
-                size = item.get("resources", {})["vm_info"]["vm_size"]
+                vm_info = item.get("resources", {}).get("vm_info", {})
+                size = "<not set>"
+                if vm_info:
+                    size = vm_info.get("vm_size", "<not set>")
 
             res.append(
                 {

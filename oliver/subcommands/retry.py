@@ -1,8 +1,10 @@
 import argparse
+import json
 
 from typing import Dict
 
-from .. import api, errors, reporting, utils, workflows as _workflows
+from ..lib import api, errors, reporting, utils, workflows as _workflows
+from ..lib.parsing import parse_workflow_inputs
 
 
 def call(args: Dict):
@@ -42,10 +44,11 @@ def call(args: Dict):
             exitcode=errors.ERROR_INVALID_INPUT,
         )
 
-    if not args["yes"] and not utils.ask_boolean_question(
-        f"Wishing to resubmit {len(workflows)} jobs. Continue?"
-    ) in ["yes", "y"]:
-        errors.report("User cancelled submission.", fatal=True, exitcode=0)
+    if not args.get("dry_run"):
+        if not args["yes"] and not utils.ask_boolean_question(
+            f"Wishing to resubmit {len(workflows)} jobs. Continue?"
+        ) in ["yes", "y"]:
+            errors.report("User cancelled submission.", fatal=True, exitcode=0)
 
     results = []
     for w in workflows:
@@ -55,13 +58,32 @@ def call(args: Dict):
         workflowInputs = metadata.get("submittedFiles", {}).get("inputs", {})
         workflowOptions = metadata.get("submittedFiles", {}).get("options", {})
         workflowLabels = metadata.get("submittedFiles", {}).get("labels", {})
+        workflow_args = {}
+        (
+            workflow_args["workflowInputs"],
+            workflow_args["workflowOptions"],
+            workflow_args["workflowLabels"],
+        ) = parse_workflow_inputs(
+            args.get("workflowInputs"),
+            inputs=json.loads(workflowInputs),
+            options=json.loads(workflowOptions),
+            labels=json.loads(workflowLabels),
+            job_name=args.get("job_name"),
+            job_group=args.get("job_group"),
+            output_dir=args.get("output_dir"),
+        )
+
+        if args.get("dry_run"):
+            for key, value in workflow_args.items():
+                print(f"{key} = {value}")
+            continue
 
         results.append(
             cromwell.post_workflows(
                 workflowUrl=workflowUrl,
-                workflowInputs=workflowInputs,
-                workflowOptions=workflowOptions,
-                labels=workflowLabels,
+                workflowInputs=workflow_args["workflowInputs"],
+                workflowOptions=workflow_args["workflowOptions"],
+                labels=workflow_args["workflowLabels"],
             )
         )
 
@@ -88,6 +110,11 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="If scope is `workflow`, the workflow's UUID. If scope is `batch`, N batches ago to restart.",
     )
     subcommand.add_argument(
+        "workflowInputs",
+        nargs="*",
+        help="JSON files or key=value pairs to add to inputs, options, or labels (see documentation for more information).",
+    )
+    subcommand.add_argument(
         "-a",
         "--all",
         help="Restart all workflows, not just 'Failed' and 'Aborted' workflows.",
@@ -98,6 +125,24 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "--batch-interval-mins",
         help="Split batches by any two jobs separated by N minutes.",
         type=int,
+    )
+    subcommand.add_argument(
+        "-d",
+        "--dry-run",
+        help="Print what would be submitted rather than actually submitting.",
+        default=False,
+        action="store_true",
+    )
+    subcommand.add_argument(
+        "-g", "--job-group", help="Job Group", type=str, default=None
+    )
+    subcommand.add_argument("-j", "--job-name", help="Job Name", type=str, default=None)
+    subcommand.add_argument(
+        "-o",
+        "--output-dir",
+        help="Coalesce outputs into the specified directory using `final_workflow_outputs_dir`.",
+        type=str,
+        default=None,
     )
     subcommand.add_argument(
         "-y",

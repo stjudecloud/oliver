@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from .. import api, errors, reporting
+from ..lib import api, errors, reporting
 
 
 def call(args: Dict):

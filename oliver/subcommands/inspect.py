@@ -3,7 +3,7 @@ import pendulum
 
 from typing import Dict
 
-from .. import api, constants, errors, reporting, utils
+from ..lib import api, constants, errors, reporting, utils
 
 
 def report_failure(failure, indent, step=2, offset=2):
@@ -25,14 +25,16 @@ def call(args: Dict):
     metadata = cromwell.get_workflows_metadata(args["workflow-id"])
 
     oliver_job_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_NAME_KEY, "")
-    oliver_group_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_GROUP_KEY, "")
+    oliver_group_name = metadata.get("labels", {}).get(
+        constants.OLIVER_JOB_GROUP_KEY, ""
+    )
 
     workflow_name = metadata.get("workflowName", "")
     workflow_id = metadata.get("id", "")
     workflow_language = metadata.get("actualWorkflowLanguage", "")
 
     if workflow_language:
-        workflow_language += (" " + metadata.get("actualWorkflowLanguageVersion", ""))
+        workflow_language += " " + metadata.get("actualWorkflowLanguageVersion", "")
 
     workflow_submission_date = metadata.get("submission")
     workflow_start_date = metadata.get("start")
@@ -43,7 +45,9 @@ def call(args: Dict):
     if workflow_start_date:
         workflow_start_to_report = reporting.localize_date(workflow_start_date)
         workflow_duration_to_report = (
-            reporting.duration_to_text(pendulum.now() - pendulum.parse(workflow_start_date))
+            reporting.duration_to_text(
+                pendulum.now() - pendulum.parse(workflow_start_date)
+            )
             + " (In progress)"
         )
 
@@ -75,12 +79,16 @@ def call(args: Dict):
 
             if call_start_date:
                 call_duration_to_report = (
-                    reporting.duration_to_text(pendulum.now() - pendulum.parse(call_start_date))
+                    reporting.duration_to_text(
+                        pendulum.now() - pendulum.parse(call_start_date)
+                    )
                     + " (In progress)"
                 )
 
             if call_start_date and call_end_date:
-                call_duration_to_report = reporting.duration_to_text(pendulum.parse(call_end_date) - pendulum.parse(call_start_date))
+                call_duration_to_report = reporting.duration_to_text(
+                    pendulum.parse(call_end_date) - pendulum.parse(call_start_date)
+                )
 
             result = {
                 "Call Name": name,

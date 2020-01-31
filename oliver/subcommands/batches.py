@@ -6,7 +6,7 @@ from collections import defaultdict
 from logzero import logger
 from typing import Dict
 
-from .. import api, constants, oliver, reporting, workflows as _workflows
+from ..lib import api, constants, oliver, reporting, workflows as _workflows
 
 SUBCOMMAND_NAME = "batches"
 SUBCOMMAND_ALIASES = ["b"]

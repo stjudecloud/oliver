@@ -29,9 +29,10 @@ def read_config(config_file=DEFAULT_LOCATION):
 def write_config(config, config_file=DEFAULT_LOCATION):
     path = os.path.expanduser(config_file)
     for key in config.keys():
-        (_type, _default) = DEFAULT_CONFIG.get(key)
-        if not isinstance(config.get(key), _type):
-            config[key] = _type(config.get(key))
+        if DEFAULT_CONFIG.get(key):
+            (_type, _default) = DEFAULT_CONFIG.get(key)
+            if not isinstance(config.get(key), _type):
+                config[key] = _type(config.get(key))
 
     with open(path, "w") as f:
         json.dump(config, f, indent=4, sort_keys=True)
