@@ -30,7 +30,9 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         )
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
 
     Args:

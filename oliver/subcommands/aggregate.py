@@ -62,7 +62,9 @@ def call(args: Dict):
         process_output(output_folder, output["Location"], dry_run=args.get("dry_run"))
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
 
     Args:

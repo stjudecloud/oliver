@@ -25,7 +25,9 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     print(json.dumps(json.loads(metadata["submittedFiles"]["inputs"]), indent=2))
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
 
     Args:
