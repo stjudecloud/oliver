@@ -6,6 +6,7 @@ from typing import Dict
 from ..integrations.azure import batch, cosmos
 from ..lib import errors
 
+
 def call(args: Dict):
     """Execute the cosmos.
     
