@@ -3,7 +3,7 @@ import os
 
 from typing import Dict
 
-from ..lib import api, errors, reporting, utils
+from ..lib import api, args as _args, errors, reporting, utils
 from ..lib.parsing import parse_workflow, parse_workflow_inputs
 
 
@@ -62,10 +62,8 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=False,
         action="store_true",
     )
-    subcommand.add_argument(
-        "-g", "--job-group", help="Job Group", type=str, default=None
-    )
-    subcommand.add_argument("-j", "--job-name", help="Job Name", type=str, default=None)
+    _args.add_oliver_job_group_args(subcommand)
+    _args.add_oliver_job_name_args(subcommand)
     subcommand.add_argument("-m", help="Default memory for workflow (in MB)")
     subcommand.add_argument("-n", help="Default number of cpus")
     subcommand.add_argument(
