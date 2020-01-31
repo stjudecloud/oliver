@@ -1,0 +1,15 @@
+name: Pylint
+on:
+    push:
+      branches:
+        - master
+    pull_request:
+
+jobs:
+  Pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+      - run: pip install -r requirements.txt
+      - run: pylint oliver
