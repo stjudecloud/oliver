@@ -81,3 +81,4 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=None,
     )
     subcommand.set_defaults(func=call)
+    return subcommand

@@ -4,8 +4,8 @@ import logging
 import logzero
 import sys
 
-from oliver.lib import errors
-from oliver.lib.config import read_config
+from logzero import logger
+from oliver.lib import args as _args, errors, config as _config
 from oliver.subcommands import (
     aws,
     azure,
@@ -42,13 +42,12 @@ SUBCOMMANDS = {
     "submit": submit,
 }
 
-REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version", "batch_interval_mins"]
 
 
 def ensure_required_args(args):
     missing_args = []
 
-    for a in REQUIRED_ARGS:
+    for a in _config.REQUIRED_ARGS:
         if not a in args or not args[a]:
             missing_args.append(a)
 
@@ -70,13 +69,7 @@ if __name__ == "__main__":
     # Common arguments
     parser.add_argument("--cromwell-server", help="Cromwell host location.")
     parser.add_argument("--cromwell-api-version", help="Cromwell API version.")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        help="Print verbose output.",
-        default=False,
-        action="store_true",
-    )
+    _args.add_loglevel_group(parser)
 
     # Subparsers
     subparsers = parser.add_subparsers(dest="subcommand")
@@ -88,11 +81,12 @@ if __name__ == "__main__":
                 fatal=True,
                 exitcode=errors.ERROR_INTERNAL_ERROR,
             )
-        module.register_subparser(subparsers)
+        subparser = module.register_subparser(subparsers)
+        _args.add_loglevel_group(subparser)
 
     args = vars(parser.parse_args())
 
-    for k, v in read_config().items():
+    for k, v in _config.read_config().items():
         # if the user has not supplied a parameter on the command line, add the default
         # value from the config to `args`.
         if not k in args or not args[k]:
@@ -106,7 +100,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     logzero.loglevel(logging.WARN)
-    if args["verbose"]:
+    if args.get("verbose"):
+        logzero.loglevel(logging.INFO)
+    elif args.get("debug"):
         logzero.loglevel(logging.DEBUG)
 
     args["func"](args)

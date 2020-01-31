@@ -81,3 +81,4 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "value", nargs="*", help='"<key>" for "get" or "<key> <value>" for "set".'
     )
     subcommand.set_defaults(func=call)
+    return subcommand

@@ -219,6 +219,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default="fancy_grid",
     )
     subcommand.set_defaults(func=call)
+    return subcommand
 
 
 def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
