@@ -3,7 +3,7 @@ import json
 
 from typing import Dict
 
-from ..lib import api, errors, reporting, utils, workflows as _workflows
+from ..lib import api, args as _args, errors, reporting, utils, workflows as _workflows
 from ..lib.parsing import parse_workflow_inputs
 
 
@@ -133,10 +133,9 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=False,
         action="store_true",
     )
-    subcommand.add_argument(
-        "-g", "--job-group", help="Job Group", type=str, default=None
-    )
-    subcommand.add_argument("-j", "--job-name", help="Job Name", type=str, default=None)
+    _args.add_oliver_job_group_args(subcommand)
+    _args.add_oliver_job_name_args(subcommand)
+
     subcommand.add_argument(
         "-o",
         "--output-dir",

@@ -42,8 +42,8 @@ def call(args: Dict):
     workflows = _workflows.get_workflows(
         cromwell=cromwell,
         submission_time_hours_ago=args["submission_time"],
-        oliver_job_name=args["oliver_job_name"],
-        oliver_job_group_name=args["oliver_job_group_name"],
+        oliver_job_name=args["job_name"],
+        oliver_job_group_name=args["job_group"],
         cromwell_workflow_uuid=args["cromwell_workflow_uuid"],
         cromwell_workflow_name=args["cromwell_workflow_name"],
         batches=batches,
@@ -136,26 +136,14 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default=False,
         action="store_true",
     )
-    subcommand.add_argument(
-        "-g",
-        "--oliver-job-group-name",
-        help="Job group name assigned by user and attached to the job.",
-        type=str,
-        default=None,
-    )
+    _args.add_oliver_job_group_args(subcommand)
     subcommand.add_argument(
         "-i",
         "--cromwell-workflow-uuid",
         type=str,
         help="Filter by workflow id matching argument.",
     )
-    subcommand.add_argument(
-        "-j",
-        "--oliver-job-name",
-        help="Job name assigned by user and attached to the job.",
-        type=str,
-        default=None,
-    )
+    _args.add_oliver_job_name_args(subcommand)
     subcommand.add_argument(
         "-n",
         "--cromwell-workflow-name",

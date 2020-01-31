@@ -41,3 +41,15 @@ def add_batches_group(parser, required=False):
         help="Split batches by any two jobs separated by N minutes.",
         type=int,
     )
+
+
+def add_oliver_job_group_args(parser, **kwargs):
+    _kwargs = {"help": "Specify the Oliver job group.", "type": str, "default": None}
+    _kwargs.update(kwargs)
+    parser.add_argument("-g", "--job-group", **_kwargs)
+
+
+def add_oliver_job_name_args(parser, **kwargs):
+    _kwargs = {"help": "Specify the Oliver job name.", "type": str, "default": None}
+    _kwargs.update(kwargs)
+    parser.add_argument("-j", "--job-name", **_kwargs)
