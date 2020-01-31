@@ -89,7 +89,7 @@ def get_workflows(
         opt_into_reporting_succeeded_jobs (bool, optional): Whether the user
         explicitly opted into seeing `Succeeded` statuses. See the method's
         documentation for an explanation of how this works. Defaults to False.
-    
+
     Returns:
         List[Dict]: a list of workflows returned from the api and filtered per
         the given parameters.
