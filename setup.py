@@ -11,7 +11,7 @@ with open("README.md", "r") as fh:
     readme = fh.read()
 
 setup(
-    name="oliver",
+    name="stjudecloud-oliver",
     version=__VERSION__,
     description="An opinionated Cromwell orchestration system",
     long_description=readme,
