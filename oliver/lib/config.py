@@ -7,6 +7,7 @@ DEFAULT_CONFIG = {
     "cromwell_api_version": (str, "v1"),
     "batch_interval_mins": (int, 2),
 }
+REQUIRED_ARGS = ["cromwell_server", "cromwell_api_version", "batch_interval_mins"]
 
 
 def get_default_config():

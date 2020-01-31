@@ -45,3 +45,4 @@ def register_subparser(subparser: argparse._SubParsersAction):
         default="fancy_grid",
     )
     subcommand.set_defaults(func=call)
+    return subcommand
