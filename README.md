@@ -2,8 +2,8 @@
 <p align="center">
   <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
   </a>
-  <a href="https://www.npmjs.com/package/oliver" target="_blank">
-    <img alt="Version" src="https://img.shields.io/static/v1?label=version&message=alpha&color=orange">
+  <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
   </a>
   <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
