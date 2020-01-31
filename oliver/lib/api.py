@@ -198,7 +198,7 @@ class CromwellAPI:
         includeSubworkflows: bool = True,
     ) -> List:
         """GET /api/workflows/{version}/query
-        
+
         Args:
             submission (datetime.datetime, optional): Returns only workflows with an equal or later submission time. Can be specified at most once. If both submission time and start date are specified, submission time should be before or equal to start date. Defaults to None.
             start (datetime.datetime, optional): Returns only workflows with an equal or later start datetime. Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. Defaults to None.
@@ -212,7 +212,7 @@ class CromwellAPI:
             excludeLabelOr (List[str], optional): Excludes workflows with the specified label. If specified multiple times, excludes workflows with any of the specified label keys. Specify the label key and label value pair as separated with "label-key:label-value". Defaults to None.
             additionalQueryResultFields (List[str], optional): Currently only 'labels' is a valid value here. Use it to include a list of labels with each result. Defaults to None.
             includeSubworkflows (Boolean, optional): Include subworkflows in results. By default, it is taken as true. Defaults to True.
-        
+
         Returns:
             List: All workflows that match the provided parameters.
         """
@@ -262,13 +262,13 @@ class CromwellAPI:
         expandSubWorkflows: bool = False,
     ) -> Dict:
         """GET /api/workflows/{version}/{id}/metadata
-        
+
         Args:
             id (str): Workflow ID to get metadata from.
             includeKey (List[str], optional): Keys to include in results. Defaults to None.
             excludeKey (List[str], optional): Keys to exclude in results. Defaults to None.
             expandSubWorkflows (bool, optional): Whether to expand subworkflows in results. Defaults to False.
-        
+
         Returns:
             List: Metadata of specified workflow.
         """

@@ -13,14 +13,14 @@ def get_workflow_batches(
     relative: bool = False,
 ):
     """Returns all workflows where the derived batch number is included in `batches`.
-    
+
     args:
         workflows (List[dict]): list of workflows returned from cromwell. must
                                 contain the `submission` key.
-        batches(Union[bool, int, List[int]]): batches to be returned. if `True`, returns all batches. 
+        batches(Union[bool, int, List[int]]): batches to be returned. if `True`, returns all batches.
                                         if a single integer, returns a single batch. if a list of integers,
-                                        batches that match the specified numbers. 
-        batch_interval_mins (int, optional): interval to constitute a new batch 
+                                        batches that match the specified numbers.
+        batch_interval_mins (int, optional): interval to constitute a new batch
                                              in minutes. defaults to 5.
         relative(bool): if True, batches will be considered as "N batches ago" (e.g.
                         `0` will return the most recent batch, `1` will return the second
@@ -58,22 +58,22 @@ def get_workflow_batches(
 
 def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List[Dict]:
     """Batches workflows based on their `submission` key and a time interval.
-    
+
     In short, this is a simple method of batching jobs. Here, we start with the
     first job and consider it batch 0. We then iterate through each element in
     the list of jobs and compute the delta between this job's submission time
     and the last job's submission time. If the difference is `batch_interval_mins`
     or more, we increase the batch count by 1.
-    
+
     Args:
         workflows (List[Dict]): list of workflows returned from Cromwell. Must
                                 contain the `submission` key.
-        batch_interval_mins (int, optional): interval to constitute a new batch 
+        batch_interval_mins (int, optional): interval to constitute a new batch
                                              in minutes. Defaults to 5.
-    
+
     Returns:
-        List[Dict], int: The first returned value is the `workflows` list that was 
-                         passed in, but with a new `batch` key added to each entry 
+        List[Dict], int: The first returned value is the `workflows` list that was
+                         passed in, but with a new `batch` key added to each entry
                          denoting the computed batch. The second returned value is the
                          maximum batch number.
     """

@@ -58,11 +58,11 @@ def print_dicts_as_table(
     ],
 ):
     """Format a list of dicts and print as a table using `tabulate`.
-    
+
     Args:
         rows (List[Dict]): Data to be printed structured as a list of dicts.
-        grid_style (str, optional): Any valid `tabulate` table format. 
-                                    See https://github.com/astanin/python-tabulate#table-format 
+        grid_style (str, optional): Any valid `tabulate` table format.
+                                    See https://github.com/astanin/python-tabulate#table-format
                                     for more information. Defaults to "fancy_grid".
         clean (bool, optional): Remove all columns consisting of -1 or None.
         fill: value to fill for missing cells.
@@ -133,12 +133,12 @@ def print_dicts_as_table(
 
 def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
     """Prints an error message as a table.
-    
+
     Args:
         status (str): string to put in the "Status" column.
         message (str): string to put in the "Message" column.
-        grid_style (str, optional): Any valid `tabulate` table format. 
-                                    See https://github.com/astanin/python-tabulate#table-format 
+        grid_style (str, optional): Any valid `tabulate` table format.
+                                    See https://github.com/astanin/python-tabulate#table-format
                                     for more information. Defaults to "fancy_grid".
     """
     results = [{"Status": status, "Message": message}]

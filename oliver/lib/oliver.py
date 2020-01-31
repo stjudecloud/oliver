@@ -5,7 +5,7 @@ from . import constants
 
 def get_oliver_name(workflow: Dict) -> Optional[str]:
     """Return the name Oliver has given the workflow in properties if it exists.
-    
+
     Args:
         workflow (Dict): Workflow returned from the API call.
     """
@@ -18,7 +18,7 @@ def get_oliver_name(workflow: Dict) -> Optional[str]:
 
 def get_oliver_group(workflow: Dict) -> Optional[str]:
     """Return the group name Oliver has given the workflow in properties if it exists.
-    
+
     Args:
         workflow (Dict): Workflow returned from the API call.
     """

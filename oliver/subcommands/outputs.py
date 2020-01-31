@@ -20,7 +20,7 @@ async def get_outputs(
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -33,7 +33,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 def register_subparser(subparser: argparse._SubParsersAction):
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

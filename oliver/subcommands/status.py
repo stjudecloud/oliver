@@ -16,7 +16,7 @@ from ..lib import (
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -90,7 +90,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 def register_subparser(subparser: argparse._SubParsersAction):
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """
@@ -185,7 +185,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
 
 def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
     """Print a summary of workflow statuses.
-    
+
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
@@ -223,7 +223,7 @@ def print_workflow_detail_view(
     grid_style="fancy_grid",
 ):
     """Print a detailed table of workflow statuses.
-    
+
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
@@ -250,7 +250,7 @@ def print_workflow_steps_view(
     workflows: List, metadatas: Dict, grid_style="fancy_grid"
 ):
     """Print a table summarizing which steps (calls) are in progress.
-    
+
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.

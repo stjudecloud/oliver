@@ -33,7 +33,7 @@ def process_output(dest_folder: str, output: str, dry_run: bool = False):
 
 def call(args: Dict):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -64,7 +64,7 @@ def call(args: Dict):
 
 def register_subparser(subparser: argparse._SubParsersAction):
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """
