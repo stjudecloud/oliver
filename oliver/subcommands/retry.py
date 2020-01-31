@@ -68,6 +68,9 @@ def call(args: Dict):
             inputs=json.loads(workflowInputs),
             options=json.loads(workflowOptions),
             labels=json.loads(workflowLabels),
+            job_name=args.get("job_name"),
+            job_group=args.get("job_group"),
+            output_dir=args.get("output_dir"),
         )
 
         if args.get("dry_run"):
@@ -129,6 +132,17 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="Print what would be submitted rather than actually submitting.",
         default=False,
         action="store_true",
+    )
+    subcommand.add_argument(
+        "-g", "--job-group", help="Job Group", type=str, default=None
+    )
+    subcommand.add_argument("-j", "--job-name", help="Job Name", type=str, default=None)
+    subcommand.add_argument(
+        "-o",
+        "--output-dir",
+        help="Coalesce outputs into the specified directory using `final_workflow_outputs_dir`.",
+        type=str,
+        default=None,
     )
     subcommand.add_argument(
         "-y",

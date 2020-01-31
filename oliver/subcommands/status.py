@@ -55,6 +55,25 @@ def call(args: Dict):
     )
 
     metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
+
+    call_names_to_consider = args.get("failed_calls")
+    if call_names_to_consider:
+        new_workflows = []
+        for workflow in workflows:
+            keep_workflow = False
+            for call_name, calls in (
+                metadatas.get(workflow.get("id"), {}).get("calls").items()
+            ):
+                if call_name in call_names_to_consider:
+                    if any([c.get("executionStatus") == "Failed" for c in calls]):
+                        keep_workflow = True
+                        break
+
+            if keep_workflow:
+                new_workflows.append(workflow)
+
+        workflows = new_workflows
+
     print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
 
     if args.get("steps_view"):
@@ -116,6 +135,12 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "--batch-interval-mins",
         help="Split batches by any two jobs separated by N minutes.",
         type=int,
+    )
+    subcommand.add_argument(
+        "--failed-calls",
+        help="Only show calls with the given name that failed (useful in restarting failed steps).",
+        nargs="+",
+        type=str,
     )
     subcommand.add_argument(
         "-d",
@@ -182,7 +207,8 @@ def register_subparser(subparser: argparse._SubParsersAction):
         action="store_true",
     )
     subcommand.add_argument(
-        "-z", "--steps-view",
+        "-z",
+        "--steps-view",
         help="Show the 'steps' view.",
         default=False,
         action="store_true",
