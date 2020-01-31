@@ -2,14 +2,14 @@
 
 import argparse
 
+from typing import Dict
+
 from collections import defaultdict
 from logzero import logger
-from typing import Dict
 
 from ..lib import (
     api,
     args as _args,
-    constants,
     oliver,
     reporting,
     workflows as _workflows,

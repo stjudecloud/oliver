@@ -1,9 +1,10 @@
 import argparse
-import pendulum
 
 from typing import Dict
 
-from ..lib import api, constants, errors, reporting, utils
+import pendulum
+
+from ..lib import api, constants, errors, reporting
 
 
 def report_failure(failure, indent, step=2, offset=2):

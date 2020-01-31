@@ -5,8 +5,8 @@ import sys
 
 from logzero import logger
 from typing import Dict, List
-from requests import request
 from urllib.parse import urljoin
+from requests import request
 
 from . import errors, reporting, utils
 

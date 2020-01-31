@@ -2,7 +2,7 @@ import sys
 
 from logzero import logger
 
-from . import constants, reporting
+from . import constants
 
 ERROR_PRECAUTION = 1
 ERROR_UNEXPECTED_RESPONSE = 2

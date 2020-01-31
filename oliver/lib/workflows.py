@@ -1,8 +1,8 @@
 import datetime
-import pendulum
+from typing import List, Dict
 
+import pendulum
 from logzero import logger
-from typing import Optional, List, Dict
 
 from . import api, batch, constants
 

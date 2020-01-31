@@ -1,16 +1,12 @@
 import argparse
-import datetime
-import pendulum
+
+from typing import Dict, List
 
 from collections import defaultdict
-from logzero import logger
-from typing import Dict, List, Optional
 
 from ..lib import (
     api,
     args as _args,
-    batch,
-    constants,
     errors,
     reporting,
     oliver,

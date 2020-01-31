@@ -1,7 +1,7 @@
-import pendulum
-
-from logzero import logger
 from typing import Dict, List, Union
+
+import pendulum
+from logzero import logger
 
 from . import errors
 

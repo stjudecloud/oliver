@@ -1,9 +1,5 @@
-import argparse
-import azure.cosmos.cosmos_client as cosmos_client
-import azure.cosmos.errors as errors
-import azure.cosmos.http_constants as http_constants
-import json
 import os
+import json
 
 from typing import Dict
 

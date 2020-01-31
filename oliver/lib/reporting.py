@@ -1,9 +1,9 @@
-import sys
-import pendulum
-
 from collections import OrderedDict
-from tabulate import tabulate
+
 from typing import List, Dict
+
+import pendulum
+from tabulate import tabulate
 from tzlocal import get_localzone
 
 from . import errors
