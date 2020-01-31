@@ -17,8 +17,7 @@
 ## Getting Started
 
 ```sh
-# Package install
-python setup.py install
+pip install stjudecloud-oliver
 ```
 
 Please refer to the guides in the `docs/` folder for more information.
