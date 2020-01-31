@@ -9,7 +9,7 @@ import sys
 
 from typing import Dict
 
-from ... import reporting
+from ...lib import reporting
 
 
 class AzureBatchAPI:

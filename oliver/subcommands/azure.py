@@ -4,7 +4,7 @@ import os
 from typing import Dict
 
 from ..integrations.azure import batch, cosmos
-from .. import errors
+from ..lib import errors
 
 def call(args: Dict):
     """Execute the cosmos.
