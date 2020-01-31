@@ -1,6 +1,8 @@
 import azure.batch.batch_service_client as batch
 import azure.batch.batch_auth as batchauth
 import azure.batch.models as batchmodels
+from azure.common.client_factory import get_client_from_cli_profile
+from azure.mgmt.batch import BatchManagementClient
 
 import json
 import os
@@ -14,28 +16,12 @@ from ...lib import reporting
 
 class AzureBatchAPI:
     def __init__(self, batch_name="", resource_group=""):
-        stream = os.popen(
-            "az batch account keys list --name "
-            + batch_name
-            + " --resource-group "
-            + resource_group
-        )
-        key = stream.read()
-        key = json.loads(key)
-        self.key = key["primary"]
-        stream = os.popen(
-            "az batch account show --name "
-            + batch_name
-            + " --resource-group "
-            + resource_group
-        )
-        url = stream.read()
-        url = json.loads(url)
-        self.url = "https://" + url["accountEndpoint"]
-
-        self.credentials = batchauth.SharedKeyCredentials(batch_name, self.key)
-
-        self.client = batch.BatchServiceClient(self.credentials, base_url=self.url)
+        mgmtclient = get_client_from_cli_profile(BatchManagementClient)
+        key = mgmtclient.batch_account.get_keys(resource_group, batch_name).primary
+        uri = mgmtclient.batch_account.get(resource_group, batch_name).account_endpoint
+        uri = "https://" + uri
+        self.credentials = batchauth.SharedKeyCredentials(batch_name, key)
+        self.client = batch.BatchServiceClient(self.credentials, base_url=uri)
 
 
 def call(args: Dict):
