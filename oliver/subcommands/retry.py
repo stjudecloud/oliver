@@ -78,9 +78,9 @@ def call(args: Dict):
         results.append(
             cromwell.post_workflows(
                 workflowUrl=workflowUrl,
-                workflowInputs=workflowInputs,
-                workflowOptions=workflowOptions,
-                labels=workflowLabels,
+                workflowInputs=workflow_args["workflowInputs"],
+                workflowOptions=workflow_args["workflowOptions"],
+                labels=workflow_args["workflowLabels"],
             )
         )
 
