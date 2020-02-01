@@ -7,7 +7,7 @@ from typing import Optional, List, Dict
 from . import api, batch, constants
 
 
-def get_workflows(
+async def get_workflows(
     cromwell: api.CromwellAPI,
     submission_time_hours_ago: int = None,
     oliver_job_name: str = None,
@@ -127,7 +127,7 @@ def get_workflows(
             - datetime.timedelta(hours=submission_time_hours_ago)
         ).replace(microsecond=0).isoformat("T") + "Z"
 
-    workflows = cromwell.get_workflows_query(
+    workflows = await cromwell.get_workflows_query(
         includeSubworkflows=False,
         labels=labels,
         ids=[cromwell_workflow_uuid],
