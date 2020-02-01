@@ -3,7 +3,7 @@ import os
 
 from typing import Dict
 
-from ..lib import api, oliver, errors, reporting, workflows as _workflows
+from ..lib import api, args as _args, oliver, errors, reporting, workflows as _workflows
 from . import outputs as _outputs
 
 
@@ -41,25 +41,56 @@ def call(args: Dict):
     cromwell = api.CromwellAPI(
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
-    outputs = _outputs.get_outputs(
-        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix"),
-    )
-
     output_folder = args.get("root-output-folder")
+    workflows = []
 
-    if args.get("append_job_name"):
-        name = oliver.get_oliver_name(
-            cromwell.get_workflows_metadata(args.get("workflow-id"))
+    if args.get("workflow"):
+        workflows = _workflows.get_workflows(
+            cromwell, cromwell_workflow_uuid=args.get("workflow"),
         )
-        if name == "<not set>":
-            name = "__UNKNOWN__"
-        output_folder = os.path.join(output_folder, name)
+    elif args.get("batches_absolute"):
+        workflows = _workflows.get_workflows(
+            cromwell,
+            batches=args.get("batches_absolute"),
+            relative_batching=False,
+            batch_interval_mins=args.get("batch_interval_mins"),
+        )
+    elif args.get("batches_relative"):
+        workflows = _workflows.get_workflows(
+            cromwell,
+            batches=args.get("batches_relative"),
+            batch_interval_mins=args.get("batch_interval_mins"),
+            relative_batching=True,
+        )
+    else:
+        errors.report(
+            f"Unhandled `retry` scope and predicate.",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+            suggest_report=True,
+        )
 
-    if not output_folder.endswith(os.path.sep):
-        output_folder = output_folder + os.path.sep
+    for workflow in workflows:
+        outputs = _outputs.get_outputs(
+            cromwell, workflow.get("id"), output_prefix=args.get("output_prefix"),
+        )
+        _this_output_folder = output_folder
 
-    for output in outputs:
-        process_output(output_folder, output["Location"], dry_run=args.get("dry_run"))
+        if args.get("append_job_name"):
+            name = oliver.get_oliver_name(
+                cromwell.get_workflows_metadata(workflow.get("id"))
+            )
+            if name == "<not set>":
+                name = "__UNKNOWN__"
+            _this_output_folder = os.path.join(_this_output_folder, name)
+
+        if not _this_output_folder.endswith(os.path.sep):
+            _this_output_folder = _this_output_folder + os.path.sep
+
+        for output in outputs:
+            process_output(
+                _this_output_folder, output["Location"], dry_run=args.get("dry_run")
+            )
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -74,7 +105,14 @@ def register_subparser(subparser: argparse._SubParsersAction):
         aliases=["a"],
         help="Aggregate all results to a local or cloud folder for a run.",
     )
-    subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
+    scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
+    _args.add_batches_group(
+        scope_predicate, add_batches_interval_arg_automatically=False
+    )
+    _args.add_batches_interval_arg(subcommand)
+    scope_predicate.add_argument(
+        "-w", "--workflow", help="Workflow UUID you wish to retry."
+    )
     subcommand.add_argument(
         "root-output-folder",
         help="Root output folder to localize the files to (currently supports S3).",
