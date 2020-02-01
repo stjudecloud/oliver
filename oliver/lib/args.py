@@ -17,7 +17,18 @@ def add_loglevel_group(parser, required=False):
     )
 
 
-def add_batches_group(parser, required=False):
+def add_batches_interval_arg(parser):
+    parser.add_argument(
+        "-x",
+        "--batch-interval-mins",
+        help="Split batches by any two jobs separated by N minutes.",
+        type=int,
+    )
+
+
+def add_batches_group(
+    parser, required=False, add_batches_interval_arg_automatically=True
+):
     batches = parser.add_mutually_exclusive_group(required=required)
     batches.add_argument(
         "-b",
@@ -35,12 +46,8 @@ def add_batches_group(parser, required=False):
         default=None,
         type=int,
     )
-    parser.add_argument(
-        "-x",
-        "--batch-interval-mins",
-        help="Split batches by any two jobs separated by N minutes.",
-        type=int,
-    )
+    if add_batches_interval_arg_automatically:
+        add_batches_interval_arg(parser)
 
 
 def add_oliver_job_group_args(parser, **kwargs):
