@@ -18,30 +18,40 @@ def call(args: Dict):
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
 
-    workflow = None
+    workflows = None
     show_only_aborted_and_failed = not args["all"]
 
-    if args["scope"] == "workflow":
+    if args.get("workflow"):
         workflows = _workflows.get_workflows(
             cromwell,
-            cromwell_workflow_uuid=args["predicate"],
+            cromwell_workflow_uuid=args.get("workflow"),
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
-    elif args["scope"] == "batch":
+    elif args.get("batches_absolute"):
         workflows = _workflows.get_workflows(
             cromwell,
-            batches=int(args["predicate"]),
-            batch_interval_mins=args["batch_interval_mins"],
+            batches=args.get("batches_absolute"),
+            relative_batching=False,
+            batch_interval_mins=args.get("batch_interval_mins"),
+            opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
+            opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
+        )
+    elif args.get("batches_relative"):
+        workflows = _workflows.get_workflows(
+            cromwell,
+            batches=args.get("batches_relative"),
+            batch_interval_mins=args.get("batch_interval_mins"),
             relative_batching=True,
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
     else:
         errors.report(
-            f"Unsupported scope: {args['scope']}!",
+            f"Unhandled `retry` scope and predicate.",
             fatal=True,
             exitcode=errors.ERROR_INVALID_INPUT,
+            suggest_report=True,
         )
 
     if not args.get("dry_run"):
@@ -102,12 +112,13 @@ def register_subparser(subparser: argparse._SubParsersAction):
         aliases=["re"],
         help="Resubmit a workflow with the same parameters. By default, only restarts workflows which are 'Failed' or 'Aborted'.",
     )
-    subcommand.add_argument(
-        "scope", help="Currently `workflow` and `batch` are supported."
+    scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
+    _args.add_batches_group(
+        scope_predicate, add_batches_interval_arg_automatically=False
     )
-    subcommand.add_argument(
-        "predicate",
-        help="If scope is `workflow`, the workflow's UUID. If scope is `batch`, N batches ago to restart.",
+    _args.add_batches_interval_arg(subcommand)
+    scope_predicate.add_argument(
+        "-w", "--workflow", help="Workflow UUID you wish to retry."
     )
     subcommand.add_argument(
         "workflowInputs",
@@ -122,11 +133,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
         action="store_true",
     )
     subcommand.add_argument(
-        "--batch-interval-mins",
-        help="Split batches by any two jobs separated by N minutes.",
-        type=int,
-    )
-    subcommand.add_argument(
         "-d",
         "--dry-run",
         help="Print what would be submitted rather than actually submitting.",
@@ -135,7 +141,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
     )
     _args.add_oliver_job_group_args(subcommand)
     _args.add_oliver_job_name_args(subcommand)
-
     subcommand.add_argument(
         "-o",
         "--output-dir",
