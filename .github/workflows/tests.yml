@@ -1,0 +1,35 @@
+name: Integration and Unit Tests
+on: 
+    push:
+      branches:
+        - master
+    pull_request:
+
+jobs:
+  tests:
+    name: Integration Tests
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install HTTPie
+        run: sudo apt-get update && sudo apt-get install httpie -y
+      - name: Start services
+        run: docker-compose --project-name oliver up --build --detach
+      - name: Wait for Cromwell
+        run: |
+          NEXT_WAIT_TIME=0
+          until http HEAD http://localhost:8000 &> /dev/null || [ $NEXT_WAIT_TIME -eq 30 ]; do
+            echo "Sleeping ${NEXT_WAIT_TIME} seconds..."
+            sleep $(( NEXT_WAIT_TIME++ ))
+          done
+          sleep 2
+      - name: Seed database
+        run: chmod +x seeds/seed.sh; seeds/seed.sh http://localhost:8000 seeds/wdl/hello.wdl
+      - name: Build
+        run: docker image build --tag oliver .
+      - name: Test
+        run: |
+          docker container run \
+            --network oliver_default \
+            oliver \
+            /bin/bash -c "python setup.py install && oliver configure --defaults && oliver config set cromwell_server http://cromwell:8000 && pytest tests"
