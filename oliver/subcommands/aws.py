@@ -4,10 +4,10 @@ import os
 from typing import Dict
 
 from ..integrations.aws import debug
-from ..lib import args as _args, errors
+from ..lib import api, args as _args, errors
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:

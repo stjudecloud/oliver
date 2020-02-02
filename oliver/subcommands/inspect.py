@@ -12,17 +12,14 @@ def report_failure(failure, indent, step=2, offset=2):
         report_failure(f, indent + step)
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
-    metadata = cromwell.get_workflows_metadata(args["workflow-id"])
+    metadata = await cromwell.get_workflows_metadata(args["workflow-id"])
 
     oliver_job_name = metadata.get("labels", {}).get(constants.OLIVER_JOB_NAME_KEY, "")
     oliver_group_name = metadata.get("labels", {}).get(

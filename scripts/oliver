@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+import asyncio
 import argparse
 import logging
 import logzero
 import sys
 
 from logzero import logger
-from oliver.lib import args as _args, errors, config as _config
+from oliver.lib import api, args as _args, errors, config as _config
 from oliver.subcommands import (
     aws,
     azure,
@@ -61,7 +62,7 @@ def ensure_required_args(args):
         )
 
 
-if __name__ == "__main__":
+async def main():
     parser = argparse.ArgumentParser(
         description="An opinionated Cromwell orchestration system."
     )
@@ -105,4 +106,10 @@ if __name__ == "__main__":
     elif args.get("debug"):
         logzero.loglevel(logging.DEBUG)
 
-    args["func"](args)
+    cromwell = api.CromwellAPI(server=args["cromwell_server"], version=args["cromwell_api_version"])
+    await args["func"](args, cromwell)
+    await cromwell.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main()) 

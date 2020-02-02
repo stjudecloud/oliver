@@ -3,11 +3,11 @@ import sys
 
 from typing import Dict
 
-from ..lib import errors
+from ..lib import api, errors
 from ..lib.config import get_default_config, read_config, write_config
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:

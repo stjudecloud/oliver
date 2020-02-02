@@ -10,7 +10,6 @@ from ..lib import constants, errors
 
 def is_url(url_string: str) -> bool:
     try:
-        print(url_string)
         scheme = urlparse(url_string).scheme
         return scheme == "http" or scheme == "https"
     except:

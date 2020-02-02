@@ -7,7 +7,7 @@ import os
 
 from typing import Dict
 
-from ...lib import reporting
+from ...lib import api, reporting
 
 
 class CosmosAPI:
@@ -48,7 +48,7 @@ class CosmosAPI:
         )
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:

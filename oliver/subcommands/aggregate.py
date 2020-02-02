@@ -31,32 +31,29 @@ def process_output(dest_folder: str, output: str, dry_run: bool = False):
         os.system(cmd)
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
     output_folder = args.get("root-output-folder")
     workflows = []
 
     if args.get("workflow"):
-        workflows = _workflows.get_workflows(
+        workflows = await _workflows.get_workflows(
             cromwell, cromwell_workflow_uuid=args.get("workflow"),
         )
     elif args.get("batches_absolute"):
-        workflows = _workflows.get_workflows(
+        workflows = await _workflows.get_workflows(
             cromwell,
             batches=args.get("batches_absolute"),
             relative_batching=False,
             batch_interval_mins=args.get("batch_interval_mins"),
         )
     elif args.get("batches_relative"):
-        workflows = _workflows.get_workflows(
+        workflows = await _workflows.get_workflows(
             cromwell,
             batches=args.get("batches_relative"),
             batch_interval_mins=args.get("batch_interval_mins"),
@@ -78,7 +75,7 @@ def call(args: Dict):
 
         if args.get("append_job_name"):
             name = oliver.get_oliver_name(
-                cromwell.get_workflows_metadata(workflow.get("id"))
+                await cromwell.get_workflows_metadata(workflow.get("id"))
             )
             if name == "<not set>":
                 name = "__UNKNOWN__"

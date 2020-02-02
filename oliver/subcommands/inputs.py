@@ -6,17 +6,14 @@ from typing import Dict
 from ..lib import api, errors
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
-    metadata = cromwell.get_workflows_metadata(args["workflow-id"])
+    metadata = await cromwell.get_workflows_metadata(args["workflow-id"])
 
     if not metadata.get("submittedFiles", {}).get("inputs"):
         errors.report(
