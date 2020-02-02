@@ -7,16 +7,12 @@ from ..lib import api, args as _args, errors, reporting, utils
 from ..lib.parsing import parse_workflow, parse_workflow_inputs
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
-
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
 
     workflow_args = parse_workflow(args["workflow"])
     (
@@ -35,7 +31,7 @@ def call(args: Dict):
             print(f"{key} = {value}")
         return
 
-    results = [cromwell.post_workflows(**workflow_args)]
+    results = [await cromwell.post_workflows(**workflow_args)]
     reporting.print_dicts_as_table(results, args["grid_style"])
 
 

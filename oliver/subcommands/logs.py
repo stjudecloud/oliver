@@ -5,17 +5,14 @@ from typing import Dict
 from ..lib import api, errors, reporting
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
-    logs = cromwell.get_workflows_logs(args["workflow-id"])
+    logs = await cromwell.get_workflows_logs(args["workflow-id"])
     results = []
 
     for name, call in logs["calls"].items():

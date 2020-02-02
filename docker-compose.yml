@@ -20,6 +20,10 @@ services:
             - type: "bind"
               source: "./mocks/cromwell/db/init" 
               target: "/docker-entrypoint-initdb.d"
+    httpbin:
+        image: kennethreitz/httpbin
+        ports:
+            - 80:80
 
 volumes:
     mysql_data:

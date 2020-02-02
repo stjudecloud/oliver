@@ -19,16 +19,12 @@ SUBCOMMAND_NAME = "batches"
 SUBCOMMAND_ALIASES = ["b"]
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
-
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"],
-    )
 
     batches = True
     relative = None
@@ -40,7 +36,7 @@ def call(args: Dict):
         batches = args.get("batches_absolute")
         relative = False
 
-    workflows = _workflows.get_workflows(
+    workflows = await _workflows.get_workflows(
         cromwell,
         batches=batches,
         relative_batching=relative,
@@ -74,7 +70,7 @@ def call(args: Dict):
         # job groups
         if args.get("show_oliver_job_groups"):
             metadatas = {
-                w.get("id"): cromwell.get_workflows_metadata(w.get("id"))
+                w.get("id"): await cromwell.get_workflows_metadata(w.get("id"))
                 for w in batch_workflows
             }
             r["Job Groups"] = ", ".join(
