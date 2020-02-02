@@ -3,11 +3,25 @@ import datetime
 import json
 import sys
 
+from logzero import logger
 from typing import Dict, List
 from requests import request
 from urllib.parse import urljoin
 
 from . import errors, reporting
+
+
+def remove_none_values(d: Dict):
+    result = {}
+
+    for key, item in d.items():
+        if isinstance(item, dict):
+            item = remove_none_values(item)
+
+        if item:
+            result[key] = item
+
+    return result
 
 
 class CromwellAPI:
@@ -19,23 +33,20 @@ class CromwellAPI:
         self.headers = headers
         self.session = aiohttp.ClientSession()
 
-    def _clean_dictionary(self, d):
-        to_delete = []
-
-        for name, items in d.items():
-            if not items:
-                to_delete.append(name)
-
-        for name in to_delete:
-            del d[name]
-
     async def close(self):
         await self.session.close()
 
-    async def _api_call(self, route, params={}, data={}, method="GET"):
+    async def _api_call(
+        self, route, params={}, data={}, method="GET", url_override=None
+    ):
+        logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
-        params = self._clean_dictionary(params)
-        data = self._clean_dictionary(data)
+
+        params = remove_none_values(params)
+        data = remove_none_values(data)
+
+        if url_override:
+            url = url_override
 
         func = None
         if method == "GET":
@@ -50,8 +61,19 @@ class CromwellAPI:
                 suggest_report=True,
             )
 
-        response = await func(url, headers=self.headers, params=params, data=data)
+        kwargs = {"headers": self.headers}
 
+        if params:
+            kwargs["params"] = params
+
+        # format data as multipart-form
+        if data:
+            _data = aiohttp.FormData()
+            for k, v in data.items():
+                _data.add_field(k, v, filename=k, content_type="application/json")
+            kwargs["data"] = _data
+
+        response = await func(url, **kwargs)
         status_code = response.status
         content = json.loads(await response.text())
 
@@ -81,6 +103,7 @@ class CromwellAPI:
         workflowInputs={},
         workflowOptions={},
         labels={},
+        url_override=None,
     ):
         "POST /api/workflows/{version}"
 
@@ -100,7 +123,10 @@ class CromwellAPI:
         }
 
         _, data = await self._api_call(
-            "/api/workflows/{version}", method="POST", data=data
+            "/api/workflows/{version}",
+            method="POST",
+            data=data,
+            url_override=url_override,
         )
         return data
 

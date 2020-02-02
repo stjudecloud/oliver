@@ -130,8 +130,8 @@ async def get_workflows(
     workflows = await cromwell.get_workflows_query(
         includeSubworkflows=False,
         labels=labels,
-        ids=[cromwell_workflow_uuid],
-        names=[cromwell_workflow_name],
+        ids=[cromwell_workflow_uuid] if cromwell_workflow_uuid else None,
+        names=[cromwell_workflow_name] if cromwell_workflow_name else None,
         submission=submission,
     )
 
