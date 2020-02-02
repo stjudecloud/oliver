@@ -89,6 +89,20 @@ oliver submit workflow.wdl \
     %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
 ```
 
+## Tests
+
+Oliver provides a (currently patchy) set of tests — both unit and end-to-end. To get started with testing, you'll
+need to bootstrap a Docker test environment (one-time operation).
+
+```bash
+# Start development environment
+docker-compose up --build -d
+
+# Seed development environment (make sure Cromwell is live first!)
+chmod +x seeds/seed.sh
+seeds/seed.sh http://localhost:8000 seeds/wdl/simple.wdl
+```
+
 ## Author
 
 👤 **St. Jude Cloud Team**
