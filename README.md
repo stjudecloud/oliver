@@ -100,7 +100,20 @@ docker-compose up --build -d
 
 # Seed development environment (make sure Cromwell is live first!)
 chmod +x seeds/seed.sh
-seeds/seed.sh http://localhost:8000 seeds/wdl/simple.wdl
+seeds/seed.sh http://localhost:8000 seeds/wdl/hello.wdl
+```
+
+To reset your entire docker-compose environment, you can run the following:
+
+```bash
+docker-compose down
+
+docker image rm oliver:latest
+docker image rm oliver_cromwell:latest
+docker image rm mysql:5.7
+docker volume rm oliver_mysql_data
+
+docker-compose up --build -d
 ```
 
 ## Author

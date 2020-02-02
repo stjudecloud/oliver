@@ -4,6 +4,7 @@ boto3==1.11.9
 logzero==1.5.0
 pendulum==2.0.5
 pytest==5.3.5
+pytest-asyncio==0.10.0
 requests==2.22.0
 tabulate==0.8.6
 tzlocal==2.0.0

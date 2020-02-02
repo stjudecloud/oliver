@@ -219,7 +219,7 @@ class CromwellAPI:
             "excludeLabelAnd": excludeLabelAnds,
             "excludeLabelOr": excludeLabelOrs,
             "additionalQueryResultFields": additionalQueryResultFields,
-            "includeSubworkflows": includeSubworkflows,
+            "includeSubworkflows": str(includeSubworkflows),
         }
 
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
