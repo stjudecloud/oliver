@@ -11,10 +11,7 @@ from . import errors, reporting
 
 class CromwellAPI:
     def __init__(
-        self,
-        server="http://localhost:8000",
-        version="v1",
-        headers={"Accept": "application/json"},
+        self, server, version, headers={"Accept": "application/json"},
     ):
         self.server = server
         self.version = version
@@ -30,12 +27,22 @@ class CromwellAPI:
         status_code = response.status_code
         content = json.loads(response.content)
 
-        if not str(status_code).startswith("2"):
-            if content.get("status") == "fail":
-                reporting.print_error_as_table(
-                    content["status"].capitalize(), content["message"].capitalize()
-                )
-                sys.exit(errors.ERROR_UNEXPECTED_RESPONSE)
+        if not status_code // 200 == 1:
+            message = f"Server returned status code {status_code}."
+            fatal = content.get("status") == "fail"
+            suggest = (
+                not fatal
+            )  # we have never experienced a case where the status wasn't "fail".
+            # if such a case is encountered, we'd like to handle it here.
+            if content.get("message"):
+                message += f" Message: \"{content.get('message')}\""
+
+            errors.report(
+                message=message,
+                fatal=fatal,
+                exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+                suggest_report=suggest,
+            )
 
         return status_code, content
 
