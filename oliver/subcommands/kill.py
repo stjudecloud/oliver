@@ -5,17 +5,14 @@ from typing import Dict
 from ..lib import api, reporting
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
-    resp = cromwell.post_workflows_abort(args["workflow-id"])
+    resp = await cromwell.post_workflows_abort(args["workflow-id"])
 
     if not resp.get("id"):
         reporting.print_error_as_table(resp["status"], resp["message"])

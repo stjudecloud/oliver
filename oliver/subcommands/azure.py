@@ -4,10 +4,10 @@ import os
 from typing import Dict
 
 from ..integrations.azure import cosmos
-from ..lib import errors
+from ..lib import api, errors
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the cosmos.
     
     Args:
