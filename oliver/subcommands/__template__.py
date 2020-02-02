@@ -9,7 +9,7 @@ SUBCOMMAND_NAME = "__template__"
 SUBCOMMAND_ALIASES = []
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:

@@ -18,16 +18,13 @@ def get_outputs(
     return results
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
     results = get_outputs(
         cromwell, args["workflow-id"], output_prefix=args.get("output_prefix"),
     )

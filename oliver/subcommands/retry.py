@@ -7,29 +7,25 @@ from ..lib import api, args as _args, errors, reporting, utils, workflows as _wo
 from ..lib.parsing import parse_workflow_inputs
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"]
-    )
-
     workflows = None
     show_only_aborted_and_failed = not args["all"]
 
     if args.get("workflow"):
-        workflows = _workflows.get_workflows(
+        workflows = await _workflows.get_workflows(
             cromwell,
             cromwell_workflow_uuid=args.get("workflow"),
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
     elif args.get("batches_absolute"):
-        workflows = _workflows.get_workflows(
+        workflows = await _workflows.get_workflows(
             cromwell,
             batches=args.get("batches_absolute"),
             relative_batching=False,
@@ -38,7 +34,7 @@ def call(args: Dict):
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
     elif args.get("batches_relative"):
-        workflows = _workflows.get_workflows(
+        workflows = await _workflows.get_workflows(
             cromwell,
             batches=args.get("batches_relative"),
             batch_interval_mins=args.get("batch_interval_mins"),
@@ -62,7 +58,7 @@ def call(args: Dict):
 
     results = []
     for w in workflows:
-        metadata = cromwell.get_workflows_metadata(w["id"])
+        metadata = await cromwell.get_workflows_metadata(w["id"])
 
         workflowUrl = metadata.get("submittedFiles", {}).get("workflowUrl", {})
         workflowInputs = metadata.get("submittedFiles", {}).get("inputs", {})
@@ -89,7 +85,7 @@ def call(args: Dict):
             continue
 
         results.append(
-            cromwell.post_workflows(
+            await cromwell.post_workflows(
                 workflowUrl=workflowUrl,
                 workflowInputs=workflow_args["workflowInputs"],
                 workflowOptions=workflow_args["workflowOptions"],

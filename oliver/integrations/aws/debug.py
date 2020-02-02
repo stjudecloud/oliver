@@ -84,7 +84,7 @@ def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
         return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0))
 
 
-def get_calls_and_times_for_workflows(args):
+async def get_calls_and_times_for_workflows(args, cromwell):
     batches = None
     relative = None
 
@@ -101,11 +101,7 @@ def get_calls_and_times_for_workflows(args):
             exitcode=errors.ERROR_INVALID_INPUT,
         )
 
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"],
-    )
-
-    workflows = _workflows.get_workflows(
+    workflows = await _workflows.get_workflows(
         cromwell,
         submission_time_hours_ago=args.get("submission_time"),
         batches=batches,
@@ -116,7 +112,9 @@ def get_calls_and_times_for_workflows(args):
 
     start_time_to_filter_by = None
     end_time_to_filter_by = None
-    metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
+    metadatas = {
+        w["id"]: await cromwell.get_workflows_metadata(w["id"]) for w in workflows
+    }
 
     failed_calls = []
 
@@ -233,7 +231,7 @@ def write_log(
                 )
 
 
-def failures(args: Dict):
+async def failures(args: Dict, cromwell: api.CromwellAPI):
     batch_client = boto3.client("batch")
     logs_client = boto3.client("logs")
 
@@ -241,7 +239,7 @@ def failures(args: Dict):
         failed_calls,
         start_time_filter,
         end_time_filter,
-    ) = get_calls_and_times_for_workflows(args)
+    ) = await get_calls_and_times_for_workflows(args, cromwell)
     logger.debug("")
     logger.debug("== Calls to match ==")
     for call in failed_calls:

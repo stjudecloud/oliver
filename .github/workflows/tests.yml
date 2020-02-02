@@ -15,13 +15,22 @@ jobs:
         run: sudo apt-get update && sudo apt-get install httpie -y
       - name: Start services
         run: docker-compose --project-name oliver up --build --detach
-      - name: Wait for Cromwell
+      - name: Wait for services to come available
         run: |
+          echo "Waiting for Cromwell to come up..."
           NEXT_WAIT_TIME=0
           until http HEAD http://localhost:8000 &> /dev/null || [ $NEXT_WAIT_TIME -eq 30 ]; do
             echo "Sleeping ${NEXT_WAIT_TIME} seconds..."
             sleep $(( NEXT_WAIT_TIME++ ))
           done
+
+          echo "Waiting for httpbin to come up..."
+          NEXT_WAIT_TIME=0
+          until http HEAD http://localhost:80 &> /dev/null || [ $NEXT_WAIT_TIME -eq 30 ]; do
+            echo "Sleeping ${NEXT_WAIT_TIME} seconds..."
+            sleep $(( NEXT_WAIT_TIME++ ))
+          done
+
           sleep 2
       - name: Seed database
         run: chmod +x seeds/seed.sh; seeds/seed.sh http://localhost:8000 seeds/wdl/hello.wdl
@@ -32,4 +41,4 @@ jobs:
           docker container run \
             --network oliver_default \
             oliver \
-            /bin/bash -c "python setup.py install && oliver configure --defaults && oliver config set cromwell_server http://cromwell:8000 && pytest tests"
+            /bin/bash -c "python setup.py install && oliver configure --defaults && oliver config set cromwell_server http://cromwell:8000 && pytest tests -v"

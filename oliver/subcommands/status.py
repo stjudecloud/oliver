@@ -18,16 +18,12 @@ from ..lib import (
 )
 
 
-def call(args: Dict):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
     
     Args:
         args (Dict): Arguments parsed from the command line.
     """
-
-    cromwell = api.CromwellAPI(
-        server=args["cromwell_server"], version=args["cromwell_api_version"],
-    )
 
     batches = None
     relative = None
@@ -39,7 +35,7 @@ def call(args: Dict):
         batches = args.get("batches_absolute")
         relative = False
 
-    workflows = _workflows.get_workflows(
+    workflows = await _workflows.get_workflows(
         cromwell=cromwell,
         submission_time_hours_ago=args["submission_time"],
         oliver_job_name=args["job_name"],
@@ -55,7 +51,9 @@ def call(args: Dict):
         opt_into_reporting_succeeded_jobs=args["show_succeeded_jobs"],
     )
 
-    metadatas = {w["id"]: cromwell.get_workflows_metadata(w["id"]) for w in workflows}
+    metadatas = {
+        w["id"]: await cromwell.get_workflows_metadata(w["id"]) for w in workflows
+    }
 
     call_names_to_consider = args.get("failed_calls")
     if call_names_to_consider:
