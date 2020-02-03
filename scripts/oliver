@@ -10,7 +10,6 @@ from oliver.lib import api, args as _args, errors, config as _config
 from oliver.subcommands import (
     aws,
     azure,
-    aggregate,
     batches,
     configure,
     config,
@@ -28,7 +27,6 @@ from oliver.subcommands import (
 SUBCOMMANDS = {
     "aws": aws,
     "azure": azure,
-    "aggregate": aggregate,
     "batches": batches,
     "configure": configure,
     "config": config,
