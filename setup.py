@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-__VERSION__ = "1.0.5"
+__VERSION__ = "1.0.6"
 
 with open("requirements.txt", encoding="utf-8") as f:
     requirements = f.read().splitlines()
