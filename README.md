@@ -1,20 +1,42 @@
 <h1 align="center">Oliver</h1>
+
 <p align="center">
   <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
   </a>
   <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
   </a>
+  <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/stjudecloud-oliver?color=orange">
+  </a>
+  <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
+    <img alt="Conda" src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
+  </a>
+  <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
+    <img alt="Conda - Downloads" src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
+  </a>
   <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
-    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
   </a>
 </p>
 
-> An opinionated Cromwell orchestration manager.
-
 ![Oliver Example](./docs/oliver-example.gif)
 
+> An opinionated Cromwell orchestration manager.
+
 ## Getting Started
+
+## Conda
+
+Oliver is distributed as a package using the community-curated Anaconda repository, [conda-forge](https://conda-forge.org/). We recommend that you first follow [the instructions included in the conda-forge documentation](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge) to get everything set up!
+
+```bash
+conda install oliver -c conda-forge
+```
+
+### Python Package Index
+
+You can also install Oliver using the Python Package Index ([PyPI](https://pypi.org/)).
 
 ```sh
 pip install stjudecloud-oliver
