@@ -5,6 +5,8 @@ import argparse
 
 from typing import Dict
 
+from ..lib import api
+
 SUBCOMMAND_NAME = "__template__"
 SUBCOMMAND_ALIASES = []
 
@@ -31,3 +33,4 @@ def register_subparser(subparser: argparse._SubParsersAction):
     )
 
     subcommand.set_defaults(func=call)
+    return subcommand

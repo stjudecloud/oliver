@@ -3,16 +3,23 @@ import os
 
 from typing import Dict
 
-from ..lib import api, args as _args, oliver, errors, reporting, workflows as _workflows
-from . import outputs as _outputs
+from ...lib import (
+    api,
+    args as _args,
+    oliver,
+    errors,
+    reporting,
+    workflows as _workflows,
+)
+from ...subcommands import outputs as _outputs
 
 
-def process_output(dest_folder: str, output: str, dry_run: bool = False):
+def process_output(dest_folder: str, output: str):
     cmd = None
 
     if isinstance(output, list):
         for o in output:
-            process_output(dest_folder, o, dry_run=dry_run)
+            process_output(dest_folder, o)
 
         return
 
@@ -24,11 +31,7 @@ def process_output(dest_folder: str, output: str, dry_run: bool = False):
         )
 
     cmd = f"aws s3 cp --sse AES256 {output} {dest_folder}"
-
-    if dry_run:
-        print(cmd)
-    else:
-        os.system(cmd)
+    print(cmd)
 
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
@@ -68,7 +71,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         )
 
     for workflow in workflows:
-        outputs = _outputs.get_outputs(
+        outputs = await _outputs.get_outputs(
             cromwell, workflow.get("id"), output_prefix=args.get("output_prefix"),
         )
         _this_output_folder = output_folder
@@ -85,53 +88,4 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             _this_output_folder = _this_output_folder + os.path.sep
 
         for output in outputs:
-            process_output(
-                _this_output_folder, output["Location"], dry_run=args.get("dry_run")
-            )
-
-
-def register_subparser(subparser: argparse._SubParsersAction):
-    """Registers a subparser for the current command.
-    
-    Args:
-        subparser (argparse._SubParsersAction): Subparsers action.
-    """
-
-    subcommand = subparser.add_parser(
-        "aggregate",
-        aliases=["a"],
-        help="Aggregate all results to a local or cloud folder for a run.",
-    )
-    scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
-    _args.add_batches_group(
-        scope_predicate, add_batches_interval_arg_automatically=False
-    )
-    _args.add_batches_interval_arg(subcommand)
-    scope_predicate.add_argument(
-        "-w", "--workflow", help="Workflow UUID you wish to retry."
-    )
-    subcommand.add_argument(
-        "root-output-folder",
-        help="Root output folder to localize the files to (currently supports S3).",
-    )
-    subcommand.add_argument(
-        "-j",
-        "--append-job-name",
-        help="Append job name to output folders.",
-        default=False,
-        action="store_true",
-    )
-    subcommand.add_argument(
-        "-d",
-        "--dry-run",
-        help="Print commands that would be executed rather than actually executing them.",
-        default=False,
-        action="store_true",
-    )
-    subcommand.add_argument(
-        "--grid-style",
-        help="Any valid `tablefmt` for python-tabulate.",
-        default="fancy_grid",
-    )
-    subcommand.set_defaults(func=call)
-    return subcommand
+            process_output(_this_output_folder, output["Location"])

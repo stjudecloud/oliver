@@ -5,10 +5,10 @@ from typing import Dict
 from ..lib import api, reporting
 
 
-def get_outputs(
+async def get_outputs(
     cromwell_api: api.CromwellAPI, workflow_id: str, output_prefix: str = None
 ):
-    outputs = cromwell_api.get_workflows_outputs(workflow_id)
+    outputs = await cromwell_api.get_workflows_outputs(workflow_id)
     results = [{"Output Name": k, "Location": v} for k, v in outputs["outputs"].items()]
 
     if output_prefix:
