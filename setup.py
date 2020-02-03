@@ -2,12 +2,12 @@
 
 from setuptools import setup, find_packages
 
-__VERSION__ = "1.0.4"
+__VERSION__ = "1.0.5"
 
-with open("requirements.txt") as f:
+with open("requirements.txt", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     readme = fh.read()
 
 setup(
