@@ -223,12 +223,16 @@ class CromwellAPI:
         }
 
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
-        if not data.get("results"):
-            errors.report(
-                "Expected 'results' key in response!",
-                fatal=True,
-                exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
-            )
+        results = data.get("results")
+        if not results:
+            if not isinstance(results, list) or len(results) != 0:
+                errors.report(
+                    "Expected 'results' key in response!",
+                    fatal=True,
+                    exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+                )
+            else:
+                logger.warn("No results found in response!")
 
         return data["results"]
 
