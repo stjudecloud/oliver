@@ -42,8 +42,10 @@ class CromwellAPI:
         logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
 
-        params = remove_none_values(params)
-        data = remove_none_values(data)
+        if isinstance(params, dict):
+            params = remove_none_values(params)
+        if isinstance(data, dict):
+            data = remove_none_values(data)
 
         if url_override:
             url = url_override
@@ -74,7 +76,7 @@ class CromwellAPI:
             kwargs["data"] = _data
 
         try:
-        response = await func(url, **kwargs)
+            response = await func(url, **kwargs)
         except aiohttp.client_exceptions.ClientConnectorError:
             await self.close()
             errors.report(
@@ -215,20 +217,39 @@ class CromwellAPI:
             List: All workflows that match the provided parameters.
         """
 
-        params = {
-            "submission": submission,
-            "start": start,
-            "end": end,
-            "status": statuses,
-            "name": names,
-            "id": ids,
-            "label": labels,
-            "labelor": labelors,
-            "excludeLabelAnd": excludeLabelAnds,
-            "excludeLabelOr": excludeLabelOrs,
-            "additionalQueryResultFields": additionalQueryResultFields,
-            "includeSubworkflows": str(includeSubworkflows),
-        }
+        params = []
+        params.append(("submission", submission))
+        params.append(("start", start))
+        params.append(("start", start))
+        if statuses:
+            for status in statuses: 
+                params.append(("status", status))
+        if names:
+            for name in names:
+                params.append(("name", name))
+        if ids:
+            for _id in ids:
+                params.append(("id", _id))
+        if labels:
+            for label in labels:
+                params.append(("label", label))
+        if labelors:
+            for labelor in labelors:
+                params.append(("labelor", labelor))
+        if excludeLabelAnds:
+            for e in excludeLabelAnds:
+                params.append(("excludeLabelAnd", e))
+        if excludeLabelOrs:
+            for e in excludeLabelOrs:
+                params.append(("excludeLabelOr", e))
+        if additionalQueryResultFields:
+            for a in additionalQueryResultFields:
+                params.append(("additionalQueryResultFields", a))
+        if includeSubworkflows is not None:
+            params.append(("includeSubworkflows", str(includeSubworkflows)))
+
+        params = list(filter(lambda v: v[1] is not None, params))
+        print(params)
 
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
         results = data.get("results")
