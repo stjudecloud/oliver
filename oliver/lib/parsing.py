@@ -11,7 +11,7 @@ from ..lib import constants, errors
 def is_url(url_string: str) -> bool:
     try:
         scheme = urlparse(url_string).scheme
-        return scheme == "http" or scheme == "https"
+        return scheme in ("http", "https")
     except:
         return False
 
@@ -28,14 +28,14 @@ def parse_workflow(workflow: str) -> Dict[str, str]:
     """
     if is_url(workflow):
         return {"workflowUrl": workflow}
-    elif os.path.isfile(workflow):
+    if os.path.isfile(workflow):
         return {"workflowSource": workflow}
-    else:
-        errors.report(
-            "Workflow is not a valid file or URL!",
-            fatal=True,
-            exitcode=errors.ERROR_INVALID_INPUT,
-        )
+    errors.report(
+        "Workflow is not a valid file or URL!",
+        fatal=True,
+        exitcode=errors.ERROR_INVALID_INPUT,
+    )
+    return {}
 
 
 def parse_workflow_inputs(
@@ -55,7 +55,7 @@ def parse_workflow_inputs(
         labels = {}
 
     for i in workflow_inputs:
-        arg_type, source_type, result = parse_cmdline_arg(i)
+        arg_type, _, result = parse_cmdline_arg(i)
         if arg_type == "input":
             inputs.update(result)
         elif arg_type == "option":
@@ -101,7 +101,7 @@ def parse_cmdline_arg(arg):
                 k, v = source_match.group(1), source_match.group(2)
                 result[k] = v
                 break
-            elif os.path.exists(suffix):
+            if os.path.exists(suffix):
                 # file
                 source_type = "file"
                 try:
@@ -113,12 +113,11 @@ def parse_cmdline_arg(arg):
                         exitcode=errors.ERROR_INVALID_INPUT,
                     )
                 break
-            else:
-                source_type = "unknown"
-                errors.report(
-                    f"Not a valid input: {arg}.",
-                    fatal=True,
-                    exitcode=errors.ERROR_INVALID_INPUT,
-                )
+            # source_type = "unknown"
+            errors.report(
+                f"Not a valid input: {arg}.",
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
 
     return arg_type, source_type, result

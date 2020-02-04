@@ -46,14 +46,14 @@ def get_workflow_batches(
                 exitcode=errors.ERROR_INVALID_INPUT,
             )
 
-    if isinstance(batches, bool) and batches == True:
+    if isinstance(batches, bool) and batches:
         logger.info("Targetting all batches.")
         return _workflows
-    else:
-        logger.info(
-            f"Targetting all jobs in batch(es): {', '.join([str(b) for b in _batches])} (original={', '.join([str(b) for b in batches])}, relative={relative})."
-        )
-        return list(filter(lambda w: w.get("batch") in _batches, _workflows))
+
+    logger.info(
+        f"Targetting all jobs in batch(es): {', '.join([str(b) for b in _batches])} (original={', '.join([str(b) for b in batches])}, relative={relative})."
+    )
+    return list(filter(lambda w: w.get("batch") in _batches, _workflows))
 
 
 def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List[Dict]:
@@ -80,8 +80,7 @@ def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List
 
     batch_num = 0
     last_submission_time = None
-    for i in range(len(workflows)):
-        w = workflows[i]
+    for w in workflows:
         submission = w.get("submission")
         if not submission:
             # fall back to start time if submission not available.
@@ -99,7 +98,7 @@ def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List
             delta = (t - last_submission_time).total_minutes()
             if delta > batch_interval_mins:
                 batch_num += 1
-        workflows[i]["batch"] = batch_num
+        w["batch"] = batch_num
         last_submission_time = t
 
     return workflows, batch_num

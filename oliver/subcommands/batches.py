@@ -50,7 +50,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     results = []
 
     if args.get("show_oliver_job_groups"):
-        logger.warn(
+        logger.warning(
             "You specified you'd like to see job group names. "
             + "This significantly increases runtime due to the need to query metadata about each workflow. "
             + "This may take a while!"
@@ -75,12 +75,10 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             }
             r["Job Groups"] = ", ".join(
                 list(
-                    set(
-                        [
-                            oliver.get_oliver_group(metadatas.get(x.get("id")))
-                            for x in batch_workflows
-                        ]
-                    )
+                    {
+                        oliver.get_oliver_group(metadatas.get(x.get("id")))
+                        for x in batch_workflows
+                    }
                 )
             )
 

@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from typing import List, Dict
+from typing import List, Dict, OrderedDict as OrderedDictType
 
 import pendulum
 from tzlocal import get_localzone
@@ -56,7 +56,7 @@ def print_dicts_as_table(
         "Failed",
         "Succeeded",
     ],
-): # pylint: disable=dangerous-default-value
+):  # pylint: disable=dangerous-default-value
     """Format a list of dicts and print as a table using `tabulate`.
 
     Args:
@@ -84,7 +84,7 @@ def print_dicts_as_table(
     # to make an elegant solution at this moment.
 
     # use ordered dict as ordered set (again, laziness)
-    ordered_set: OrderedDict[str, None] = OrderedDict()
+    ordered_set: OrderedDictType[str, None] = OrderedDict()
     for row in rows:
         for h in row.keys():
             ordered_set[h] = None

@@ -248,7 +248,7 @@ class CromwellAPI:
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
             else:
-                logger.warn("No results found in response!")
+                logger.warning("No results found in response!")
 
         return data["results"]
 

@@ -31,7 +31,7 @@ async def call(args: Dict):
         if not use_defaults:
             question = "What is the value for '{k}'"
             if k in QUESTION_MAPPING:
-                question = QUESTION_MAPPING[k]
+                question = QUESTION_MAPPING.get(k)
 
             answer = ask(question, _default)
             if answer:

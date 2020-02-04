@@ -6,7 +6,7 @@ from typing import Dict
 from requests import request
 import azure.cosmos.cosmos_client as cosmos_client
 
-from ...lib import api, reporting
+from ...lib import reporting
 
 
 class CosmosAPI:
@@ -49,7 +49,7 @@ class CosmosAPI:
         )
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict):
     """Execute the subcommand.
 
     Args:
