@@ -60,8 +60,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
     )
     _args.add_oliver_job_group_args(subcommand)
     _args.add_oliver_job_name_args(subcommand)
-    subcommand.add_argument("-m", help="Default memory for workflow (in MB)")
-    subcommand.add_argument("-n", help="Default number of cpus")
     subcommand.add_argument(
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",
