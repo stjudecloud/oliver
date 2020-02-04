@@ -43,10 +43,17 @@ def parse_workflow_inputs(
     job_name: str = None,
     job_group: str = None,
     output_dir: str = None,
-    inputs: Dict = {},
-    options: Dict = {},
-    labels: Dict = {},
+    inputs: Dict = None,
+    options: Dict = None,
+    labels: Dict = None,
 ):
+    if inputs is None:
+        inputs = {}
+    if options is None:
+        options = {}
+    if labels is None:
+        labels = {}
+
     for i in workflow_inputs:
         arg_type, source_type, result = parse_cmdline_arg(i)
         if arg_type == "input":

@@ -56,7 +56,7 @@ def print_dicts_as_table(
         "Failed",
         "Succeeded",
     ],
-):
+): # pylint: disable=dangerous-default-value
     """Format a list of dicts and print as a table using `tabulate`.
 
     Args:

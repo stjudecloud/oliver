@@ -80,9 +80,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     if args.get("detail_view"):
         print()
         print_workflow_detail_view(
-            workflows,
-            metadatas,
-            grid_style=args["grid_style"],
+            workflows, metadatas, grid_style=args["grid_style"],
         )
 
 
@@ -216,9 +214,7 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
 
 
 def print_workflow_detail_view(
-    workflows: List,
-    metadatas: Dict,
-    grid_style="fancy_grid",
+    workflows: List, metadatas: Dict, grid_style="fancy_grid",
 ):
     """Print a detailed table of workflow statuses.
 

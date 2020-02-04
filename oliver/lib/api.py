@@ -25,7 +25,7 @@ def remove_none_values(d: Dict):
 class CromwellAPI:
     def __init__(
         self, server, version, headers={"Accept": "application/json"},
-    ):
+    ): # pylint: disable=dangerous-default-value
         self.server = server
         self.version = version
         self.headers = headers
@@ -35,15 +35,23 @@ class CromwellAPI:
         await self.session.close()
 
     async def _api_call(
-        self, route, params={}, data={}, method="GET", url_override=None
+        self, route, params=None, data=None, method="GET", url_override=None
     ):
         logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
+
+        if params is None:
+            params = {}
+        if data is None:
+            data = {}
 
         if isinstance(params, dict):
             params = remove_none_values(params)
         if isinstance(data, dict):
             data = remove_none_values(data)
+
+        params = remove_none_values(params)
+        data = remove_none_values(data)
 
         if url_override:
             url = url_override
@@ -112,7 +120,7 @@ class CromwellAPI:
         workflowOptions={},
         labels={},
         url_override=None,
-    ):
+    ): # pylint: disable=dangerous-default-value
         "POST /api/workflows/{version}"
 
         if workflowSource is None and workflowUrl is None:
