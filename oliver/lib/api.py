@@ -1,14 +1,12 @@
 import aiohttp
 import datetime
 import json
-import sys
 
 from logzero import logger
 from typing import Dict, List
 from urllib.parse import urljoin
-from requests import request
 
-from . import errors, reporting, utils
+from . import errors, utils
 
 
 def remove_none_values(d: Dict):

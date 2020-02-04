@@ -1,8 +1,6 @@
 """Remove outputs for all failed or aborted workflows.
 """
 
-import argparse
-
 from logzero import logger
 from typing import Dict
 

@@ -13,7 +13,7 @@ async def get_outputs(
 
     if output_prefix:
         for result in results:
-            result["Location"] = args["output_prefix"] + result["Location"]
+            result["Location"] = output_prefix + result["Location"]
 
     return results
 

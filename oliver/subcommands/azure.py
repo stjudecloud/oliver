@@ -16,7 +16,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     azure_subcommand = args.get("azure-subcommand")
 
     if azure_subcommand == "cosmos":
-        cosmos.call(args)
+        cosmos.call(args, cromwell)
     else:
         errors.report(
             message=f"Unknown azure subcommand: '{azure_subcommand}'",

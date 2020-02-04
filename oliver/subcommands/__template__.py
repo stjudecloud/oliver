@@ -19,6 +19,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     """
 
     print(f"Hello, {SUBCOMMAND_NAME}!")
+    print(args)
+    print(cromwell)
 
 
 def register_subparser(

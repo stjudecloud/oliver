@@ -82,8 +82,6 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         print_workflow_detail_view(
             workflows,
             metadatas,
-            show_job_name=args.get("show_job_name"),
-            show_job_group=args.get("show_job_group"),
             grid_style=args["grid_style"],
         )
 
@@ -220,8 +218,6 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
 def print_workflow_detail_view(
     workflows: List,
     metadatas: Dict,
-    show_job_name: bool = False,
-    show_job_group: bool = False,
     grid_style="fancy_grid",
 ):
     """Print a detailed table of workflow statuses.
@@ -229,8 +225,6 @@ def print_workflow_detail_view(
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
-        show_job_name(bool): include Oliver job name in results.
-        show_job_group(bool): include Oliver job group in results.
     """
 
     results = [
