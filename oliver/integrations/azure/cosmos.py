@@ -2,6 +2,7 @@ import os
 import json
 
 from typing import Dict
+import azure.cosmos.cosmos_client as cosmos_client
 
 from ...lib import api, reporting
 

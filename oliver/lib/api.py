@@ -1,10 +1,10 @@
-import aiohttp
 import datetime
 import json
 
-from logzero import logger
 from typing import Dict, List
 from urllib.parse import urljoin
+from logzero import logger
+import aiohttp
 
 from . import errors, utils
 

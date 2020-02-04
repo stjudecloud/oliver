@@ -3,8 +3,8 @@ from collections import OrderedDict
 from typing import List, Dict
 
 import pendulum
-from tabulate import tabulate
 from tzlocal import get_localzone
+from tabulate import tabulate
 
 from . import errors
 

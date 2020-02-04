@@ -33,7 +33,7 @@ def process_output(dest_folder: str, output: str):
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """

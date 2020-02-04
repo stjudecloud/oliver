@@ -1,15 +1,15 @@
 """Remove outputs for all failed or aborted workflows.
 """
 
-from logzero import logger
 from typing import Dict
+from logzero import logger
 
 from ...lib import api, errors, workflows as _workflows
 
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
