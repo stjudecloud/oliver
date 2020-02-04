@@ -127,7 +127,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             print()
 
     # Show failures if they exist
-    if len(metadata.get("failures", [])) > 0:
+    if metadata.get("failures", []):
         print("Failures:")
         print()
         for i, failure in enumerate(metadata["failures"]):
@@ -135,7 +135,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             report_failure(failure, 0, offset=2)
             print()
 
-    if len(calls) > 0:
+    if calls:
         print()
         reporting.print_dicts_as_table(calls)
 

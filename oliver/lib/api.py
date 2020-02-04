@@ -25,7 +25,7 @@ def remove_none_values(d: Dict):
 class CromwellAPI:
     def __init__(
         self, server, version, headers={"Accept": "application/json"},
-    ): # pylint: disable=dangerous-default-value
+    ):  # pylint: disable=dangerous-default-value
         self.server = server
         self.version = version
         self.headers = headers
@@ -120,7 +120,7 @@ class CromwellAPI:
         workflowOptions={},
         labels={},
         url_override=None,
-    ): # pylint: disable=dangerous-default-value
+    ):  # pylint: disable=dangerous-default-value
         "POST /api/workflows/{version}"
 
         if workflowSource is None and workflowUrl is None:
@@ -241,7 +241,7 @@ class CromwellAPI:
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
         results = data.get("results")
         if not results:
-            if not isinstance(results, list) or len(results) != 0:
+            if not isinstance(results, list):
                 errors.report(
                     "Expected 'results' key in response!",
                     fatal=True,

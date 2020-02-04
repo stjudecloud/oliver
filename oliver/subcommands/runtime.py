@@ -55,7 +55,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
                         ]
                     )
 
-    if len(calls_that_match) > 0:
+    if calls_that_match:
         if len(calls_that_match) > 1:
             errors.report(
                 "Multiple calls match this criteria!",
