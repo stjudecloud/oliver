@@ -284,3 +284,8 @@ int-import-graph=
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
 overgeneral-exceptions=Exception
+
+[LOGGING]
+# Format style used to check logging format string.
+
+logging-format-style=fstr
