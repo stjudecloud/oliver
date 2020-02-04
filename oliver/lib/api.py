@@ -4,9 +4,13 @@ import json
 from typing import Dict, List
 from urllib.parse import urljoin
 from logzero import logger
-import aiohttp
 
+<<<<<<< HEAD
 from . import errors, utils
+=======
+import aiohttp
+from . import errors
+>>>>>>> lint: disabling syntax error in api line
 
 
 def remove_none_values(d: Dict):
