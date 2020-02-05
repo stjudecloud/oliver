@@ -6,9 +6,7 @@ from oliver.lib import api, config
 @pytest.mark.asyncio
 async def test_get_workflows():
     c = config.read_config()
-    cromwell = api.CromwellAPI(
-        server="http://cromwell:8000", version="v1"
-    )
+    cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
     results = await cromwell.get_workflows_query()
 
     assert len(results) == 5
@@ -21,9 +19,7 @@ async def test_get_workflows():
 @pytest.mark.asyncio
 async def test_api_get():
     c = config.read_config()
-    cromwell = api.CromwellAPI(
-        server="http://httpbin:80", version="v1"
-    )
+    cromwell = api.CromwellAPI(server="http://httpbin:80", version="v1")
 
     (code, response) = await cromwell._api_call(
         "/get", params={"includeSubworkflows": "true"}
@@ -38,9 +34,7 @@ async def test_api_get():
 @pytest.mark.asyncio
 async def test_api_post():
     c = config.read_config()
-    cromwell = api.CromwellAPI(
-        server="http://httpbin:80", version="v1"
-    )
+    cromwell = api.CromwellAPI(server="http://httpbin:80", version="v1")
 
     data = {
         "workflowSource": None,

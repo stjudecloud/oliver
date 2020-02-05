@@ -157,10 +157,7 @@ async def get_workflows(
     return workflows
 
 
-async def get_outputs(
-    cromwell: api.CromwellAPI,
-    cromwell_workflow_uuid: str
-):
+async def get_outputs(cromwell: api.CromwellAPI, cromwell_workflow_uuid: str):
     """Get the outputs from a workflow with the given uuid.
     
     Args:

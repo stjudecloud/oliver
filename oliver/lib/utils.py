@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple
 
 from . import errors
 
+
 def ask_boolean_question(question: str):
     choices: List[str] = ["yes", "y", "no", "n"]
 
@@ -35,7 +36,7 @@ def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
 
     assert isinstance(d, dict), "Expected a dictionary for aiohttp!"
     results = []
-    
+
     def parse(k, v):
         return [(k, v)]
 
@@ -50,8 +51,7 @@ def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
                 message=f"Can't prepare object of type '{type(v)}' for aiohttp.",
                 fatal=True,
                 exitcode=errors.ERROR_INTERNAL_ERROR,
-                suggest_report=True
+                suggest_report=True,
             )
 
     return results
-

@@ -82,7 +82,7 @@ class CromwellAPI:
             errors.report(
                 message=f"Could not connect to {self.server}. Is the Cromwell server reachable?",
                 fatal=True,
-                exitcode=errors.ERROR_NO_RESPONSE
+                exitcode=errors.ERROR_NO_RESPONSE,
             )
         status_code = response.status
         content = json.loads(await response.text())
