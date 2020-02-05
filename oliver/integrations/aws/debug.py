@@ -171,6 +171,7 @@ def write_log(
 ):
     if candidate_batch_jobs is None:
         candidate_batch_jobs = []
+
     workflow_id = call.get("workflow_id")
     call_name = call.get("name")
 

@@ -45,17 +45,7 @@ def print_dicts_as_table(
     grid_style: str = "fancy_grid",
     clean: bool = True,
     fill=None,
-    header_order: list = [
-        "Job Name",
-        "Job Group",
-        "Call Name",
-        "QueuedInCromwell",
-        "Starting",
-        "Running",
-        "Aborted",
-        "Failed",
-        "Succeeded",
-    ],
+    header_order: list = None,
 ):  # pylint: disable=dangerous-default-value
     """Format a list of dicts and print as a table using `tabulate`.
 
@@ -72,6 +62,19 @@ def print_dicts_as_table(
 
     if len(rows) <= 0:
         return
+
+    if header_order is None:
+        header_order = [
+            "Job Name",
+            "Job Group",
+            "Call Name",
+            "QueuedInCromwell",
+            "Starting",
+            "Running",
+            "Aborted",
+            "Failed",
+            "Succeeded",
+        ]
 
     if not isinstance(rows, list) or not isinstance(rows[0], dict):
         errors.report(

@@ -34,6 +34,7 @@ class CosmosAPI:
     def _api_call(self, route, params=None, data=None, files=None, method="GET"):
         if params is None:
             params = {}
+
         url = urljoin(self.server, route).format(version=self.version)
 
         response = request(

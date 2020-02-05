@@ -5,12 +5,8 @@ from typing import Dict, List
 from urllib.parse import urljoin
 from logzero import logger
 
-<<<<<<< HEAD
-from . import errors, utils
-=======
 import aiohttp
-from . import errors
->>>>>>> lint: disabling syntax error in api line
+from . import errors, utils
 
 
 def remove_none_values(d: Dict):
@@ -28,11 +24,11 @@ def remove_none_values(d: Dict):
 
 class CromwellAPI:
     def __init__(
-        self, server, version, headers={"Accept": "application/json"},
-    ):  # pylint: disable=dangerous-default-value
+        self, server, version, headers=None,
+    ):
         self.server = server
         self.version = version
-        self.headers = headers
+        self.headers = headers or {"Accept": "application/json"}
         self.session = aiohttp.ClientSession()
 
     async def close(self):
@@ -120,12 +116,19 @@ class CromwellAPI:
         self,
         workflowSource=None,
         workflowUrl=None,
-        workflowInputs={},
-        workflowOptions={},
-        labels={},
+        workflowInputs=None,
+        workflowOptions=None,
+        labels=None,
         url_override=None,
-    ):  # pylint: disable=dangerous-default-value
+    ):
         "POST /api/workflows/{version}"
+
+        if workflowInputs is None:
+            workflowInputs = {}
+        if workflowOptions is None:
+            workflowOptions = {}
+        if labels is None:
+            labels = {}
 
         if workflowSource is None and workflowUrl is None:
             errors.report(
