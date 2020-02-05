@@ -8,7 +8,7 @@ from typing import Dict, List
 from requests import request
 from urllib.parse import urljoin
 
-from . import errors, reporting
+from . import errors, reporting, utils
 
 
 def remove_none_values(d: Dict):
@@ -42,8 +42,10 @@ class CromwellAPI:
         logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
 
-        params = remove_none_values(params)
-        data = remove_none_values(data)
+        if isinstance(params, dict):
+            params = remove_none_values(params)
+        if isinstance(data, dict):
+            data = remove_none_values(data)
 
         if url_override:
             url = url_override
@@ -64,7 +66,7 @@ class CromwellAPI:
         kwargs = {"headers": self.headers}
 
         if params:
-            kwargs["params"] = params
+            kwargs["params"] = utils.dict_to_aiohttp_tuples(params)
 
         # format data as multipart-form
         if data:
@@ -74,13 +76,13 @@ class CromwellAPI:
             kwargs["data"] = _data
 
         try:
-        response = await func(url, **kwargs)
+            response = await func(url, **kwargs)
         except aiohttp.client_exceptions.ClientConnectorError:
             await self.close()
             errors.report(
                 message=f"Could not connect to {self.server}. Is the Cromwell server reachable?",
                 fatal=True,
-                exitcode=errors.ERROR_NO_RESPONSE
+                exitcode=errors.ERROR_NO_RESPONSE,
             )
         status_code = response.status
         content = json.loads(await response.text())

@@ -68,6 +68,8 @@ async def main():
     # Common arguments
     parser.add_argument("--cromwell-server", help="Cromwell host location.")
     parser.add_argument("--cromwell-api-version", help="Cromwell API version.")
+    parser.add_argument("-f", "--force", default=False, action="store_true", help="Force running even with missing parameters.")
+    _args.add_batches_interval_arg(parser)
     _args.add_loglevel_group(parser)
 
     # Subparsers
@@ -91,7 +93,7 @@ async def main():
         if not k in args or not args[k]:
             args[k] = v
 
-    if args.get("subcommand") != "configure":
+    if not args.get("force") and args.get("subcommand") != "configure":
         ensure_required_args(args)
 
     if not args.get("subcommand"):
