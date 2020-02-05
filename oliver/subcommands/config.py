@@ -2,11 +2,13 @@ import argparse
 
 from typing import Dict
 
-from ..lib import errors
+from ..lib import api, errors
 from ..lib.config import read_config, write_config
 
 
-async def call(args: Dict):
+async def call(
+    args: Dict, cromwell: api.CromwellAPI
+):  # pylint: disable=unused-argument
     """Execute the subcommand.
 
     Args:

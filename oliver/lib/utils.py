@@ -41,7 +41,9 @@ def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
         return [(k, v)]
 
     for k, v in d.items():
-        if isinstance(v, (int, str)):
+        # The following expression tests to make sure v doesn't match a bool
+        # pylint: disable=unidiomatic-typecheck
+        if type(v) is int or isinstance(v, str):
             results.extend(parse(k, v))
         elif isinstance(v, list):
             for item in v:

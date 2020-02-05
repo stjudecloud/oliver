@@ -8,6 +8,18 @@ from tabulate import tabulate
 
 from . import errors
 
+DEFAULT_HEADER_ORDER = [
+    "Job Name",
+    "Job Group",
+    "Call Name",
+    "QueuedInCromwell",
+    "Starting",
+    "Running",
+    "Aborted",
+    "Failed",
+    "Succeeded",
+]
+
 
 def localize_date(given_date: str):
     "Returns a localized date given any date that is parsable by pedulum."
@@ -46,7 +58,7 @@ def print_dicts_as_table(
     clean: bool = True,
     fill=None,
     header_order: list = None,
-):  # pylint: disable=dangerous-default-value
+):
     """Format a list of dicts and print as a table using `tabulate`.
 
     Args:
@@ -64,17 +76,7 @@ def print_dicts_as_table(
         return
 
     if header_order is None:
-        header_order = [
-            "Job Name",
-            "Job Group",
-            "Call Name",
-            "QueuedInCromwell",
-            "Starting",
-            "Running",
-            "Aborted",
-            "Failed",
-            "Succeeded",
-        ]
+        header_order = DEFAULT_HEADER_ORDER
 
     if not isinstance(rows, list) or not isinstance(rows[0], dict):
         errors.report(

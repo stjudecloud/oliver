@@ -2,6 +2,7 @@ import argparse
 
 from typing import Dict
 
+from ..lib import api
 from ..lib.config import get_default_config, read_config, write_config
 
 QUESTION_MAPPING = {
@@ -15,7 +16,9 @@ def ask(question, default):
     return input(f"{question} (default: {default})? ")
 
 
-async def call(args: Dict):
+async def call(
+    args: Dict, cromwell: api.CromwellAPI
+):  # pylint: disable=unused-argument
     """Execute the subcommand.
 
     Args:
