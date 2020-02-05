@@ -1,15 +1,16 @@
 import argparse
-import sys
 
 from typing import Dict
 
 from ..lib import api, errors
-from ..lib.config import get_default_config, read_config, write_config
+from ..lib.config import read_config, write_config
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(
+    args: Dict, cromwell: api.CromwellAPI
+):  # pylint: disable=unused-argument
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -62,9 +63,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         )
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

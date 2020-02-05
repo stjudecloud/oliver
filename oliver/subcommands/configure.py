@@ -16,9 +16,11 @@ def ask(question, default):
     return input(f"{question} (default: {default})? ")
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(
+    args: Dict, cromwell: api.CromwellAPI
+):  # pylint: disable=unused-argument
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -32,7 +34,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         if not use_defaults:
             question = "What is the value for '{k}'"
             if k in QUESTION_MAPPING:
-                question = QUESTION_MAPPING[k]
+                question = QUESTION_MAPPING.get(k)
 
             answer = ask(question, _default)
             if answer:
@@ -42,9 +44,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     write_config(final_config)
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

@@ -13,17 +13,21 @@ SUBCOMMAND_ALIASES = []
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
     print(f"Hello, {SUBCOMMAND_NAME}!")
+    print(args)
+    print(cromwell)
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

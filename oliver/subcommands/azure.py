@@ -1,5 +1,4 @@
 import argparse
-import os
 
 from typing import Dict
 
@@ -9,7 +8,7 @@ from ..lib import api, errors
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the cosmos.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -17,7 +16,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     azure_subcommand = args.get("azure-subcommand")
 
     if azure_subcommand == "cosmos":
-        cosmos.call(args)
+        cosmos.call(args, cromwell)
     else:
         errors.report(
             message=f"Unknown azure subcommand: '{azure_subcommand}'",
@@ -26,9 +25,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         )
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

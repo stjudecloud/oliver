@@ -1,14 +1,11 @@
-import argparse
 import os
 
 from typing import Dict
 
 from ...lib import (
     api,
-    args as _args,
     oliver,
     errors,
-    reporting,
     workflows as _workflows,
 )
 from ...subcommands import outputs as _outputs
@@ -36,7 +33,7 @@ def process_output(dest_folder: str, output: str):
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """

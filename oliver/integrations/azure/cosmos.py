@@ -1,11 +1,10 @@
-import argparse
-import azure.cosmos.cosmos_client as cosmos_client
-import azure.cosmos.errors as errors
-import azure.cosmos.http_constants as http_constants
-import json
 import os
+import json
+from urllib.parse import urljoin
 
 from typing import Dict
+from requests import request
+import azure.cosmos.cosmos_client as cosmos_client
 
 from ...lib import api, reporting
 
@@ -32,7 +31,10 @@ class CosmosAPI:
         self.key = key["primaryMasterKey"]
         self.client = cosmos_client.CosmosClient(self.server, {"masterKey": self.key})
 
-    def _api_call(self, route, params={}, data=None, files=None, method="GET"):
+    def _api_call(self, route, params=None, data=None, files=None, method="GET"):
+        if params is None:
+            params = {}
+
         url = urljoin(self.server, route).format(version=self.version)
 
         response = request(
@@ -48,9 +50,11 @@ class CosmosAPI:
         )
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(
+    args: Dict, cromwell: api.CromwellAPI
+):  # pylint: disable=unused-argument
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """

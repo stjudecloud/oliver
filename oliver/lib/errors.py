@@ -2,7 +2,7 @@ import sys
 
 from logzero import logger
 
-from . import constants, reporting
+from . import constants
 
 ERROR_PRECAUTION = 1
 ERROR_UNEXPECTED_RESPONSE = 2
@@ -15,7 +15,7 @@ def report(
     message: str, fatal: bool = True, exitcode: int = 1, suggest_report: bool = False
 ):
     """Reports an error to terminal and exits (if specified).
-    
+
     Args:
         message (str): Message to output to the terminal.
         fatal (bool, optional): Whether to exit after reporting the error. Defaults to True.

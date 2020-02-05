@@ -2,14 +2,14 @@
 
 import argparse
 
+from typing import Dict
+
 from collections import defaultdict
 from logzero import logger
-from typing import Dict
 
 from ..lib import (
     api,
     args as _args,
-    constants,
     oliver,
     reporting,
     workflows as _workflows,
@@ -21,7 +21,7 @@ SUBCOMMAND_ALIASES = ["b"]
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -50,7 +50,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     results = []
 
     if args.get("show_oliver_job_groups"):
-        logger.warn(
+        logger.warning(
             "You specified you'd like to see job group names. "
             + "This significantly increases runtime due to the need to query metadata about each workflow. "
             + "This may take a while!"
@@ -75,12 +75,10 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             }
             r["Job Groups"] = ", ".join(
                 list(
-                    set(
-                        [
-                            oliver.get_oliver_group(metadatas.get(x.get("id")))
-                            for x in batch_workflows
-                        ]
-                    )
+                    {
+                        oliver.get_oliver_group(metadatas.get(x.get("id")))
+                        for x in batch_workflows
+                    }
                 )
             )
 
@@ -102,9 +100,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     reporting.print_dicts_as_table(results)
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

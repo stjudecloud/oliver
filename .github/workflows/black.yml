@@ -1,5 +1,5 @@
 name: Black Code Formatter
-on: 
+on:
   push:
     branches:
       - master

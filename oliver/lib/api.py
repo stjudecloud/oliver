@@ -1,14 +1,12 @@
-import aiohttp
 import datetime
 import json
-import sys
 
-from logzero import logger
 from typing import Dict, List
-from requests import request
 from urllib.parse import urljoin
+from logzero import logger
 
-from . import errors, reporting, utils
+import aiohttp
+from . import errors, utils
 
 
 def remove_none_values(d: Dict):
@@ -26,26 +24,34 @@ def remove_none_values(d: Dict):
 
 class CromwellAPI:
     def __init__(
-        self, server, version, headers={"Accept": "application/json"},
+        self, server, version, headers=None,
     ):
         self.server = server
         self.version = version
-        self.headers = headers
+        self.headers = headers or {"Accept": "application/json"}
         self.session = aiohttp.ClientSession()
 
     async def close(self):
         await self.session.close()
 
     async def _api_call(
-        self, route, params={}, data={}, method="GET", url_override=None
+        self, route, params=None, data=None, method="GET", url_override=None
     ):
         logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
+
+        if params is None:
+            params = {}
+        if data is None:
+            data = {}
 
         if isinstance(params, dict):
             params = remove_none_values(params)
         if isinstance(data, dict):
             data = remove_none_values(data)
+
+        params = remove_none_values(params)
+        data = remove_none_values(data)
 
         if url_override:
             url = url_override
@@ -110,12 +116,19 @@ class CromwellAPI:
         self,
         workflowSource=None,
         workflowUrl=None,
-        workflowInputs={},
-        workflowOptions={},
-        labels={},
+        workflowInputs=None,
+        workflowOptions=None,
+        labels=None,
         url_override=None,
     ):
         "POST /api/workflows/{version}"
+
+        if workflowInputs is None:
+            workflowInputs = {}
+        if workflowOptions is None:
+            workflowOptions = {}
+        if labels is None:
+            labels = {}
 
         if workflowSource is None and workflowUrl is None:
             errors.report(
@@ -198,7 +211,7 @@ class CromwellAPI:
         includeSubworkflows: bool = True,
     ) -> List:
         """GET /api/workflows/{version}/query
-        
+
         Args:
             submission (datetime.datetime, optional): Returns only workflows with an equal or later submission time. Can be specified at most once. If both submission time and start date are specified, submission time should be before or equal to start date. Defaults to None.
             start (datetime.datetime, optional): Returns only workflows with an equal or later start datetime. Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. Defaults to None.
@@ -212,7 +225,7 @@ class CromwellAPI:
             excludeLabelOr (List[str], optional): Excludes workflows with the specified label. If specified multiple times, excludes workflows with any of the specified label keys. Specify the label key and label value pair as separated with "label-key:label-value". Defaults to None.
             additionalQueryResultFields (List[str], optional): Currently only 'labels' is a valid value here. Use it to include a list of labels with each result. Defaults to None.
             includeSubworkflows (Boolean, optional): Include subworkflows in results. By default, it is taken as true. Defaults to True.
-        
+
         Returns:
             List: All workflows that match the provided parameters.
         """
@@ -235,14 +248,14 @@ class CromwellAPI:
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
         results = data.get("results")
         if not results:
-            if not isinstance(results, list) or len(results) != 0:
+            if not isinstance(results, list):
                 errors.report(
                     "Expected 'results' key in response!",
                     fatal=True,
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
             else:
-                logger.warn("No results found in response!")
+                logger.warning("No results found in response!")
 
         return data["results"]
 
@@ -262,13 +275,13 @@ class CromwellAPI:
         expandSubWorkflows: bool = False,
     ) -> Dict:
         """GET /api/workflows/{version}/{id}/metadata
-        
+
         Args:
             id (str): Workflow ID to get metadata from.
             includeKey (List[str], optional): Keys to include in results. Defaults to None.
             excludeKey (List[str], optional): Keys to exclude in results. Defaults to None.
             expandSubWorkflows (bool, optional): Whether to expand subworkflows in results. Defaults to False.
-        
+
         Returns:
             List: Metadata of specified workflow.
         """
