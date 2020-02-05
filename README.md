@@ -44,10 +44,11 @@ pip install stjudecloud-oliver
 
 Please refer to the guides in the `docs/` folder for more information.
 
-| Guide Name     | Link                             |
-| -------------- | -------------------------------- |
-| Advanced Usage | [Link](./docs/ADVANCED_USAGE.md) |
-| Configuration  | [Link](./docs/CONFIGURATION.md)  |
+| Guide Name      | Link                             |
+| --------------- | -------------------------------- |
+| Advanced Usage  | [Link](./docs/ADVANCED_USAGE.md) |
+| Configuration   | [Link](./docs/CONFIGURATION.md)  |
+| Submitting Jobs | [Link](./docs/SUBMIT.md)         |
 
 ## Usage
 
@@ -96,41 +97,6 @@ pre-commit install
 pre-commit install --hook-type commit-msg
 ```
 
-## Submitting Jobs
-
-One of the novel features of `oliver` is the ease in which workflow
-parameters can be set on the command line. Typically when submitting a workflow, 
-one must specify a `workflowInputs` (could be one of many), `workflowOptions`,
-and `labels` JSON file to Cromwell.
-
-When you use `oliver submit`, you can easily specify files or individual key-value 
-pairs to be included in the parameters above. For instance, passing `inputs.json` on 
-the command line will read all key-value pairs from `inputs.json` and add them to 
-the inputs dictionary. Individual key-value pairs can be passed like `key=value`.
-Values passed later are processed sequentially, meaning that later arguments
-overwrite any key-value pairs set by previous ones.
-
-Additionally, argument passed on the command line can encode each the
-different parameter types for a Cromwell workflow:
-
-| Parameter Type | Prefix   | Example      |
-| -------------- | -------- | ------------ |
-| Input          | `<none>` | `key=value`  |
-| Option         | `@`      | `@key=value` |
-| Label          | `%`      | `%key=value` |
-
-For example, consider the following command:
-
-```bash
-oliver submit workflow.wdl \
-    default-inputs.json \      # loads all values in the JSON file to the inputs object.
-    @default-options.json \    # loads all values in the JSON file to the options object.
-    %default-labels.json \     # loads all values in the JSON file to the labels object.
-    input_key=value \          # adds `input_key=value` to the inputs object (overwrites the value if `input_key` set in default-inputs.json).
-    @option_key=value \        # adds `option_key=value` to the options object (overwrites the value if `option_key` set in default-options.json).
-    %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
-```
-
 ## Tests
 
 Oliver provides a (currently patchy) set of tests — both unit and end-to-end. To get started with testing, you'll
@@ -138,11 +104,22 @@ need to bootstrap a Docker test environment (one-time operation).
 
 ```bash
 # Start development environment
-docker-compose up --build -d
+docker image build --tag oliver .
+docker-compose up --build  -d
+
+alias docker-run-oliver="docker container run \
+  -it \
+  --rm \
+  --network oliver_default \
+  --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
+  --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
+  --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
+  --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
+  oliver"
 
 # Seed development environment (make sure Cromwell is live first!)
-chmod +x seeds/seed.sh
-seeds/seed.sh http://localhost:8000 seeds/wdl/hello.wdl
+docker-run-oliver bash seeds/seed.sh http://cromwell:8000 seeds/wdl/hello.wdl
+docker-run-oliver pytest
 ```
 
 To reset your entire docker-compose environment, you can run the following:
@@ -154,7 +131,9 @@ docker image rm oliver:latest
 docker image rm oliver_cromwell:latest
 docker image rm mysql:5.7
 docker volume rm oliver_mysql_data
+docker network rm oliver_default
 
+docker image build --tag oliver .
 docker-compose up --build -d
 ```
 
