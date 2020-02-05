@@ -73,16 +73,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
         workflows = new_workflows
 
-    print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
-
     if args.get("steps_view"):
-        print()
         print_workflow_steps_view(
             workflows, metadatas, grid_style=args.get("grid_style")
         )
-
-    if args.get("detail_view"):
-        print()
+    elif args.get("detail_view"):
         print_workflow_detail_view(
             workflows,
             metadatas,
@@ -90,6 +85,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             show_job_group=args.get("show_job_group"),
             grid_style=args["grid_style"],
         )
+    else:
+        print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
 
 
 def register_subparser(subparser: argparse._SubParsersAction):
@@ -104,6 +101,23 @@ def register_subparser(subparser: argparse._SubParsersAction):
         aliases=["st"],
         help="Report various statistics about a running Cromwell server.",
     )
+
+    view = subcommand.add_mutually_exclusive_group()
+    view.add_argument(
+        "-d",
+        "--detail-view",
+        help="Show detailed view which displays information about each individual job.",
+        default=False,
+        action="store_true",
+    )
+    view.add_argument(
+        "-z",
+        "--steps-view",
+        help="Show the 'steps' view which displays summary information about how many jobs are at each step.",
+        default=False,
+        action="store_true",
+    )
+
     subcommand.add_argument(
         "-a",
         "--aborted",
@@ -118,13 +132,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
         help="Only show calls with the given name that failed (useful in restarting failed steps).",
         nargs="+",
         type=str,
-    )
-    subcommand.add_argument(
-        "-d",
-        "--detail-view",
-        help="Show detailed view.",
-        default=False,
-        action="store_true",
     )
     subcommand.add_argument(
         "-f",
@@ -168,13 +175,6 @@ def register_subparser(subparser: argparse._SubParsersAction):
         "--succeeded",
         dest="show_succeeded_jobs",
         help="Show jobs in the 'Succeeded' state.",
-        default=False,
-        action="store_true",
-    )
-    subcommand.add_argument(
-        "-z",
-        "--steps-view",
-        help="Show the 'steps' view.",
         default=False,
         action="store_true",
     )
