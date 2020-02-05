@@ -7,7 +7,7 @@ from oliver.lib import api, config
 async def test_get_workflows():
     c = config.read_config()
     cromwell = api.CromwellAPI(
-        server=c.get("cromwell_server"), version=c.get("cromwell_api_version")
+        server="http://cromwell:8000", version="v1"
     )
     results = await cromwell.get_workflows_query()
 
@@ -22,7 +22,7 @@ async def test_get_workflows():
 async def test_api_get():
     c = config.read_config()
     cromwell = api.CromwellAPI(
-        server="http://httpbin:80", version=c.get("cromwell_api_version")
+        server="http://httpbin:80", version="v1"
     )
 
     (code, response) = await cromwell._api_call(
@@ -39,7 +39,7 @@ async def test_api_get():
 async def test_api_post():
     c = config.read_config()
     cromwell = api.CromwellAPI(
-        server="http://httpbin:80", version=c.get("cromwell_api_version")
+        server="http://httpbin:80", version="v1"
     )
 
     data = {

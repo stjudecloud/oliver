@@ -1,7 +1,7 @@
 # Custom
 .DS_Store
 !oliver/lib
-!tests/lib
+!tests/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

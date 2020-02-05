@@ -8,7 +8,7 @@ from typing import Dict, List
 from requests import request
 from urllib.parse import urljoin
 
-from . import errors, reporting
+from . import errors, reporting, utils
 
 
 def remove_none_values(d: Dict):
@@ -66,7 +66,7 @@ class CromwellAPI:
         kwargs = {"headers": self.headers}
 
         if params:
-            kwargs["params"] = params
+            kwargs["params"] = utils.dict_to_aiohttp_tuples(params)
 
         # format data as multipart-form
         if data:
@@ -217,39 +217,20 @@ class CromwellAPI:
             List: All workflows that match the provided parameters.
         """
 
-        params = []
-        params.append(("submission", submission))
-        params.append(("start", start))
-        params.append(("start", start))
-        if statuses:
-            for status in statuses: 
-                params.append(("status", status))
-        if names:
-            for name in names:
-                params.append(("name", name))
-        if ids:
-            for _id in ids:
-                params.append(("id", _id))
-        if labels:
-            for label in labels:
-                params.append(("label", label))
-        if labelors:
-            for labelor in labelors:
-                params.append(("labelor", labelor))
-        if excludeLabelAnds:
-            for e in excludeLabelAnds:
-                params.append(("excludeLabelAnd", e))
-        if excludeLabelOrs:
-            for e in excludeLabelOrs:
-                params.append(("excludeLabelOr", e))
-        if additionalQueryResultFields:
-            for a in additionalQueryResultFields:
-                params.append(("additionalQueryResultFields", a))
-        if includeSubworkflows is not None:
-            params.append(("includeSubworkflows", str(includeSubworkflows)))
-
-        params = list(filter(lambda v: v[1] is not None, params))
-        print(params)
+        params = {
+            "submission": submission,
+            "start": start,
+            "end": end,
+            "status": statuses,
+            "name": names,
+            "id": ids,
+            "label": labels,
+            "labelor": labelors,
+            "excludeLabelAnd": excludeLabelAnds,
+            "excludeLabelOr": excludeLabelOrs,
+            "additionalQueryResultFields": additionalQueryResultFields,
+            "includeSubworkflows": str(includeSubworkflows),
+        }
 
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
         results = data.get("results")
