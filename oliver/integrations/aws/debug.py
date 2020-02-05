@@ -1,12 +1,10 @@
-import boto3
-import datetime
-import json
 import os
-import pendulum
-import sys
 
-from logzero import logger
 from typing import Dict
+from logzero import logger
+
+import pendulum
+import boto3
 
 from ...lib import api, errors, reporting, workflows as _workflows
 
@@ -169,8 +167,11 @@ async def get_calls_and_times_for_workflows(args, cromwell):
 
 
 def write_log(
-    batch_client, logs_client, call, output_directory, candidate_batch_jobs=[]
+    batch_client, logs_client, call, output_directory, candidate_batch_jobs=None
 ):
+    if candidate_batch_jobs is None:
+        candidate_batch_jobs = []
+
     workflow_id = call.get("workflow_id")
     call_name = call.get("name")
 

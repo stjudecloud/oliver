@@ -1,5 +1,4 @@
 import argparse
-import pendulum
 
 from typing import Dict
 
@@ -8,7 +7,7 @@ from ..lib import api, errors, reporting
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -56,7 +55,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
                         ]
                     )
 
-    if len(calls_that_match) > 0:
+    if calls_that_match:
         if len(calls_that_match) > 1:
             errors.report(
                 "Multiple calls match this criteria!",
@@ -68,9 +67,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         reporting.print_dicts_as_table(calls)
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

@@ -1,9 +1,10 @@
 import argparse
-import pendulum
 
 from typing import Dict
 
-from ..lib import api, constants, errors, reporting, utils
+import pendulum
+
+from ..lib import api, constants, errors, reporting
 
 
 def report_failure(failure, indent, step=2, offset=2):
@@ -14,7 +15,7 @@ def report_failure(failure, indent, step=2, offset=2):
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -126,7 +127,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             print()
 
     # Show failures if they exist
-    if len(metadata.get("failures", [])) > 0:
+    if metadata.get("failures", []):
         print("Failures:")
         print()
         for i, failure in enumerate(metadata["failures"]):
@@ -134,14 +135,16 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             report_failure(failure, 0, offset=2)
             print()
 
-    if len(calls) > 0:
+    if calls:
         print()
         reporting.print_dicts_as_table(calls)
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """

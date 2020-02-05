@@ -1,16 +1,12 @@
 import argparse
-import datetime
-import pendulum
+
+from typing import Dict, List
 
 from collections import defaultdict
-from logzero import logger
-from typing import Dict, List, Optional
 
 from ..lib import (
     api,
     args as _args,
-    batch,
-    constants,
     errors,
     reporting,
     oliver,
@@ -20,7 +16,7 @@ from ..lib import (
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -79,19 +75,17 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         )
     elif args.get("detail_view"):
         print_workflow_detail_view(
-            workflows,
-            metadatas,
-            show_job_name=args.get("show_job_name"),
-            show_job_group=args.get("show_job_group"),
-            grid_style=args["grid_style"],
+            workflows, metadatas, grid_style=args["grid_style"],
         )
     else:
         print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """
@@ -189,7 +183,7 @@ def register_subparser(subparser: argparse._SubParsersAction):
 
 def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
     """Print a summary of workflow statuses.
-    
+
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
@@ -220,19 +214,13 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
 
 
 def print_workflow_detail_view(
-    workflows: List,
-    metadatas: Dict,
-    show_job_name: bool = False,
-    show_job_group: bool = False,
-    grid_style="fancy_grid",
+    workflows: List, metadatas: Dict, grid_style="fancy_grid",
 ):
     """Print a detailed table of workflow statuses.
-    
+
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
-        show_job_name(bool): include Oliver job name in results.
-        show_job_group(bool): include Oliver job group in results.
     """
 
     results = [
@@ -254,7 +242,7 @@ def print_workflow_steps_view(
     workflows: List, metadatas: Dict, grid_style="fancy_grid"
 ):
     """Print a table summarizing which steps (calls) are in progress.
-    
+
     Args:
         workflows (List): List of workflows returned from the API call.
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.

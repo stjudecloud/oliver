@@ -1,8 +1,8 @@
 import datetime
-import pendulum
+from typing import List, Dict
 
+import pendulum
 from logzero import logger
-from typing import Optional, List, Dict
 
 from . import api, batch, constants
 
@@ -23,7 +23,7 @@ async def get_workflows(
     opt_into_reporting_succeeded_jobs: bool = False,
 ) -> List[Dict]:
     """Retrieves a list of workflows and filter based on provided parameters.
-    
+
     Re: `opt_into_reporting_XXXXXX_jobs`. Okay, so admittedly this is a weird
     way to structure these inputs, but I think it's a relatively straightforward
     implementation. The behavior we want is:
@@ -43,7 +43,7 @@ async def get_workflows(
     - If all of the statuses are `False`, then the user wants everything and
       `statuses` should be posted as None.
     - Otherwise, set `statuses` to a list of the statuses the user would like.
-    
+
     Args:
         cromwell (api.CromwellAPI): cromwell api connected to the cromwell
         instance in question.
@@ -51,26 +51,26 @@ async def get_workflows(
         submission_time_hours_ago (int, optional): if provided, will show jobs
         from a maximum of N hours ago.
 
-        oliver_job_name (str, optional): filter by oliver job name of the 
+        oliver_job_name (str, optional): filter by oliver job name of the
         workflow(s) in question.
 
-        oliver_job_group_name (str, optional): filter by oliver group name of 
+        oliver_job_group_name (str, optional): filter by oliver group name of
         the workflow(s) in question.
 
-        cromwell_workflow_uuid (str, optional): filter by Cromwell-assigned 
+        cromwell_workflow_uuid (str, optional): filter by Cromwell-assigned
         UUID of the workflow in question.
 
         cromwell_workflow_name (str, optional): filter by workflow (pipeline)
         name.
 
         batches(List[int], optional): split workflows into batches using
-        and select only jobs in the specified batches. If `relative_batching` 
+        and select only jobs in the specified batches. If `relative_batching`
         is True, this behavior changes to selecting "N batch ago".
 
-        batch_interval_mins(int, optional): any two jobs separated by N 
+        batch_interval_mins(int, optional): any two jobs separated by N
         minutes or more constitutes a new batch. Defaults to 5 minutes.
 
-        relative_batching(bool): Calculate batches relative to the most recent 
+        relative_batching(bool): Calculate batches relative to the most recent
         batch (e.g. `0` is the most recent batch, `1` is the second most recent
         batch). Defaults to False.
 
@@ -159,12 +159,12 @@ async def get_workflows(
 
 async def get_outputs(cromwell: api.CromwellAPI, cromwell_workflow_uuid: str):
     """Get the outputs from a workflow with the given uuid.
-    
+
     Args:
         cromwell (api.CromwellAPI): cromwell api connected to the cromwell
         instance in question.
 
-        cromwell_workflow_uuid (str, optional): Cromwell-assigned UUID 
+        cromwell_workflow_uuid (str, optional): Cromwell-assigned UUID
         of the workflow in question.
     """
 

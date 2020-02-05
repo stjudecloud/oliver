@@ -1,5 +1,5 @@
-import argparse
 import os
+import argparse
 
 from typing import Dict
 
@@ -9,7 +9,7 @@ from ..lib import api, args as _args, errors
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
     """Execute the subcommand.
-    
+
     Args:
         args (Dict): Arguments parsed from the command line.
     """
@@ -21,7 +21,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     elif aws_subcommand == "clean":
         await clean.call(args, cromwell)
     elif aws_subcommand == "debug":
-        debug.failures(args)
+        debug.failures(args, cromwell)
     else:
         errors.report(
             message=f"Unknown aws subcommand: '{aws_subcommand}'",
@@ -30,9 +30,11 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         )
 
 
-def register_subparser(subparser: argparse._SubParsersAction):
+def register_subparser(
+    subparser: argparse._SubParsersAction,
+):  # pylint: disable=protected-access
     """Registers a subparser for the current command.
-    
+
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.
     """
