@@ -1,7 +1,7 @@
 FROM python:3.8.1
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends httpie \
+    && apt-get install -y --no-install-recommends httpie jq \
     && rm -rf /var/lib/apt/lists/*
 
 ENV OLIVER_HOME=/opt/oliver
