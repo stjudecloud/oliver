@@ -106,14 +106,14 @@ def register_subparser(subparser: argparse._SubParsersAction):
     view.add_argument(
         "-d",
         "--detail-view",
-        help="Show detailed view.",
+        help="Show detailed view which displays information about each individual job.",
         default=False,
         action="store_true",
     )
     view.add_argument(
         "-z",
         "--steps-view",
-        help="Show the 'steps' view.",
+        help="Show the 'steps' view which displays summary information about how many jobs are at each step.",
         default=False,
         action="store_true",
     )
