@@ -15,6 +15,9 @@
   <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
     <img alt="Conda - Downloads" src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
   </a>
+  <a href="https://codecov.io/gh/stjudecloud/oliver">
+    <img src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
+  </a>
   <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
   </a>
@@ -115,11 +118,12 @@ alias docker-run-oliver="docker container run \
   --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
   --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
   --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
-  oliver"
+  --entrypoint '' \
+  oliver:latest"
 
 # Seed development environment (make sure Cromwell is live first!)
 docker-run-oliver bash seeds/seed.sh http://cromwell:8000 seeds/wdl/hello.wdl
-docker-run-oliver pytest
+docker-run-oliver pytest --cov=./ --cov-report=xml
 ```
 
 To reset your entire docker-compose environment, you can run the following:
