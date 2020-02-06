@@ -42,6 +42,13 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
             opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
         )
+    elif args.get("retry_job_group"):
+        workflows = await _workflows.get_workflows(
+            cromwell,
+            oliver_job_group_name=args.get("retry_job_group"),
+            opt_into_reporting_failed_jobs=show_only_aborted_and_failed,
+            opt_into_reporting_aborted_jobs=show_only_aborted_and_failed,
+        )
     else:
         errors.report(
             f"Unhandled `retry` scope and predicate.",
@@ -117,6 +124,9 @@ def register_subparser(
     _args.add_batches_interval_arg(subcommand)
     scope_predicate.add_argument(
         "-w", "--workflow", help="Workflow UUID you wish to retry."
+    )
+    scope_predicate.add_argument(
+        "-G", "--retry-job-group", help="Job group name you wish to retry."
     )
     subcommand.add_argument(
         "workflowInputs",
