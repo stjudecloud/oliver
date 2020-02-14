@@ -2,7 +2,7 @@ import argparse
 
 from typing import Dict
 
-from ..integrations.azure import cosmos
+from ..integrations.azure import aggregate, cosmos
 from ..lib import api, errors
 
 
@@ -17,6 +17,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
     if azure_subcommand == "cosmos":
         cosmos.call(args, cromwell)
+    elif azure_subcommand == "aggregate":
+        await aggregate.call(args, cromwell)
     else:
         errors.report(
             message=f"Unknown azure subcommand: '{azure_subcommand}'",
@@ -61,6 +63,24 @@ def register_subparser(
         action="store_true",
     )
     cosmos.add_argument("-o", "--outfile", help="File to save JSON records to")
+
+    aggregate = azure_subcommands.add_parser(
+        "aggregate", description="Aggregate outputs from Azure blob container."
+    )
+    aggregate.add_argument("workflow-id", help="Cromwell workflow ID.")
+    aggregate.add_argument(
+        "output-folder", help="Output folder to download the files to."
+    )
+    aggregate.add_argument(
+        "--sas-token", help="Valid SAS token for the `cromwell-executions` container."
+    )
+    aggregate.add_argument(
+        "-d",
+        "--dry-run",
+        help="Print what would be submitted rather than actually submitting.",
+        default=False,
+        action="store_true",
+    )
 
     subcommand.set_defaults(func=call)
     return subcommand
