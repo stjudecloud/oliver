@@ -3,6 +3,7 @@ from collections import OrderedDict
 from typing import List, Dict, OrderedDict as OrderedDictType
 
 import pendulum
+from logzero import logger
 from tzlocal import get_localzone
 from tabulate import tabulate
 
@@ -26,10 +27,17 @@ def localize_date(given_date: str):
     return pendulum.parse(given_date).in_tz(get_localzone()).to_day_datetime_string()
 
 
-def localize_date_from_timestamp(timestamp: int):
+def localize_date_from_timestamp(timestamp: int, already_localized=False):
     "Returns a localized date given a UNIX timestamp."
+
+    tz = 'UTC'
+    if already_localized:
+        tz = get_localzone()
+    
+    logger.debug(f"Converting using timezone: {tz}")
+
     return (
-        pendulum.from_timestamp(timestamp)
+        pendulum.from_timestamp(timestamp, tz=tz)
         .in_tz(get_localzone())
         .to_day_datetime_string()
     )

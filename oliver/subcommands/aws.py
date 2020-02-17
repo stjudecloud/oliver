@@ -103,6 +103,11 @@ def register_subparser(
         aliases=["d"],
         description="Gathers information about AWS Batch failures and puts them in a folder for analysis.",
     )
+    debug_subcommand.add_argument(
+        "queue",
+        help="Which AWS batch queue to query?",
+        type=str
+    )
     _args.add_batches_group(debug_subcommand, required=True)
     debug_subcommand.add_argument(
         "-o",
@@ -110,13 +115,6 @@ def register_subparser(
         help="Output folder to write results to.",
         type=str,
         default=os.path.join(os.getcwd(), "debug"),
-    )
-    debug_subcommand.add_argument(
-        "-q",
-        "--queue",
-        help="Which queue to query?",
-        type=str,
-        default="default-e31bdbd0-3c77-11ea-bb0a-0a1540e225b5",
     )
     debug_subcommand.add_argument(
         "-s",
