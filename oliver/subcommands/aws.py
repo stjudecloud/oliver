@@ -21,7 +21,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     elif aws_subcommand == "clean":
         await clean.call(args, cromwell)
     elif aws_subcommand == "debug":
-        debug.failures(args, cromwell)
+        await debug.call(args, cromwell)
     else:
         errors.report(
             message=f"Unknown aws subcommand: '{aws_subcommand}'",
