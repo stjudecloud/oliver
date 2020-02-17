@@ -232,7 +232,7 @@ def write_log(
                 )
 
 
-async def failures(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict, cromwell: api.CromwellAPI):
     batch_client = boto3.client("batch")
     logs_client = boto3.client("logs")
 
