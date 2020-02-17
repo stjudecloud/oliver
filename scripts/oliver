@@ -8,6 +8,7 @@ import sys
 from logzero import logger
 from oliver.lib import api, args as _args, errors, config as _config
 from oliver.subcommands import (
+    aggregate,
     aws,
     azure,
     batches,
@@ -25,6 +26,7 @@ from oliver.subcommands import (
 )
 
 SUBCOMMANDS = {
+    "aggregate": aggregate,
     "aws": aws,
     "azure": azure,
     "batches": batches,
@@ -112,4 +114,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())
