@@ -97,7 +97,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
         results.append(r)
 
-    reporting.print_dicts_as_table(results)
+    reporting.print_dicts_as_table(results, grid_style=args.get("grid-style"))
 
 
 def register_subparser(
@@ -120,6 +120,11 @@ def register_subparser(
         help="Show oliver job groups per batch (dramatically increases runtime).",
         default=False,
         action="store_true",
+    )
+    subcommand.add_argument(
+        "--grid-style",
+        help="Any valid `tablefmt` for python-tabulate.",
+        default="fancy_grid",
     )
 
     subcommand.set_defaults(func=call)
