@@ -1,21 +1,25 @@
 import os
 
-from typing import Dict
+from functools import lru_cache
 from logzero import logger
+from typing import Dict
 
 import pendulum
 import boto3
 
 from ...lib import api, errors, reporting, workflows as _workflows
 
+@lru_cache(maxsize=4096)
+def describe_batch_job(batch_client, job_id):
+    return batch_client.describe_jobs(jobs=[job_id])
 
 def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
     paginator = batch_client.get_paginator("list_jobs")
     results = []
 
     for status in args.get("status"):
-        for result in paginator.paginate(jobQueue=args.get("queue"), jobStatus=status):
-            resp = result.get("jobSummaryList")
+        for item in paginator.paginate(jobQueue=args.get("queue"), jobStatus=status):
+            resp = item.get("jobSummaryList")
             if not resp:
                 errors.report(
                     "Could not parse AWS API response for listing batch jobs!",
@@ -32,7 +36,7 @@ def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
                     "name": job.get("jobName"),
                     "id": job.get("jobId"),
                     "reason": job.get("statusReason"),
-                    "containerExitCode": job.get("container").get("exitCode"),
+                    "containerExitCode": job.get("container", {}).get("exitCode"),
                     "created": round(created / 1000) if created else None,
                     "start": round(start / 1000) if start else None,
                     "end": round(end / 1000) if end else None,
@@ -79,7 +83,7 @@ def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
                 else:
                     results.append(new_job)
 
-        return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0))
+    return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0))
 
 
 async def get_calls_and_times_for_workflows(args, cromwell):
@@ -182,12 +186,11 @@ def write_log(
     # summary
     with open(os.path.join(calldir, "summary.txt"), "w") as f:
         f.write("== Cromwell ==\n\n")
-        f.write(f"Created at: {call.get('createdReadable')} ({call.get('created')}).\n")
-        f.write(f"Started at: {call.get('startReadable')} ({call.get('start')}).\n")
-        f.write(f"Stopped at: {call.get('stopReadable')} ({call.get('stop')}).\n")
-        f.write(f"Workflow ID: {call.get('id')}.\n")
+        for k, v in call.items():
+            f.write(f"{k.capitalize()}: {v}\n")
 
     for batch_job in candidate_batch_jobs:
+        logger.info(f"Writing info for {batch_job.get('id')}.")
         batchdir = os.path.join(calldir, "batch-job-" + batch_job.get("id"))
         if not os.path.isdir(batchdir):
             os.makedirs(batchdir)
@@ -195,19 +198,11 @@ def write_log(
         # summary
         with open(os.path.join(batchdir, "summary.txt"), "w") as f:
             f.write("== AWS batch ==\n\n")
-            f.write(
-                f"Created at: {batch_job.get('createdReadable')} ({batch_job.get('created')}).\n"
-            )
-            f.write(
-                f"Started at: {batch_job.get('startReadable')} ({batch_job.get('start')}).\n"
-            )
-            f.write(
-                f"Stopped at: {batch_job.get('stopReadable')} ({batch_job.get('stop')}).\n"
-            )
-            f.write(f"Status Reason: {batch_job.get('reason')}\n")
+            for k, v in batch_job.items():
+                f.write(f"{k.capitalize()}: {v}\n")
 
         # logs
-        resp = batch_client.describe_jobs(jobs=[batch_job.get("id")])
+        resp = describe_batch_job(batch_client, batch_job.get("id"))
         jobs = resp.get("jobs")
         if not jobs:
             errors.report(
@@ -215,16 +210,25 @@ def write_log(
                 fatal=True,
                 exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
             )
+        assert len(jobs) == 1
         logstream = jobs[0].get("container").get("logStreamName")
 
         with open(os.path.join(batchdir, "cloudwatch-logs.txt"), "w") as f:
-            try:
-                logs = logs_client.get_log_events(
-                    logGroupName="/aws/batch/job", logStreamName=logstream
-                )
-                for event in logs.get("events"):
-                    f.write(event.get("message") + "\n")
-            except:
+            success = False
+
+            for logstream_name in [logstream, logstream + "-proxy"]:
+                if success: 
+                    break
+
+                try:
+                    logs = logs_client.get_log_events(logGroupName="/aws/batch/job", logStreamName=logstream_name)
+                    for event in logs.get("events"):
+                        f.write(event.get("message") + "\n")
+                    success = True
+                except Exception as e:
+                    pass
+
+            if not success:
                 f.write("Could not retrive logs!\n")
                 errors.report(
                     message=f"Could not find logstream reporting by describe-jobs: {logstream}! Skipping.",
@@ -241,21 +245,23 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         start_time_filter,
         end_time_filter,
     ) = await get_calls_and_times_for_workflows(args, cromwell)
-    logger.debug("")
-    logger.debug("== Calls to match ==")
+
+    logger.info(f"Attempting to match up {len(failed_calls)} failed calls with associated AWS logs.")
     for call in failed_calls:
         logger.debug(
-            f"{call.get('name')}\t{call.get('startReadable')}\t{call.get('endReadable')}"
+            f"  [*] {call.get('name')} ({call.get('startReadable')} -> {call.get('endReadable')})"
         )
+    logger.info(f"Searching from {reporting.localize_date_from_timestamp(start_time_filter)} -> {reporting.localize_date_from_timestamp(end_time_filter)}.")
 
     aws_batch_jobs = get_aws_batch_jobs(
         args, batch_client, start_time_filter, end_time_filter
     )
-    logger.debug("")
-    logger.debug("== Candidate AWS batch jobs ==")
+
+    logger.info(f"Found {len(aws_batch_jobs)} matching AWS batch jobs.")
+
     for job in aws_batch_jobs:
         logger.debug(
-            f"{job.get('id')}\t{job.get('name')}\t{job.get('startReadable')}\t{job.get('endReadable')}"
+            f"  [*] {job.get('name')}-{job.get('id')} ({job.get('startReadable')} -> {job.get('endReadable')})"
         )
 
     for call in failed_calls:
