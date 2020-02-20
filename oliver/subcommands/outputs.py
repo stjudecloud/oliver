@@ -25,7 +25,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         args (Dict): Arguments parsed from the command line.
     """
 
-    results = get_outputs(
+    results = await get_outputs(
         cromwell, args["workflow-id"], output_prefix=args.get("output_prefix"),
     )
     reporting.print_dicts_as_table(results)

@@ -30,10 +30,10 @@ def localize_date(given_date: str):
 def localize_date_from_timestamp(timestamp: int, already_localized=False):
     "Returns a localized date given a UNIX timestamp."
 
-    tz = 'UTC'
+    tz = "UTC"
     if already_localized:
         tz = get_localzone()
-    
+
     logger.debug(f"Converting using timezone: {tz}")
 
     return (
