@@ -1,8 +1,8 @@
 import os
 
+from typing import Dict
 from functools import lru_cache
 from logzero import logger
-from typing import Dict
 
 import pendulum
 import boto3
@@ -229,7 +229,7 @@ def write_log(
                     for event in logs.get("events"):
                         f.write(event.get("message") + "\n")
                     success = True
-                except Exception as e:
+                except Exception:
                     pass
 
             if not success:
