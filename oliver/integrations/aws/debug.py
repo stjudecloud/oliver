@@ -9,9 +9,11 @@ import boto3
 
 from ...lib import api, errors, reporting, workflows as _workflows
 
+
 @lru_cache(maxsize=4096)
 def describe_batch_job(batch_client, job_id):
     return batch_client.describe_jobs(jobs=[job_id])
+
 
 def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
     paginator = batch_client.get_paginator("list_jobs")
@@ -217,11 +219,13 @@ def write_log(
             success = False
 
             for logstream_name in [logstream, logstream + "-proxy"]:
-                if success: 
+                if success:
                     break
 
                 try:
-                    logs = logs_client.get_log_events(logGroupName="/aws/batch/job", logStreamName=logstream_name)
+                    logs = logs_client.get_log_events(
+                        logGroupName="/aws/batch/job", logStreamName=logstream_name
+                    )
                     for event in logs.get("events"):
                         f.write(event.get("message") + "\n")
                     success = True
@@ -246,12 +250,16 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         end_time_filter,
     ) = await get_calls_and_times_for_workflows(args, cromwell)
 
-    logger.info(f"Attempting to match up {len(failed_calls)} failed calls with associated AWS logs.")
+    logger.info(
+        f"Attempting to match up {len(failed_calls)} failed calls with associated AWS logs."
+    )
     for call in failed_calls:
         logger.debug(
             f"  [*] {call.get('name')} ({call.get('startReadable')} -> {call.get('endReadable')})"
         )
-    logger.info(f"Searching from {reporting.localize_date_from_timestamp(start_time_filter)} -> {reporting.localize_date_from_timestamp(end_time_filter)}.")
+    logger.info(
+        f"Searching from {reporting.localize_date_from_timestamp(start_time_filter)} -> {reporting.localize_date_from_timestamp(end_time_filter)}."
+    )
 
     aws_batch_jobs = get_aws_batch_jobs(
         args, batch_client, start_time_filter, end_time_filter
