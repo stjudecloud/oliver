@@ -29,7 +29,7 @@
           src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
     </a>
     <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
-      <img alt="License: MIT"
+    <img alt="License: MIT"
           src="https://img.shields.io/badge/License-MIT-blue.svg" />
     </a>
   </p>
@@ -40,69 +40,112 @@
     <a href="./docs/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/stjudecloud/oliver/issues">Report Bug</a>
+    <a href="./docs/DEMO.md">View Demo</a>
     ·
     <a href="https://github.com/stjudecloud/oliver/issues">Request Feature</a>
+    ·
+    <a href="https://github.com/stjudecloud/oliver/issues">Report Bug</a>
+    ·
+    ⭐ Consider starring the repo! ⭐
+    <br />
   </p>
 </p>
 
-<!-- <p align="center">
-  <img alt="Oliver: Example GIF" src="./docs/oliver-example.gif" />
-</p> -->
 
-## Getting Started
+## 🎨 Features
 
-## Conda
 
-Oliver is distributed as a package using the community-curated Anaconda repository, [conda-forge](https://conda-forge.org/). We recommend that you first follow [the instructions included in the conda-forge documentation](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge) to get everything set up!
+* <b>Workflow Orchestration.</b> Easily submit, inspect, kill, and retry workflows in a Cromwell environment.
+* <b>Better Job Tracking.</b> Jobs can be associated with names and job groups to enable better status reporting.
+* <b>Dynamic Argument Parsing.</b> Specify inputs and options on the command line rather than editing JSON files.
+* <b>Third-party Cloud Integrations.</b> Use the `aws` and `azure` subcommands to explore cloud-specific functionality.
+
+## 📚 Getting Started
+
+### Installation
+
+#### Conda
+
+Oliver is distributed as a package using the community-curated Anaconda repository, [conda-forge](https://conda-forge.org/). You'll need to [install conda][conda-install], and we recommend that you first follow [the instructions included in the conda-forge documentation][conda-forge-setup] to get everything set up!
 
 ```bash
 conda install oliver -c conda-forge
 ```
 
-### Python Package Index
+#### Python Package Index
 
 You can also install Oliver using the Python Package Index ([PyPI](https://pypi.org/)).
 
-```sh
+```bash
 pip install stjudecloud-oliver
 ```
 
-Please refer to the guides in the `docs/` folder for more information.
+### Configuring
 
-| Guide Name      | Link                             |
-| --------------- | -------------------------------- |
-| Advanced Usage  | [Link](./docs/ADVANCED_USAGE.md) |
-| Configuration   | [Link](./docs/CONFIGURATION.md)  |
-| Submitting Jobs | [Link](./docs/SUBMIT.md)         |
-
-## Usage
+Next, we recommend that you configure oliver so that common arguments can be saved. By default, Oliver will prompt you for the answers interactively.
 
 ```bash
-oliver -h
+oliver configure
 ```
 
-The following subcommands are currently supported.
+If you are setting up Oliver programmatically, you can accept a default configuration (`oliver configure --defaults`) and edit from there using `oliver config`.
 
-| Subcommand  | Short Command | Description                                                 |
-| ----------- | ------------- | ----------------------------------------------------------- |
-| `aws`       |               | All subcommands related to Cromwell on AWS.                 |
-| `azure`     |               | All subcommands related to Cromwell on Azure.               |
-| `aggregate` | `a`           | Aggregate all results to a local or cloud folder for a run. |
-| `batches`   | `b`           | Explore batches of jobs submitted to Cromwell.              |
-| `configure` |               | Configure Oliver with default options.                      |
-| `config`    |               | Set or get a single config value from Oliver.               |
-| `inputs`    |               | Find all reported outputs for a given workflow.             |
-| `inspect`   | `i`           | Describe the state of a Cromwell workflow.                  |
-| `kill`      | `k`           | Kill a workflow running on a Cromwell server.               |
-| `logs`      | `l`           | Find all reported logs for a given workflow.                |
-| `outputs`   | `o`           | Find all reported outputs for a given workflow.             |
-| `retry`     | `re`          | Resubmit a workflow with the same parameters.               |
-| `runtime`   | `ru`          | Get the runtime attributes used for a specific call.        |
-| `status`    | `st`          | Report various statistics about a running Cromwell server.  |
-| `submit`    | `su`          | Submit a workflow to the Cromwell server.                   |
+## 🚌 A Quick Tour
 
-## Development
+At its foundation, Oliver is an opinionated job orchestrator for Cromwell. Commonly, you will want to use it to submit a job, inspect a job's status, kill a job, retry a job (possibly with different parameters), and organize job results.
+
+If you're interested in a complete overview of Oliver's capabilities, please see <a href="./docs/"><strong>the documentation pages</strong></a>.
+
+#### Submit a Job
+
+The simplest possible job submission is one which submits a simple workflow with one or more input JSON file(s) and/or key-value pair(s).
+
+```bash
+oliver submit workflow.wdl inputs.json input_key=input_value
+```
+
+You can similarly set workflow options and labels by prepending arguments with `@` and `%` respectively.
+
+```bash
+# works for files too!
+oliver submit workflow.wdl @option=foo %label=bar
+```
+
+Please <a href="./docs/SUBMIT.md"><strong>see the docs</strong></a> for more details on job submission.
+
+#### Inspect a Job
+
+Once a job is submitted, you can interrogate the Cromwell server about its status.
+
+```bash
+oliver inspect workflow-id
+```
+
+If you aren't sure what workflow identifier was given to your job, you can easily track it down using the `status` subcommand.
+
+```bash
+# detailed view, which shows individual workflow statuses
+oliver status -d
+```
+
+#### Kill a Job
+
+If, for whatever reason, you'd like to stop a job, you can use Oliver to instruct Cromwell to do so.
+
+```bash
+oliver kill workflow-id
+```
+
+#### Retry a Job
+
+Retrying a workflow is similarly easy: even if you need to override previously set parameters (e.g. increase the memory capacity for a task).
+
+```bash
+# override previous inputs by specifying arguments (the same way as you would for `submit`).
+oliver retry workflow-id
+```
+
+## 🧪 Development
 
 If you are interested in contributing to the code, please first review
 our [CONTRIBUTING.md](../CONTRIBUTING.md) document. To bootstrap a 
@@ -123,7 +166,7 @@ pre-commit install
 pre-commit install --hook-type commit-msg
 ```
 
-## Tests
+## 🚧️ Tests
 
 Oliver provides a (currently patchy) set of tests — both unit and end-to-end. To get started with testing, you'll
 need to bootstrap a Docker test environment (one-time operation).
@@ -164,14 +207,6 @@ docker image build --tag oliver .
 docker-compose up --build -d
 ```
 
-## Author
-
-👤 **St. Jude Cloud Team**
-
-* Website: https://stjude.cloud
-* Twitter: [@StJudeResearch](https://twitter.com/StJudeResearch)
-* Github: [@stjudecloud](https://github.com/stjudecloud)
-
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/stjudecloud/oliver/issues). You can also take a look at the [contributing guide](https://github.com/stjudecloud/oliver/blob/master/CONTRIBUTING.md).
@@ -180,3 +215,6 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 
 Copyright © 2020 [St. Jude Cloud Team](https://github.com/stjudecloud).<br />
 This project is [MIT](https://github.com/stjudecloud/oliver/blob/master/LICENSE.md) licensed.
+
+[conda-install]: https://docs.anaconda.com/anaconda/install/
+[conda-forge-setup]: https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge
