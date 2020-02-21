@@ -9,6 +9,9 @@
     <a href="./docs/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
+    <a href="https://github.com/stjudecloud/oliver/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/stjudecloud/oliver/issues">Request Feature</a>
   </p>
 </p>
 
