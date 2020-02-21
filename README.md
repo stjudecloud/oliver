@@ -7,8 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
-  </a>
+  [![Github Actions][actions-shield]][actions-url]
   <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
   </a>
@@ -162,3 +161,6 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 
 Copyright © 2020 [St. Jude Cloud Team](https://github.com/stjudecloud).<br />
 This project is [MIT](https://github.com/stjudecloud/oliver/blob/master/LICENSE.md) licensed.
+
+[actions-url]: https://actions-badge.atrox.dev/stjudecloud/oliver/goto
+[actions-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat
