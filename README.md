@@ -4,6 +4,37 @@
   </h1>
 
   <p align="center">
+    <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto" target="_blank">
+      <img alt="Actions: CI Status"
+          src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
+    </a>
+    <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+      <img alt="PyPI"
+          src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
+    </a>
+    <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+      <img alt="PyPI: Downloads"
+          src="https://img.shields.io/pypi/dm/stjudecloud-oliver?color=orange">
+    </a>
+    <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
+      <img alt="Conda"
+          src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
+    </a>
+    <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
+      <img alt="Conda: Downloads" 
+          src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
+    </a>
+    <a href="https://codecov.io/gh/stjudecloud/oliver" target="_blank">
+      <img alt="Code Coverage"
+          src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
+    </a>
+    <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
+      <img alt="License: MIT"
+          src="https://img.shields.io/badge/License-MIT-blue.svg" />
+    </a>
+  </p>
+
+  <p align="center">
     An opinionated Cromwell orchestration manager.
     <br />
     <a href="./docs/"><strong>Explore the docs »</strong></a>
@@ -16,40 +47,8 @@
 </p>
 
 <p align="center">
-  <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto" target="_blank">
-    <img alt="Actions: CI Status"
-         src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
-  </a>
-  <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
-    <img alt="PyPI"
-         src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
-  </a>
-  <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
-    <img alt="PyPI: Downloads"
-         src="https://img.shields.io/pypi/dm/stjudecloud-oliver?color=orange">
-  </a>
-  <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
-    <img alt="Conda"
-         src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
-  </a>
-  <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
-    <img alt="Conda: Downloads" 
-         src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
-  </a>
-  <a href="https://codecov.io/gh/stjudecloud/oliver" target="_blank">
-    <img alt="Code Coverage"
-         src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
-  </a>
-  <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
-    <img alt="License: MIT"
-         src="https://img.shields.io/badge/License-MIT-blue.svg" />
-  </a>
-</p>
-
-<p align="center">
   <img alt="Oliver: Example GIF" src="./docs/oliver-example.gif" />
 </p>
-
 
 ## Getting Started
 
