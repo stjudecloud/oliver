@@ -3,11 +3,13 @@
     Oliver
   </h1>
 
-  <p align="center">An opinionated Cromwell orchestration manager.</p>
-  <br />
-  <a href="./docs/"><strong>Explore the docs »</strong></a>
-  <br />
-  <br />
+  <p align="center">
+    An opinionated Cromwell orchestration manager.
+    <br />
+    <a href="./docs/"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+  </p>
 </p>
 
 <p align="center">
