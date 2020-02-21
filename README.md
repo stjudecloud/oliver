@@ -1,4 +1,9 @@
-<h1 align="center">Oliver</h1>
+<h1 align="center">
+  Oliver
+</h1>
+<i align="center">
+  An opinionated Cromwell orchestration manager.
+</i>
 
 <p align="center">
   <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
@@ -25,7 +30,6 @@
 
 ![Oliver Example](./docs/oliver-example.gif)
 
-> An opinionated Cromwell orchestration manager.
 
 ## Getting Started
 
