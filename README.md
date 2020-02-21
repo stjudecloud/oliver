@@ -1,9 +1,10 @@
-<h1 align="center">
-  Oliver
-</h1>
-<i align="center">
+<p align="center">
+  <h1 align="center">
+    Oliver
+  </h1>
+
   An opinionated Cromwell orchestration manager.
-</i>
+</p>
 
 <p align="center">
   <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto"><img alt="Build Status" src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
