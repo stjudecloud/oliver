@@ -4,6 +4,10 @@
   </h1>
 
   <p align="center">An opinionated Cromwell orchestration manager.</p>
+  <br />
+  <a href="./docs/"><strong>Explore the docs »</strong></a>
+  <br />
+  <br />
 </p>
 
 <p align="center">
@@ -38,7 +42,7 @@
 </p>
 
 <p align="center">
-  <img width="600" alt="Oliver: Example GIF" src="./docs/oliver-example.gif" />
+  <img alt="Oliver: Example GIF" src="./docs/oliver-example.gif" />
 </p>
 
 
