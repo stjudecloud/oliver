@@ -21,7 +21,7 @@
           src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
     </a>
     <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
-      <img alt="Conda: Downloads" 
+      <img alt="Conda: Downloads"
           src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
     </a>
     <a href="https://codecov.io/gh/stjudecloud/oliver" target="_blank">
@@ -34,14 +34,13 @@
     </a>
   </p>
 
+
   <p align="center">
     An opinionated Cromwell orchestration manager.
     <br />
-    <a href="./docs/"><strong>Explore the docs »</strong></a>
+    <a href="https://stjudecloud.github.io/oliver/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="./docs/DEMO.md">View Demo</a>
-    ·
     <a href="https://github.com/stjudecloud/oliver/issues">Request Feature</a>
     ·
     <a href="https://github.com/stjudecloud/oliver/issues">Report Bug</a>
@@ -51,6 +50,13 @@
   </p>
 </p>
 
+<!-- ## 🎨 Demo -->
+<br />
+<p align="center">
+  <img alt="Example of Oliver usage" src="/docs/images/oliver-example.gif"/>
+</p>
+<br />
+<br />
 
 ## 🎨 Features
 
@@ -94,7 +100,7 @@ If you are setting up Oliver programmatically, you can accept a default configur
 
 At its foundation, Oliver is an opinionated job orchestrator for Cromwell. Commonly, you will want to use it to submit a job, inspect a job's status, kill a job, retry a job (possibly with different parameters), and organize job results.
 
-If you're interested in a complete overview of Oliver's capabilities, please see <a href="./docs/"><strong>the documentation pages</strong></a>.
+If you're interested in a complete overview of Oliver's capabilities, please see <strong>[the documentation pages](./docs/)</strong></a>.
 
 #### Submit a Job
 
@@ -111,7 +117,7 @@ You can similarly set workflow options and labels by prepending arguments with `
 oliver submit workflow.wdl @option=foo %label=bar
 ```
 
-Please <a href="./docs/SUBMIT.md"><strong>see the docs</strong></a> for more details on job submission.
+Please <strong>[see the docs](/getting-started/submit-jobs.md)</strong> for more details on job submission.
 
 #### Inspect a Job
 
@@ -145,10 +151,10 @@ Retrying a workflow is similarly easy: even if you need to override previously s
 oliver retry workflow-id
 ```
 
-## 🧪 Development
+## 🖥️ Development
 
 If you are interested in contributing to the code, please first review
-our [CONTRIBUTING.md](../CONTRIBUTING.md) document. To bootstrap a 
+our [CONTRIBUTING.md][contributing-md] document. To bootstrap a
 development environment, please use the following commands.
 
 ```bash
@@ -209,7 +215,7 @@ docker-compose up --build -d
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/stjudecloud/oliver/issues). You can also take a look at the [contributing guide](https://github.com/stjudecloud/oliver/blob/master/CONTRIBUTING.md).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/stjudecloud/oliver/issues). You can also take a look at the [contributing guide][contributing-md].
 
 ## 📝 License
 
@@ -217,4 +223,6 @@ Copyright © 2020 [St. Jude Cloud Team](https://github.com/stjudecloud).<br />
 This project is [MIT](https://github.com/stjudecloud/oliver/blob/master/LICENSE.md) licensed.
 
 [conda-install]: https://docs.anaconda.com/anaconda/install/
-[conda-forge-setup]: https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge
+[conda-forge-setup]:
+https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge
+[contributing-md]: https://github.com/stjudecloud/oliver/blob/master/

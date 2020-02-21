@@ -1,13 +1,13 @@
 # Submitting Jobs
 
 One of the novel features of `oliver` is the ease in which workflow
-parameters can be set on the command line. Typically when submitting a workflow, 
+parameters can be set on the command line. Typically when submitting a workflow,
 one must specify a `workflowInputs` (could be one of many), `workflowOptions`,
 and `labels` JSON file to Cromwell.
 
-When you use `oliver submit`, you can easily specify files or individual key-value 
-pairs to be included in the parameters above. For instance, passing `inputs.json` on 
-the command line will read all key-value pairs from `inputs.json` and add them to 
+When you use `oliver submit`, you can easily specify files or individual key-value
+pairs to be included in the parameters above. For instance, passing `inputs.json` on
+the command line will read all key-value pairs from `inputs.json` and add them to
 the inputs dictionary. Individual key-value pairs can be passed like `key=value`.
 Values passed later are processed sequentially, meaning that later arguments
 overwrite any key-value pairs set by previous ones.
