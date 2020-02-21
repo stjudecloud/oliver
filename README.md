@@ -7,28 +7,39 @@
 </p>
 
 <p align="center">
-  [![Github Actions][actions-shield]][actions-url]
-  <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
-    <img alt="PyPI" src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
+  <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto" target="_blank">
+    <img alt="Actions: CI Status"
+         src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
   </a>
   <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
-    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/stjudecloud-oliver?color=orange">
+    <img alt="PyPI"
+         src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
+  </a>
+  <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+    <img alt="PyPI: Downloads"
+         src="https://img.shields.io/pypi/dm/stjudecloud-oliver?color=orange">
   </a>
   <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
-    <img alt="Conda" src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
+    <img alt="Conda"
+         src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
   </a>
   <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
-    <img alt="Conda - Downloads" src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
+    <img alt="Conda: Downloads" 
+         src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
   </a>
-  <a href="https://codecov.io/gh/stjudecloud/oliver">
-    <img src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
+  <a href="https://codecov.io/gh/stjudecloud/oliver" target="_blank">
+    <img alt="Code Coverage"
+         src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
   </a>
   <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
-    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
+    <img alt="License: MIT"
+         src="https://img.shields.io/badge/License-MIT-blue.svg" />
   </a>
 </p>
 
-![Oliver Example](./docs/oliver-example.gif)
+<p align="center">
+  <img width="600" alt="Oliver: Example GIF" src="./docs/oliver-example.gif" />
+</p>
 
 
 ## Getting Started
@@ -161,6 +172,3 @@ Contributions, issues and feature requests are welcome!<br />Feel free to check 
 
 Copyright © 2020 [St. Jude Cloud Team](https://github.com/stjudecloud).<br />
 This project is [MIT](https://github.com/stjudecloud/oliver/blob/master/LICENSE.md) licensed.
-
-[actions-url]: https://actions-badge.atrox.dev/stjudecloud/oliver/goto
-[actions-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat
