@@ -9,7 +9,7 @@ google_analytics: ["UA-107924368-1", "stjudecloud.github.io/oliver"]
 
 nav:
   - "Home": "index.md"
-  - "Getting Started":
+  - "Guides":
     - "Configuration": "getting-started/configuration.md"
     - "Submitting Jobs": "getting-started/submit-jobs.md"
     - "Monitoring Jobs": "getting-started/monitor-jobs.md"
