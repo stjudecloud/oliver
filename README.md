@@ -1,8 +1,4 @@
 <p align="center">
-  <h1 align="center">
-    Oliver
-  </h1>
-
   <p align="center">
     <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto" target="_blank">
       <img alt="Actions: CI Status"
@@ -33,6 +29,10 @@
           src="https://img.shields.io/badge/License-MIT-blue.svg" />
     </a>
   </p>
+
+  <h1 align="center">
+    Oliver
+  </h1>
 
   <p align="center">
     An opinionated Cromwell orchestration manager.
