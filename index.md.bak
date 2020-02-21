@@ -56,7 +56,6 @@
   <img alt="Example of Oliver usage" src="/docs/images/oliver-example.gif"/>
 </p>
 <br />
-<br />
 
 ## 🎨 Features
 
@@ -117,7 +116,7 @@ You can similarly set workflow options and labels by prepending arguments with `
 oliver submit workflow.wdl @option=foo %label=bar
 ```
 
-Please <strong>[see the docs](/getting-started/submit-jobs.md)</strong> for more details on job submission.
+Please <strong>[see the docs](./docs/getting-started/submit-jobs.md)</strong> for more details on job submission.
 
 #### Inspect a Job
 
