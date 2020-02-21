@@ -222,6 +222,5 @@ Copyright © 2020 [St. Jude Cloud Team](https://github.com/stjudecloud).<br />
 This project is [MIT](https://github.com/stjudecloud/oliver/blob/master/LICENSE.md) licensed.
 
 [conda-install]: https://docs.anaconda.com/anaconda/install/
-[conda-forge-setup]:
-https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge
+[conda-forge-setup]: https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge
 [contributing-md]: https://github.com/stjudecloud/oliver/blob/master/
