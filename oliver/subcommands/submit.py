@@ -7,7 +7,7 @@ import argparse
 
 from typing import Dict
 
-from ..lib import api, args as _args, reporting
+from ..lib import api, args as _args, errors, reporting
 from ..lib.parsing import parse_workflow, parse_workflow_inputs
 
 
@@ -18,13 +18,24 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         args (Dict): Arguments parsed from the command line.
     """
 
+    workflow_inputs = args.get("workflowInputs")
+
+    if not isinstance(workflow_inputs, list):
+        errors.report(
+            message="Workflow inputs must be a list.",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+            suggest_report=True,
+        )
+        return
+
     workflow_args = parse_workflow(args["workflow"])
     (
         workflow_args["workflowInputs"],
         workflow_args["workflowOptions"],
         workflow_args["labels"],
     ) = parse_workflow_inputs(
-        args.get("workflowInputs"),
+        workflow_inputs,
         job_name=args.get("job_name"),
         job_group=args.get("job_group"),
         output_dir=args.get("output_dir"),

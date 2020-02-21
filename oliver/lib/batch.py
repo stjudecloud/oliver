@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 
 import pendulum
 from logzero import logger
@@ -29,13 +29,21 @@ def get_workflow_batches(
         List[dict]: the `workflows` filtered by batch number.
     """
 
-    if not isinstance(batches, bool) and isinstance(batches, int):
+    if isinstance(batches, bool):
+        errors.report(
+            message="Boolean value found for batches. This is an unexpected case that the developers need to fix.",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+            suggest_report=True,
+        )
+
+    if isinstance(batches, int):
         batches = [batches]
 
     _workflows, _max_batch_num = batch_workflows(
         workflows, batch_interval_mins=batch_interval_mins
     )
-    _batches = batches
+    _batches: List[int] = batches
 
     if relative:
         _batches = [_max_batch_num - b for b in _batches]
@@ -56,7 +64,9 @@ def get_workflow_batches(
     return list(filter(lambda w: w.get("batch") in _batches, _workflows))
 
 
-def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List[Dict]:
+def batch_workflows(
+    workflows: List[Dict], batch_interval_mins: int = 5
+) -> Tuple[List[Dict], int]:
     """Batches workflows based on their `submission` key and a time interval.
 
     In short, this is a simple method of batching jobs. Here, we start with the

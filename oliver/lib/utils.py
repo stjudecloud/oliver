@@ -48,7 +48,7 @@ def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
     """
 
     assert isinstance(d, dict), "Expected a dictionary for aiohttp!"
-    results = []
+    results: List[Tuple] = []
 
     def parse(k, v):
         return [(k, v)]

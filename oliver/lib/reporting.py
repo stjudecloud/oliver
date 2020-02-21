@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from typing import List, Dict, OrderedDict as OrderedDictType
+from typing import List, Dict
 
 import pendulum
 from logzero import logger
@@ -64,7 +64,7 @@ def print_dicts_as_table(
     rows: List[Dict],
     grid_style: str = "fancy_grid",
     clean: bool = True,
-    fill=None,
+    fill: str = None,
     header_order: list = None,
 ):
     """Format a list of dicts and print as a table using `tabulate`.
@@ -97,7 +97,9 @@ def print_dicts_as_table(
     # to make an elegant solution at this moment.
 
     # use ordered dict as ordered set (again, laziness)
-    ordered_set: OrderedDictType[str, None] = OrderedDict()
+    ordered_set: OrderedDict[  # pylint: disable=unsubscriptable-object
+        str, None
+    ] = OrderedDict()
     for row in rows:
         for h in row.keys():
             ordered_set[h] = None
@@ -114,8 +116,8 @@ def print_dicts_as_table(
 
     if clean:
         for header in headers:
-            results = [row.get(header) in uninteresting_values for row in rows]
-            to_remove = all(results)
+            res: List[bool] = [row.get(header) in uninteresting_values for row in rows]
+            to_remove = all(res)
             if to_remove:
                 headers_to_remove.append(header)
 
@@ -126,7 +128,7 @@ def print_dicts_as_table(
             if header in row:
                 del row[header]
 
-    results = []
+    results: List[Dict[str, str]] = []
 
     # definitely a more elegant solution for this...
     for row in rows:

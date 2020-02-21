@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from typing import Dict, List
+from typing import Dict, List, Union
 from urllib.parse import urljoin
 from logzero import logger
 
@@ -213,7 +213,7 @@ class CromwellAPI:
 
     async def get_workflows_query(
         self,
-        submission: datetime.datetime = None,
+        submission: Union[datetime.datetime, str] = None,
         start: datetime.datetime = None,
         end: datetime.datetime = None,
         statuses: List[str] = None,
