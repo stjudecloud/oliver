@@ -1,4 +1,8 @@
 <p align="center">
+  <h1 align="center">
+    Oliver
+  </h1>
+
   <p align="center">
     <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto" target="_blank">
       <img alt="Actions: CI Status"
@@ -30,10 +34,6 @@
     </a>
   </p>
 
-  <h1 align="center">
-    Oliver
-  </h1>
-
   <p align="center">
     An opinionated Cromwell orchestration manager.
     <br />
@@ -46,9 +46,9 @@
   </p>
 </p>
 
-<p align="center">
+<!-- <p align="center">
   <img alt="Oliver: Example GIF" src="./docs/oliver-example.gif" />
-</p>
+</p> -->
 
 ## Getting Started
 
