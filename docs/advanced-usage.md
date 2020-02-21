@@ -40,7 +40,7 @@ When using [Cromwell on Azure][coa], [CosmosDB][cosmos] is used as the metadata 
 oliver config set azure_resource_group "YOUR RESOURCE GROUP NAME"
 oliver config set cosmos_account_name "YOUR COSMOSDB ACCOUNT NAME"
 ```
-For more information, see our [configuration guide][configuration].
+For more information, see our [configuration guide][../getting-started/configuration.md].
 
 [coa]: https://github.com/microsoft/CromwellOnAzure
 [configuration]: ./CONFIGURATION.md
