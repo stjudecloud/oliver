@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="An opinionated Cromwell orchestration manager.">
+        <meta name="author" content="St. Jude Cloud">
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>Oliver</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/color-brewer.min.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-107924368-1', 'stjudecloud.github.io/oliver');
+            ga('send', 'pageview');
+        </script> 
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href=".">Oliver</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="active">
+                                <a href=".">Home</a>
+                            </li>
+                            <li >
+                                <a href="guide/">Guide</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="getting-started/configuration/">Configuration</a>
+</li>
+                                    
+<li >
+    <a href="getting-started/submit-jobs/">Submitting Jobs</a>
+</li>
+                                    
+<li >
+    <a href="getting-started/monitor-jobs/">Monitoring Jobs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Integrations <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li >
+    <a href="integrations/azure/">Azure</a>
+</li>
+                                    
+<li >
+    <a href="integrations/aws/">AWS</a>
+</li>
+                                </ul>
+                            </li>
+                            <li >
+                                <a href="advanced-usage/">Advanced Usage</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="disabled">
+                                <a rel="next" >
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li >
+                                <a rel="prev" href="guide/">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/stjudecloud/oliver/edit/master/docs/index.md"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#features">🎨 Features</a></li>
+        <li class="main "><a href="#getting-started">📚 Getting Started</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#configuring">Configuring</a></li>
+        <li class="main "><a href="#a-quick-tour">🚌 A Quick Tour</a></li>
+            <li><a href="#submit-a-job">Submit a Job</a></li>
+            <li><a href="#inspect-a-job">Inspect a Job</a></li>
+            <li><a href="#kill-a-job">Kill a Job</a></li>
+            <li><a href="#retry-a-job">Retry a Job</a></li>
+        <li class="main "><a href="#development">🖥️ Development</a></li>
+        <li class="main "><a href="#tests">🚧️ Tests</a></li>
+        <li class="main "><a href="#contributing">🤝 Contributing</a></li>
+        <li class="main "><a href="#license">📝 License</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p align="center">
+  <h1 align="center">
+    Oliver
+  </h1>
+
+  <p align="center">
+    <a href="https://actions-badge.atrox.dev/stjudecloud/oliver/goto" target="_blank">
+      <img alt="Actions: CI Status"
+          src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fstjudecloud%2Foliver%2Fbadge&style=flat" />
+    </a>
+    <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+      <img alt="PyPI"
+          src="https://img.shields.io/pypi/v/stjudecloud-oliver?color=orange">
+    </a>
+    <a href="https://pypi.org/project/stjudecloud-oliver/" target="_blank">
+      <img alt="PyPI: Downloads"
+          src="https://img.shields.io/pypi/dm/stjudecloud-oliver?color=orange">
+    </a>
+    <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
+      <img alt="Conda"
+          src="https://img.shields.io/conda/vn/conda-forge/oliver.svg?color=brightgreen">
+    </a>
+    <a href="https://anaconda.org/conda-forge/oliver" target="_blank">
+      <img alt="Conda: Downloads"
+          src="https://img.shields.io/conda/dn/conda-forge/oliver?color=brightgreen">
+    </a>
+    <a href="https://codecov.io/gh/stjudecloud/oliver" target="_blank">
+      <img alt="Code Coverage"
+          src="https://codecov.io/gh/stjudecloud/oliver/branch/master/graph/badge.svg" />
+    </a>
+    <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md" target="_blank">
+    <img alt="License: MIT"
+          src="https://img.shields.io/badge/License-MIT-blue.svg" />
+    </a>
+  </p>
+
+
+  <p align="center">
+    An opinionated Cromwell orchestration manager.
+    <br />
+    <a href="https://stjudecloud.github.io/oliver/"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/stjudecloud/oliver/issues">Request Feature</a>
+    ·
+    <a href="https://github.com/stjudecloud/oliver/issues">Report Bug</a>
+    ·
+    ⭐ Consider starring the repo! ⭐
+    <br />
+  </p>
+</p>
+
+<!-- ## 🎨 Demo -->
+
+<p><br />
+<p align="center">
+  <img alt="Example of Oliver usage" src="/images/oliver-example.gif"/>
+</p>
+<br />
+<br /></p>
+<h2 id="features">🎨 Features</h2>
+<ul>
+<li><b>Workflow Orchestration.</b> Easily submit, inspect, kill, and retry workflows in a Cromwell environment.</li>
+<li><b>Better Job Tracking.</b> Jobs can be associated with names and job groups to enable better status reporting.</li>
+<li><b>Dynamic Argument Parsing.</b> Specify inputs and options on the command line rather than editing JSON files.</li>
+<li><b>Third-party Cloud Integrations.</b> Use the <code>aws</code> and <code>azure</code> subcommands to explore cloud-specific functionality.</li>
+</ul>
+<h2 id="getting-started">📚 Getting Started</h2>
+<h3 id="installation">Installation</h3>
+<h4 id="conda">Conda</h4>
+<p>Oliver is distributed as a package using the community-curated Anaconda repository, <a href="https://conda-forge.org/">conda-forge</a>. You'll need to <a href="https:/.anaconda.com/anaconda/install/">install conda</a>, and we recommend that you first follow <a href="">the instructions included in the conda-forge documentation</a> to get everything set up!</p>
+<pre><code class="bash">conda install oliver -c conda-forge
+</code></pre>
+
+<h4 id="python-package-index">Python Package Index</h4>
+<p>You can also install Oliver using the Python Package Index (<a href="https://pypi.org/">PyPI</a>).</p>
+<pre><code class="bash">pip install stjudecloud-oliver
+</code></pre>
+
+<h3 id="configuring">Configuring</h3>
+<p>Next, we recommend that you configure oliver so that common arguments can be saved. By default, Oliver will prompt you for the answers interactively.</p>
+<pre><code class="bash">oliver configure
+</code></pre>
+
+<p>If you are setting up Oliver programmatically, you can accept a default configuration (<code>oliver configure --defaults</code>) and edit from there using <code>oliver config</code>.</p>
+<h2 id="a-quick-tour">🚌 A Quick Tour</h2>
+<p>At its foundation, Oliver is an opinionated job orchestrator for Cromwell. Commonly, you will want to use it to submit a job, inspect a job's status, kill a job, retry a job (possibly with different parameters), and organize job results.</p>
+<p>If you're interested in a complete overview of Oliver's capabilities, please see <strong><a href="./">the documentation pages</a></strong></a>.</p>
+<h4 id="submit-a-job">Submit a Job</h4>
+<p>The simplest possible job submission is one which submits a simple workflow with one or more input JSON file(s) and/or key-value pair(s).</p>
+<pre><code class="bash">oliver submit workflow.wdl inputs.json input_key=input_value
+</code></pre>
+
+<p>You can similarly set workflow options and labels by prepending arguments with <code>@</code> and <code>%</code> respectively.</p>
+<pre><code class="bash"># works for files too!
+oliver submit workflow.wdl @option=foo %label=bar
+</code></pre>
+
+<p>Please <strong><a href="/getting-started/submit-jobs.md">see the docs</a></strong> for more details on job submission.</p>
+<h4 id="inspect-a-job">Inspect a Job</h4>
+<p>Once a job is submitted, you can interrogate the Cromwell server about its status.</p>
+<pre><code class="bash">oliver inspect workflow-id
+</code></pre>
+
+<p>If you aren't sure what workflow identifier was given to your job, you can easily track it down using the <code>status</code> subcommand.</p>
+<pre><code class="bash"># detailed view, which shows individual workflow statuses
+oliver status -d
+</code></pre>
+
+<h4 id="kill-a-job">Kill a Job</h4>
+<p>If, for whatever reason, you'd like to stop a job, you can use Oliver to instruct Cromwell to do so.</p>
+<pre><code class="bash">oliver kill workflow-id
+</code></pre>
+
+<h4 id="retry-a-job">Retry a Job</h4>
+<p>Retrying a workflow is similarly easy: even if you need to override previously set parameters (e.g. increase the memory capacity for a task).</p>
+<pre><code class="bash"># override previous inputs by specifying arguments (the same way as you would for `submit`).
+oliver retry workflow-id
+</code></pre>
+
+<h2 id="development">🖥️ Development</h2>
+<p>If you are interested in contributing to the code, please first review
+our <a href="https://github.com/stjudecloud/oliver/blob/master/">CONTRIBUTING.md</a> document. To bootstrap a
+development environment, please use the following commands.</p>
+<pre><code class="bash"># Clone the repository
+git clone git@github.com:stjudecloud/oliver.git
+cd oliver
+
+# Link the package with your current Python environment
+python setup.py develop
+
+# Ensure pre-commit is installed to automatically format
+# code using `black`.
+brew install pre-commit
+pre-commit install
+pre-commit install --hook-type commit-msg
+</code></pre>
+
+<h2 id="tests">🚧️ Tests</h2>
+<p>Oliver provides a (currently patchy) set of tests — both unit and end-to-end. To get started with testing, you'll
+need to bootstrap a Docker test environment (one-time operation).</p>
+<pre><code class="bash"># Start development environment
+docker image build --tag oliver .
+docker-compose up --build  -d
+
+alias docker-run-oliver=&quot;docker container run \
+  -it \
+  --rm \
+  --network oliver_default \
+  --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
+  --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
+  --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
+  --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
+  --entrypoint '' \
+  oliver:latest&quot;
+
+# Seed development environment (make sure Cromwell is live first!)
+docker-run-oliver bash seeds/seed.sh http://cromwell:8000 seeds/wdl/hello.wdl
+docker-run-oliver pytest --cov=./ --cov-report=xml
+</code></pre>
+
+<p>To reset your entire docker-compose environment, you can run the following:</p>
+<pre><code class="bash">docker-compose down
+
+docker image rm oliver:latest
+docker image rm oliver_cromwell:latest
+docker image rm mysql:5.7
+docker volume rm oliver_mysql_data
+docker network rm oliver_default
+
+docker image build --tag oliver .
+docker-compose up --build -d
+</code></pre>
+
+<h2 id="contributing">🤝 Contributing</h2>
+<p>Contributions, issues and feature requests are welcome!<br />Feel free to check <a href="https://github.com/stjudecloud/oliver/issues">issues page</a>. You can also take a look at the <a href="https://github.com/stjudecloud/oliver/blob/master/">contributing guide</a>.</p>
+<h2 id="license">📝 License</h2>
+<p>Copyright © 2020 <a href="https://github.com/stjudecloud">St. Jude Cloud Team</a>.<br />
+This project is <a href="https://github.com/stjudecloud/oliver/blob/master/LICENSE.md">MIT</a> licensed.</p>
+<p>https://conda-forge.org/user/introduction.html#how-can-i-install-packages-from-conda-forge</p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>© 2020 St. Jude Children's Research Hospital</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="Keyboard Shortcuts Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Keyboard Shortcuts</h4>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.0.4
+Build Date UTC : 2020-02-21 19:58:09
+-->
