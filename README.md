@@ -3,7 +3,7 @@
     Oliver
   </h1>
 
-  An opinionated Cromwell orchestration manager.
+  <p align="center">An opinionated Cromwell orchestration manager.</p>
 </p>
 
 <p align="center">
