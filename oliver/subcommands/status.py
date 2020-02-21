@@ -3,6 +3,7 @@ import argparse
 from typing import Dict, List
 
 from collections import defaultdict
+from logzero import logger
 
 from ..lib import (
     api,
@@ -12,6 +13,9 @@ from ..lib import (
     oliver,
     workflows as _workflows,
 )
+
+
+LARGE_NUM_WORKFLOWS = 300
 
 
 async def call(args: Dict, cromwell: api.CromwellAPI):
@@ -46,6 +50,14 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         opt_into_reporting_running_jobs=args["show_running_jobs"],
         opt_into_reporting_succeeded_jobs=args["show_succeeded_jobs"],
     )
+
+    num_workflows = len(workflows)
+    if num_workflows > LARGE_NUM_WORKFLOWS:
+        logger.warning(
+            f"Since there are {num_workflows} total workflows, "
+            + "this significantly increases runtime due to the need to query metadata about each workflow. "
+            + "This may take a while!"
+        )
 
     metadatas = {
         w["id"]: await cromwell.get_workflows_metadata(w["id"]) for w in workflows
