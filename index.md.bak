@@ -99,7 +99,7 @@ If you are setting up Oliver programmatically, you can accept a default configur
 
 At its foundation, Oliver is an opinionated job orchestrator for Cromwell. Commonly, you will want to use it to submit a job, inspect a job's status, kill a job, retry a job (possibly with different parameters), and organize job results.
 
-If you're interested in a complete overview of Oliver's capabilities, please see <strong>[the documentation pages](./docs/)</strong></a>.
+If you're interested in a complete overview of Oliver's capabilities, please see [**the documentation pages**](./docs/)</a>.
 
 #### Submit a Job
 
@@ -116,7 +116,7 @@ You can similarly set workflow options and labels by prepending arguments with `
 oliver submit workflow.wdl @option=foo %label=bar
 ```
 
-Please [see the docs](./docs/getting-started/submit-jobs.md) for more details on job submission.
+Please [**see the docs**](./docs/getting-started/submit-jobs.md) for more details on job submission.
 
 #### Inspect a Job
 
