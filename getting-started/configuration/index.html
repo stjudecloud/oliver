@@ -150,68 +150,17 @@ oliver config set cromwell_server http://foo:8000
 
 <h2 id="commonly-used-options">Commonly Used Options</h2>
 <p>The following key values pairs are commonly used to configure Oliver. Note that any key in the <code>argparse</code> parser can be specified in the configuration — if you would like to set any of these options and don't mind looking through Python code, you can do so (we do not exhaustively list all possible config options here).</p>
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>Description</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>cromwell_server</code></td>
-<td>HTTP/HTTPS root URL for the Cromwell server to use by default.</td>
-<td>String</td>
-<td>True</td>
-<td><code>http://localhost:8000</code></td>
-</tr>
-<tr>
-<td><code>cromwell_api_version</code></td>
-<td>Cromwell API version to use by default.</td>
-<td>String</td>
-<td>True</td>
-<td><code>v1</code></td>
-</tr>
-<tr>
-<td><code>output_prefix</code></td>
-<td>Prefix to append to file locations.</td>
-<td>String</td>
-<td>False</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<p>| Key                    | Description                                                           | Type   | Default                 |
+| ---------------------- | --------------------------------------------------------------------- | ------ | ----------------------- |  |
+| <code>cromwell_server</code>      | HTTP/HTTPS root URL for the Cromwell server to use by default.        | String | <code>http://localhost:8000</code> |
+| <code>cromwell_api_version</code> | Cromwell API version to use by default.                               | String | <code>v1</code>                    |
+| <code>batch_interval_mins</code>  | When inferring batches, how many minutes should separate two batches? | Int    | 2                       |
+| <code>output_prefix</code>        | Prefix to append to file locations.                                   | String | None                    |</p>
 <h3 id="cromwell-on-azure-specific">Cromwell on Azure specific</h3>
-<table>
-<thead>
-<tr>
-<th>Key</th>
-<th>Description</th>
-<th>Type</th>
-<th>Required</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>azure_resource_group</code></td>
-<td>If using Cromwell on Azure, resource group associated with your Cromwell instance.</td>
-<td>String</td>
-<td>False</td>
-<td></td>
-</tr>
-<tr>
-<td><code>cosmos_account_name</code></td>
-<td>If using Cromwell on Azure, name of CosmosDB associated with your Cromwell instance.</td>
-<td>String</td>
-<td>False</td>
-<td></td>
-</tr>
-</tbody>
-</table></div>
+<p>| Key                    | Description                                                                          | Type   | Default |
+| ---------------------- | ------------------------------------------------------------------------------------ | ------ | ------- | ---- |
+| <code>azure_resource_group</code> | If using Cromwell on Azure, resource group associated with your Cromwell instance.   | String |         | None |
+| <code>cosmos_account_name</code>  | If using Cromwell on Azure, name of CosmosDB associated with your Cromwell instance. | String |         | None |</p></div>
         </div>
 
         <footer class="col-md-12">
