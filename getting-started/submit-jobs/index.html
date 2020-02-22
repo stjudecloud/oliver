@@ -121,23 +121,38 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#submitting-jobs">Submitting Jobs</a></li>
+            <li><a href="#dynamic-parameter-parsing">Dynamic Parameter Parsing</a></li>
+            <li><a href="#prefixes">Prefixes</a></li>
+            <li><a href="#inspecting-parameters-with-dry-runs">Inspecting Parameters with Dry Runs</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
 <h1 id="submitting-jobs">Submitting Jobs</h1>
-<p>One of the novel features of <code>oliver</code> is the ease in which workflow
-parameters can be set on the command line. Typically when submitting a workflow,
-one must specify a <code>workflowInputs</code> (could be one of many), <code>workflowOptions</code>,
-and <code>labels</code> JSON file to Cromwell.</p>
-<p>When you use <code>oliver submit</code>, you can easily specify files or individual key-value
-pairs to be included in the parameters above. For instance, passing <code>inputs.json</code> on
-the command line will read all key-value pairs from <code>inputs.json</code> and add them to
-the inputs dictionary. Individual key-value pairs can be passed like <code>key=value</code>.
-Values passed later are processed sequentially, meaning that later arguments
-overwrite any key-value pairs set by previous ones.</p>
-<p>Additionally, argument passed on the command line can encode each the
-different parameter types for a Cromwell workflow:</p>
+<p>One of the novel features provided by Oliver is the ease with which workflow
+inputs, options, and labels can be set dynamically on the command line.
+Typically when submitting a workflow, one must craft and POST one or more <code>workflowInputs</code>,
+<code>workflowOptions</code>, and <code>labels</code> JSON files to Cromwell. This can be cumbersome 
+— especially when you have thousands of workflows to run.</p>
+<h2 id="dynamic-parameter-parsing">Dynamic Parameter Parsing</h2>
+<p>Oliver provides an improvement over this experience for a few keys reasons:</p>
+<ul>
+<li>Inputs, options, and labels can be loaded from files <em>or</em> as key-value pairs on the command line.</li>
+<li>Inputs, options, and labels are processed sequentially and overwrite arguments that were provided earlier on the command line.</li>
+<li>Oliver distinguishes between inputs, options, and labels based on the prefix provided.</li>
+</ul>
+<p>For instance, consider the following command:</p>
+<pre><code class="bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D
+</code></pre>
+
+<p>Here, Oliver loads <code>workflow.wdl</code> and begins preparing the <code>workflowInputs</code> (inputs), <code>workflowOptions</code> (options), and <code>labels</code> (labels) JSON objects — all of which are initialized as <code>{}</code>.</p>
+<ol>
+<li>Oliver loads the JSON object defined in <code>defaults.json</code>. For each key-value in that object, it adds the pair to <code>workflowInputs</code>, overwriting the pair if it already exists. In this case, the JSON object is empty, so <code>workflowInputs</code> now mirrors what was contained in <code>defaults.json</code>.</li>
+<li>Oliver recognizes that you have provided <code>sample_name=SJBALL101_D</code> as a key value pair and adds this pair to <code>workflowInputs</code>, overwriting the key if it existed.</li>
+</ol>
+<p>In this way, you can dynamically set and overwrite inputs with ease to satisfy your use case.</p>
+<h2 id="prefixes">Prefixes</h2>
+<p>This process works similarly for all parameter types (inputs, options, or labels). To distinguish them to Oliver, you need to use the following prefixes:</p>
 <table>
 <thead>
 <tr>
@@ -164,7 +179,7 @@ different parameter types for a Cromwell workflow:</p>
 </tr>
 </tbody>
 </table>
-<p>For example, consider the following command:</p>
+<p>For example, consider the following command and note the process Oliver follows in the comments:</p>
 <pre><code class="bash">oliver submit workflow.wdl \
     default-inputs.json \      # loads all values in the JSON file to the inputs object.
     @default-options.json \    # loads all values in the JSON file to the options object.
@@ -172,6 +187,11 @@ different parameter types for a Cromwell workflow:</p>
     input_key=value \          # adds `input_key=value` to the inputs object (overwrites the value if `input_key` set in default-inputs.json).
     @option_key=value \        # adds `option_key=value` to the options object (overwrites the value if `option_key` set in default-options.json).
     %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
+</code></pre>
+
+<h2 id="inspecting-parameters-with-dry-runs">Inspecting Parameters with Dry Runs</h2>
+<p>Often, it can be useful to inspect how Oliver is parsing the parameters you are passing on the command line. You can easily do so by specifying the dry-run argument.</p>
+<pre><code class="bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D --dry-run
 </code></pre></div>
         </div>
 

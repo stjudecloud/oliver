@@ -121,6 +121,7 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#configuration">Configuration</a></li>
+            <li><a href="#basics">Basics</a></li>
             <li><a href="#commonly-used-options">Commonly Used Options</a></li>
     </ul>
 </div></div>
@@ -129,6 +130,7 @@
 <h1 id="configuration">Configuration</h1>
 <p>Configuration for Oliver is stored in the config file as JSON. By default, the
 dotfile is location at <code>~/.oliver_config</code>. One of the benefits of using Oliver is the "set and forget" nature of configuration. For instance, a common configuration option that you might want to set rather than providing on the command line is the URL to your Cromwell server.</p>
+<h2 id="basics">Basics</h2>
 <p>Before using Oliver, you should run the configuration quickstart wizard:</p>
 <pre><code class="bash">oliver configure
 </code></pre>
@@ -156,7 +158,7 @@ oliver config set cromwell_server http://foo:8000
 | <code>cromwell_api_version</code> | Cromwell API version to use by default.                               | String | <code>v1</code>                    |
 | <code>batch_interval_mins</code>  | When inferring batches, how many minutes should separate two batches? | Int    | 2                       |
 | <code>output_prefix</code>        | Prefix to append to file locations.                                   | String | None                    |</p>
-<h3 id="cromwell-on-azure-specific">Cromwell on Azure specific</h3>
+<h3 id="cromwell-on-azure-specific">Cromwell on Azure Specific</h3>
 <p>| Key                    | Description                                                                          | Type   | Default |
 | ---------------------- | ------------------------------------------------------------------------------------ | ------ | ------- | ---- |
 | <code>azure_resource_group</code> | If using Cromwell on Azure, resource group associated with your Cromwell instance.   | String |         | None |
