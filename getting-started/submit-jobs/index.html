@@ -122,8 +122,7 @@
     <ul class="nav bs-sidenav">
         <li class="main active"><a href="#submitting-jobs">Submitting Jobs</a></li>
             <li><a href="#dynamic-parameter-parsing">Dynamic Parameter Parsing</a></li>
-            <li><a href="#prefixes">Prefixes</a></li>
-            <li><a href="#inspecting-parameters-with-dry-runs">Inspecting Parameters with Dry Runs</a></li>
+            <li><a href="#job-names-and-groups">Job Names and Groups</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -151,7 +150,7 @@ Typically when submitting a workflow, one must craft and POST one or more <code>
 <li>Oliver recognizes that you have provided <code>sample_name=SJBALL101_D</code> as a key value pair and adds this pair to <code>workflowInputs</code>, overwriting the key if it existed.</li>
 </ol>
 <p>In this way, you can dynamically set and overwrite inputs with ease to satisfy your use case.</p>
-<h2 id="prefixes">Prefixes</h2>
+<h3 id="prefixes">Prefixes</h3>
 <p>This process works similarly for all parameter types (inputs, options, or labels). To distinguish them to Oliver, you need to use the following prefixes:</p>
 <table>
 <thead>
@@ -189,9 +188,24 @@ Typically when submitting a workflow, one must craft and POST one or more <code>
     %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
 </code></pre>
 
-<h2 id="inspecting-parameters-with-dry-runs">Inspecting Parameters with Dry Runs</h2>
+<h3 id="inspecting-parameters-with-dry-runs">Inspecting Parameters with Dry Runs</h3>
 <p>Often, it can be useful to inspect how Oliver is parsing the parameters you are passing on the command line. You can easily do so by specifying the dry-run argument.</p>
 <pre><code class="bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D --dry-run
+</code></pre>
+
+<h2 id="job-names-and-groups">Job Names and Groups</h2>
+<p>You can submit jobs with a "Oliver Job Name" (<code>-j</code>) and "Oliver Job Group" (<code>-g</code>) to mimic the capabilities of an HPC. Under the hood, Oliver adds these as labels to the workflow. In most Oliver commands, you can then specify these options to restrict results. </p>
+<p>For instance, if you wished to submit a group of samples with the same job name and then track their status:</p>
+<pre><code># Submit jobs
+for SAMPLE in $SAMPLES; do
+  echo oliver submit $WORKFLOW_URL $DEFAULT_INPUTS_FILE \
+                     input_bam=${SAMPLE}.bam \
+                     output_prefix=${SAMPLE}. \
+                     -j ${SAMPLE} -g CohortAlpha
+done
+
+# Check status of this job group
+oliver status -g CohortAlpha
 </code></pre></div>
         </div>
 
