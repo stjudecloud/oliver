@@ -27,7 +27,7 @@ Here, Oliver loads `workflow.wdl` and begins preparing the `workflowInputs` (inp
 
 In this way, you can dynamically set and overwrite inputs with ease to satisfy your use case.
 
-## Prefixes
+### Prefixes
 
 This process works similarly for all parameter types (inputs, options, or labels). To distinguish them to Oliver, you need to use the following prefixes:
 
@@ -49,10 +49,29 @@ oliver submit workflow.wdl \
     %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
 ```
 
-## Inspecting Parameters with Dry Runs
+### Inspecting Parameters with Dry Runs
 
 Often, it can be useful to inspect how Oliver is parsing the parameters you are passing on the command line. You can easily do so by specifying the dry-run argument.
 
 ```bash
 oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D --dry-run
+```
+
+## Job Names and Groups
+
+You can submit jobs with a "Oliver Job Name" (`-j`) and "Oliver Job Group" (`-g`) to mimic the capabilities of an HPC. Under the hood, Oliver adds these as labels to the workflow. In most Oliver commands, you can then specify these options to restrict results. 
+
+For instance, if you wished to submit a group of samples with the same job name and then track their status:
+
+```
+# Submit jobs
+for SAMPLE in $SAMPLES; do
+  echo oliver submit $WORKFLOW_URL $DEFAULT_INPUTS_FILE \
+                     input_bam=${SAMPLE}.bam \
+                     output_prefix=${SAMPLE}. \
+                     -j ${SAMPLE} -g CohortAlpha
+done
+
+# Check status of this job group
+oliver status -g CohortAlpha
 ```
