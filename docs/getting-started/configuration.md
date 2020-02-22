@@ -3,6 +3,8 @@
 Configuration for Oliver is stored in the config file as JSON. By default, the
 dotfile is location at `~/.oliver_config`. One of the benefits of using Oliver is the "set and forget" nature of configuration. For instance, a common configuration option that you might want to set rather than providing on the command line is the URL to your Cromwell server.
 
+## Basics
+
 Before using Oliver, you should run the configuration quickstart wizard:
 
 ```bash
@@ -39,7 +41,7 @@ The following key values pairs are commonly used to configure Oliver. Note that 
 | `batch_interval_mins`  | When inferring batches, how many minutes should separate two batches? | Int    | 2                       |
 | `output_prefix`        | Prefix to append to file locations.                                   | String | None                    |
 
-### Cromwell on Azure specific
+### Cromwell on Azure Specific
 
 | Key                    | Description                                                                          | Type   | Default |
 | ---------------------- | ------------------------------------------------------------------------------------ | ------ | ------- | ---- |
