@@ -7,11 +7,11 @@ from setuptools import setup, find_packages
 
 root_dir = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(root_dir, "oliver", "__init__.py"), mode="r", encoding="utf-8") as fd:
+with open(
+    os.path.join(root_dir, "oliver", "__init__.py"), mode="r", encoding="utf-8"
+) as fd:
     version = re.search(
-        r"^__version__\s*=\s*[\"']([^\"']*)[\"']",
-        fd.read(),
-        re.MULTILINE
+        r"^__version__\s*=\s*[\"']([^\"']*)[\"']", fd.read(), re.MULTILINE
     ).group(1)
 
 with open("requirements.txt", mode="r", encoding="utf-8") as f:
