@@ -38,7 +38,7 @@ jobs:
             --network oliver_default \
             --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
             --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
-            --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
+            --mount type=bind,source=$PWD/bin,target=/opt/oliver/bin \
             --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
             --entrypoint "" \
             oliver:latest \
@@ -52,7 +52,7 @@ jobs:
               --network oliver_default \
               --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
               --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
-              --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
+              --mount type=bind,source=$PWD/bin,target=/opt/oliver/bin \
               --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
               --mount type=bind,source=$PWD/coverage.xml,target=/opt/oliver/coverage.xml \
               --entrypoint "" \
@@ -73,7 +73,7 @@ jobs:
             --network oliver_default \
             --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
             --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
-            --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
+            --mount type=bind,source=$PWD/bin,target=/opt/oliver/bin \
             --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
             --mount type=bind,source=$PWD/coverage.xml,target=/opt/oliver/coverage.xml \
             --entrypoint "" \

@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 COPY README.md ${OLIVER_HOME}/README.md
 COPY setup.py ${OLIVER_HOME}/setup.py
 COPY oliver/ ${OLIVER_HOME}/oliver/
-COPY scripts/ ${OLIVER_HOME}/scripts/
+COPY bin/ ${OLIVER_HOME}/bin/
 COPY tests/ ${OLIVER_HOME}/tests/
 
 RUN python3 setup.py develop
