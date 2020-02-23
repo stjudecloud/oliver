@@ -287,7 +287,7 @@ alias docker-run-oliver=&quot;docker container run \
   --network oliver_default \
   --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
   --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
-  --mount type=bind,source=$PWD/scripts,target=/opt/oliver/scripts \
+  --mount type=bind,source=$PWD/bin,target=/opt/oliver/bin \
   --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
   --entrypoint '' \
   oliver:latest&quot;
@@ -398,5 +398,5 @@ This project is <a href="https://github.com/stjudecloud/oliver/blob/master/LICEN
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-02-23 03:55:41
+Build Date UTC : 2020-02-23 04:01:17
 -->
