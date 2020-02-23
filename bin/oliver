@@ -6,6 +6,7 @@ import logzero
 import sys
 
 from logzero import logger
+from oliver import __version__
 from oliver.lib import api, args as _args, errors, config as _config
 from oliver.subcommands import (
     aggregate,
@@ -73,6 +74,7 @@ async def main():
     parser.add_argument("-f", "--force", default=False, action="store_true", help="Force running even with missing parameters.")
     _args.add_batches_interval_arg(parser)
     _args.add_loglevel_group(parser)
+    _args.add_version_arg(parser)
 
     # Subparsers
     subparsers = parser.add_subparsers(dest="subcommand")
@@ -94,6 +96,10 @@ async def main():
         # value from the config to `args`.
         if not k in args or not args[k]:
             args[k] = v
+
+    if args.get("version"):
+        print(__version__)
+        sys.exit(0)
 
     if not args.get("force") and args.get("subcommand") != "configure":
         ensure_required_args(args)
