@@ -1,13 +1,12 @@
-name: Integration and Unit Tests
-on: 
+name: CI
+on:
     push:
       branches:
         - master
     pull_request:
 
 jobs:
-  tests:
-    name: Integration Tests
+  integration-tests:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1

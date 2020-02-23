@@ -1,4 +1,4 @@
-name: Black Code Formatter
+name: Lint
 on:
   push:
     branches:
@@ -6,8 +6,14 @@ on:
   pull_request:
 
 jobs:
-  lint:
-    name: Lint Python with Black
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+      - run: python setup.py install
+      - run: pylint oliver
+  black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

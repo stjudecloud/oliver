@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy:
+  PyPI:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -24,3 +24,36 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       run: |
         semantic-release publish
+
+  gh-pages:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r ./requirements.txt
+
+      - run: cp README.md docs/index.md && sed -i.bak 's/\.\/docs/\.\//g' docs/index.md
+      - run: mkdocs build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./site
