@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from oliver.lib import api
@@ -62,6 +64,80 @@ async def test_api_post():
     )
     assert response.get("files", {}).get("workflowOptions") == "{}"
     assert "workflowSource" not in response.get("files", {})
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_unknown_http_method():
+    cromwell = api.CromwellAPI(server="http://httpbin:80", version="v1")
+
+    # pylint: disable=W0212
+    with pytest.raises(SystemExit):
+        await cromwell._api_call("/bar", method="BAZ")
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_unreachable_host():
+    cromwell = api.CromwellAPI(server="http://foo", version="v1")
+
+    # pylint: disable=W0212
+    with pytest.raises(SystemExit):
+        await cromwell._api_call("/bar")
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_bad_response():
+    cromwell = api.CromwellAPI(server="http://httpbin", version="v1")
+
+    # pylint: disable=W0212
+    with pytest.raises(SystemExit):
+        await cromwell._api_call("/status/404")
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_post_workflows_empty_params():
+    cromwell = api.CromwellAPI(
+        server="http://httpbin:80", version="v1", route_override="/post"
+    )
+
+    await cromwell.post_workflows(workflowUrl="https://foo/bar")
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_post_workflows_with_params():
+    cromwell = api.CromwellAPI(
+        server="http://httpbin:80", version="v1", route_override="/post"
+    )
+    input_dict = {"input": "foo"}
+    option_dict = {"option": "bar"}
+    label_dict = {"label": "baz"}
+    response = await cromwell.post_workflows(
+        workflowUrl="https://foo/bar",
+        workflowInputs=json.dumps(input_dict),
+        workflowOptions=json.dumps(option_dict),
+        labels=json.dumps(label_dict),
+    )
+
+    assert json.loads(response.get("files").get("labels")) == label_dict
+    assert json.loads(response.get("files").get("workflowInputs")) == input_dict
+    assert json.loads(response.get("files").get("workflowOptions")) == option_dict
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_post_workflows_no_workflow_source():
+    cromwell = api.CromwellAPI(server="http://httpbin", version="v1")
+
+    with pytest.raises(SystemExit):
+        await cromwell.post_workflows(workflowUrl=None, workflowSource=None)
 
     await cromwell.close()
 
