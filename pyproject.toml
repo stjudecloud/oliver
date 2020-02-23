@@ -1,0 +1,7 @@
+[build-system]
+requires = ["setuptools", "wheel"] 
+
+[tool.semantic_release]
+version_variable = "oliver/__init__.py:__version__"
+version_source = "commit"
+check_build_status = true
