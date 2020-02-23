@@ -1,8 +1,9 @@
 name: CD
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -22,4 +23,4 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       run: |
-        semantic-release publish 
+        semantic-release publish
