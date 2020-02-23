@@ -1,6 +1,24 @@
+from unittest.mock import patch
+
 import pytest
 
 from oliver.lib import utils
+
+
+@patch("oliver.lib.utils._input", return_value="yes")
+def test_ask_boolean_question_yes(_):
+    assert utils.ask_boolean_question("sample question") == "yes"
+
+
+@patch("oliver.lib.utils._input", return_value="no")
+def test_ask_boolean_question_no(_):
+    assert utils.ask_boolean_question("sample question") == "no"
+
+
+@patch("oliver.lib.utils._input", return_value="foo")
+def test_ask_boolean_question_bad_input(_):
+    with pytest.raises(SystemExit):
+        utils.ask_boolean_question("sample question")
 
 
 def test_dict_to_aiohttp_tuples_non_dict():

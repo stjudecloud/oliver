@@ -3,13 +3,26 @@ from typing import Dict, List, Tuple
 from . import errors
 
 
-def ask_boolean_question(question: str):
+def _input(question: str):
+    """Need a wrapper method for mocking during tests"""
+    return input(question)
+
+
+def ask_boolean_question(question: str, tries: int = 3):
     choices: List[str] = ["yes", "y", "no", "n"]
 
-    while True:
-        answer = input(question + " (y/n) ").lower()
+    tried = 0
+    while tried < tries:
+        answer = _input(question + " (y/n) ").lower()
         if answer in choices:
             return answer
+        tried += 1
+
+    errors.report(
+        message="Could not get valid user input!",
+        fatal=True,
+        exitcode=errors.ERROR_INVALID_INPUT,
+    )
 
 
 def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
