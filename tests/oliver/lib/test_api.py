@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from oliver.lib import api
@@ -106,6 +108,27 @@ async def test_post_workflows_empty_params():
     )
 
     await cromwell.post_workflows(workflowUrl="https://foo/bar")
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_post_workflows_with_params():
+    cromwell = api.CromwellAPI(
+        server="http://httpbin:80", version="v1", route_override="/post"
+    )
+    input_dict = {"input": "foo"}
+    option_dict = {"option": "bar"}
+    label_dict = {"label": "baz"}
+    response = await cromwell.post_workflows(
+        workflowUrl="https://foo/bar",
+        workflowInputs=json.dumps(input_dict),
+        workflowOptions=json.dumps(option_dict),
+        labels=json.dumps(label_dict),
+    )
+
+    assert json.loads(response.get("files").get("labels")) == label_dict
+    assert json.loads(response.get("files").get("workflowInputs")) == input_dict
+    assert json.loads(response.get("files").get("workflowOptions")) == option_dict
     await cromwell.close()
 
 
