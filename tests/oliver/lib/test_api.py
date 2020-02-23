@@ -100,6 +100,26 @@ async def test_errors_on_bad_response():
 
 
 @pytest.mark.asyncio
+async def test_post_workflows_empty_params():
+    cromwell = api.CromwellAPI(
+        server="http://httpbin:80", version="v1", route_override="/post"
+    )
+
+    await cromwell.post_workflows(workflowUrl="https://foo/bar")
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_post_workflows_no_workflow_source():
+    cromwell = api.CromwellAPI(server="http://httpbin", version="v1")
+
+    with pytest.raises(SystemExit):
+        await cromwell.post_workflows(workflowUrl=None, workflowSource=None)
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
 async def test_post_workflows_batch_not_implemented():
     with pytest.raises(NotImplementedError):
         cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")

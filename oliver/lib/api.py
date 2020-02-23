@@ -23,18 +23,21 @@ def remove_none_values(d: Dict):
 
 
 class CromwellAPI:
-    def __init__(
-        self, server, version, headers=None,
-    ):
+    def __init__(self, server, version, headers=None, route_override=None):
         self.server = server
         self.version = version
         self.headers = headers or {"Accept": "application/json"}
         self.session = aiohttp.ClientSession()
+        self.route_override = route_override
 
     async def close(self):
         await self.session.close()
 
     async def _api_call(self, route, params=None, data=None, method="GET"):
+        # only used when testing
+        if self.route_override:
+            route = self.route_override
+
         logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
 
@@ -88,8 +91,11 @@ class CromwellAPI:
         status_code = response.status
         response_text = await response.text()
         content = None
-        if response_text:
-            content = json.loads(response_text)
+        try:
+            if response_text:
+                content = json.loads(response_text)
+        except:
+            pass
 
         if not status_code // 200 == 1:
             message = f"Server returned status code {status_code}."
@@ -144,6 +150,12 @@ class CromwellAPI:
             "workflowOptions": workflowOptions,
             "labels": labels,
         }
+
+        logger.debug(f"workflowSource: {workflowSource}")
+        logger.debug(f"workflowUrl: {workflowUrl}")
+        logger.debug(f"workflowInputs: {workflowInputs}")
+        logger.debug(f"workflowOptions: {workflowOptions}")
+        logger.debug(f"labels: {labels}")
 
         _, data = await self._api_call(
             "/api/workflows/{version}", method="POST", data=data,
