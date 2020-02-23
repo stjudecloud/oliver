@@ -1,4 +1,4 @@
-def add_version_arg(parser, required=False):
+def add_version_arg(parser):
     """adds version arguments to a parser."""
 
     parser.add_argument(
