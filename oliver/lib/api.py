@@ -86,16 +86,22 @@ class CromwellAPI:
                 exitcode=errors.ERROR_NO_RESPONSE,
             )
         status_code = response.status
-        content = json.loads(await response.text())
+        response_text = await response.text()
+        content = None
+        if response_text:
+            content = json.loads(response_text)
 
         if not status_code // 200 == 1:
             message = f"Server returned status code {status_code}."
-            fatal = content.get("status") == "fail"
+            if content:
+                fatal = content.get("status") == "fail"
+            else:
+                fatal = True
             suggest = (
                 not fatal
             )  # we have never experienced a case where the status wasn't "fail".
             # if such a case is encountered, we'd like to handle it here.
-            if content.get("message"):
+            if content and content.get("message"):
                 message += f" Message: \"{content.get('message')}\""
 
             errors.report(

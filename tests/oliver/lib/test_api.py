@@ -67,6 +67,39 @@ async def test_api_post():
 
 
 @pytest.mark.asyncio
+async def test_errors_on_unknown_http_method():
+    cromwell = api.CromwellAPI(server="http://httpbin:80", version="v1")
+
+    # pylint: disable=W0212
+    with pytest.raises(SystemExit):
+        await cromwell._api_call("/bar", method="BAZ")
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_unreachable_host():
+    cromwell = api.CromwellAPI(server="http://foo", version="v1")
+
+    # pylint: disable=W0212
+    with pytest.raises(SystemExit):
+        await cromwell._api_call("/bar")
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_errors_on_bad_response():
+    cromwell = api.CromwellAPI(server="http://httpbin", version="v1")
+
+    # pylint: disable=W0212
+    with pytest.raises(SystemExit):
+        await cromwell._api_call("/status/404")
+
+    await cromwell.close()
+
+
+@pytest.mark.asyncio
 async def test_post_workflows_batch_not_implemented():
     with pytest.raises(NotImplementedError):
         cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
