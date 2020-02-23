@@ -34,9 +34,7 @@ class CromwellAPI:
     async def close(self):
         await self.session.close()
 
-    async def _api_call(
-        self, route, params=None, data=None, method="GET", url_override=None
-    ):
+    async def _api_call(self, route, params=None, data=None, method="GET"):
         logger.debug(f"{method} {route}")
         url = urljoin(self.server, route).format(version=self.version)
 
@@ -52,9 +50,6 @@ class CromwellAPI:
 
         params = remove_none_values(params)
         data = remove_none_values(data)
-
-        if url_override:
-            url = url_override
 
         func = None
         if method == "GET":
@@ -119,7 +114,6 @@ class CromwellAPI:
         workflowInputs=None,
         workflowOptions=None,
         labels=None,
-        url_override=None,
     ):
         "POST /api/workflows/{version}"
 
@@ -146,10 +140,7 @@ class CromwellAPI:
         }
 
         _, data = await self._api_call(
-            "/api/workflows/{version}",
-            method="POST",
-            data=data,
-            url_override=url_override,
+            "/api/workflows/{version}", method="POST", data=data,
         )
         return data
 
