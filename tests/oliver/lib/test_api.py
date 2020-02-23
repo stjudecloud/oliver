@@ -1,11 +1,16 @@
 import pytest
 
-from oliver.lib import api, config
+from oliver.lib import api
+
+
+def test_none_values_with_dict():
+    d = api.remove_none_values({"foo": "bar", "baz": {}})
+
+    assert d == {"foo": "bar"}
 
 
 @pytest.mark.asyncio
 async def test_get_workflows():
-    c = config.read_config()
     cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
     results = await cromwell.get_workflows_query()
 
@@ -18,9 +23,9 @@ async def test_get_workflows():
 
 @pytest.mark.asyncio
 async def test_api_get():
-    c = config.read_config()
     cromwell = api.CromwellAPI(server="http://httpbin:80", version="v1")
 
+    # pylint: disable=W0212
     (code, response) = await cromwell._api_call(
         "/get", params={"includeSubworkflows": "true"}
     )
@@ -33,7 +38,6 @@ async def test_api_get():
 
 @pytest.mark.asyncio
 async def test_api_post():
-    c = config.read_config()
     cromwell = api.CromwellAPI(server="http://httpbin:80", version="v1")
 
     data = {
@@ -44,6 +48,7 @@ async def test_api_post():
         "labels": "{}",
     }
 
+    # pylint: disable=W0212
     (code, response) = await cromwell._api_call("/post", data=data, method="POST")
 
     assert code == 200
@@ -59,3 +64,66 @@ async def test_api_post():
     assert "workflowSource" not in response.get("files", {})
 
     await cromwell.close()
+
+
+@pytest.mark.asyncio
+async def test_post_workflows_batch_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.post_workflows_batch()
+
+
+@pytest.mark.asyncio
+async def test_get_workflows_labels_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.get_workflows_labels()
+
+
+@pytest.mark.asyncio
+async def test_patch_workflows_labels_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.patch_workflows_labels()
+
+
+@pytest.mark.asyncio
+async def test_post_workflows_release_hold_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.post_workflows_release_hold()
+
+
+@pytest.mark.asyncio
+async def test_get_workflows_status_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.get_workflows_status()
+
+
+@pytest.mark.asyncio
+async def test_post_workflows_query_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.post_workflows_query()
+
+
+@pytest.mark.asyncio
+async def test_get_workflows_timing_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.get_workflows_timing()
+
+
+@pytest.mark.asyncio
+async def test_get_workflows_call_caching_diff_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.get_workflows_call_caching_diff()
+
+
+@pytest.mark.asyncio
+async def test_get_workflows_backends_not_implemented():
+    with pytest.raises(NotImplementedError):
+        cromwell = api.CromwellAPI(server="http://cromwell:8000", version="v1")
+        await cromwell.get_workflows_backends()
