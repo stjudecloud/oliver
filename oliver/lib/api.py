@@ -88,6 +88,13 @@ class CromwellAPI:
                 fatal=True,
                 exitcode=errors.ERROR_NO_RESPONSE,
             )
+        except aiohttp.client_exceptions.InvalidURL:
+            await self.close()
+            errors.report(
+                message=f"Could not connect to {self.server}. Is the address correct?",
+                fatal=True,
+                exitcode=errors.ERROR_INVALID_INPUT,
+            )
         status_code = response.status
         response_text = await response.text()
         content = None
