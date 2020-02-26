@@ -9,6 +9,7 @@ from logzero import logger
 from oliver import __version__
 from oliver.lib import api, args as _args, errors, config as _config
 from oliver.subcommands import (
+    abort,
     aggregate,
     aws,
     azure,
@@ -17,7 +18,6 @@ from oliver.subcommands import (
     config,
     inputs,
     inspect,
-    kill,
     logs,
     outputs,
     retry,
@@ -27,6 +27,7 @@ from oliver.subcommands import (
 )
 
 SUBCOMMANDS = {
+    "abort": abort,
     "aggregate": aggregate,
     "aws": aws,
     "azure": azure,
@@ -35,7 +36,6 @@ SUBCOMMANDS = {
     "config": config,
     "inputs": inputs,
     "inspect": inspect,
-    "kill": kill,
     "logs": logs,
     "outputs": outputs,
     "retry": retry,

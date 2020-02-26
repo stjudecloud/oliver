@@ -32,7 +32,9 @@ def register_subparser(
     """
 
     subcommand = subparser.add_parser(
-        "kill", aliases=["k"], help="Kill a workflow running on a Cromwell server."
+        "abort",
+        aliases=["kill", "k"],
+        help="Abort a workflow running on a Cromwell server.",
     )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
