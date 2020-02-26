@@ -23,6 +23,8 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
       run: |
+        git config --global user.email "support@stjude.cloud"
+        git config --global user.name "St. Jude Cloud"
         semantic-release publish
 
   gh-pages:
