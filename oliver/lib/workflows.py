@@ -1,5 +1,5 @@
 import datetime
-from typing import List, Dict
+from typing import Dict, List, Optional, Union
 
 import pendulum
 from logzero import logger
@@ -14,9 +14,9 @@ async def get_workflows(
     oliver_job_group_name: str = None,
     cromwell_workflow_uuid: str = None,
     cromwell_workflow_name: str = None,
-    batches: List[int] = None,
-    batch_interval_mins: int = 5,
-    relative_batching: bool = False,
+    batches: Union[List[int], bool] = None,
+    batch_interval_mins: Optional[int] = 5,
+    relative_batching: Optional[bool] = False,
     opt_into_reporting_running_jobs: bool = False,
     opt_into_reporting_aborted_jobs: bool = False,
     opt_into_reporting_failed_jobs: bool = False,

@@ -16,7 +16,7 @@ def get_oliver_name(workflow: Dict) -> Optional[str]:
     return "<not set>"
 
 
-def get_oliver_group(workflow: Dict) -> Optional[str]:
+def get_oliver_group(workflow: Dict) -> str:
     """Return the group name Oliver has given the workflow in properties if it exists.
 
     Args:

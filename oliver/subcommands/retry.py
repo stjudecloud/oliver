@@ -14,7 +14,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         args (Dict): Arguments parsed from the command line.
     """
 
-    workflows = None
+    workflows = []
     show_only_aborted_and_failed = not args["all"]
 
     if args.get("workflow"):
@@ -77,7 +77,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             workflow_args["workflowOptions"],
             workflow_args["workflowLabels"],
         ) = parse_workflow_inputs(
-            args.get("workflowInputs"),
+            args.get("workflowInputs", []),
             inputs=json.loads(workflowInputs),
             options=json.loads(workflowOptions),
             labels=json.loads(workflowLabels),

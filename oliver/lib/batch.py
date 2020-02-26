@@ -1,4 +1,4 @@
-from typing import Dict, List, Union, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import pendulum
 from logzero import logger
@@ -8,9 +8,9 @@ from . import errors
 
 def get_workflow_batches(
     workflows: List[dict],
-    batches: Union[int, List[int]],
-    batch_interval_mins: int = 5,
-    relative: bool = False,
+    batches: Union[int, List[int], bool],
+    batch_interval_mins: Optional[int] = 5,
+    relative: Optional[bool] = False,
 ):
     """Returns all workflows where the derived batch number is included in `batches`.
 
@@ -29,20 +29,17 @@ def get_workflow_batches(
         List[dict]: the `workflows` filtered by batch number.
     """
 
-    if isinstance(batches, bool):
-        errors.report(
-            message="Boolean value found for batches. This is an unexpected case that the developers need to fix.",
-            fatal=True,
-            exitcode=errors.ERROR_INVALID_INPUT,
-            suggest_report=True,
-        )
+    _workflows, _max_batch_num = batch_workflows(
+        workflows, batch_interval_mins=batch_interval_mins
+    )
+
+    if isinstance(batches, bool) and batches:
+        logger.info("Targetting all batches.")
+        return _workflows
 
     if isinstance(batches, int):
         batches = [batches]
 
-    _workflows, _max_batch_num = batch_workflows(
-        workflows, batch_interval_mins=batch_interval_mins
-    )
     _batches: List[int] = batches
 
     if relative:
@@ -54,10 +51,6 @@ def get_workflow_batches(
                 exitcode=errors.ERROR_INVALID_INPUT,
             )
 
-    if isinstance(batches, bool) and batches:
-        logger.info("Targetting all batches.")
-        return _workflows
-
     logger.info(
         f"Targetting all jobs in batch(es): {', '.join([str(b) for b in _batches])} (original={', '.join([str(b) for b in batches])}, relative={relative})."
     )
@@ -65,7 +58,7 @@ def get_workflow_batches(
 
 
 def batch_workflows(
-    workflows: List[Dict], batch_interval_mins: int = 5
+    workflows: List[Dict], batch_interval_mins: Optional[int] = 5
 ) -> Tuple[List[Dict], int]:
     """Batches workflows based on their `submission` key and a time interval.
 

@@ -32,9 +32,7 @@ async def call(
 
     for k, _default in starting_config.items():
         if not use_defaults:
-            question = "What is the value for '{k}'"
-            if k in QUESTION_MAPPING:
-                question = QUESTION_MAPPING.get(k)
+            question = QUESTION_MAPPING.get(k, f"What is the value for '{k}'")
 
             answer = ask(question, _default)
             if answer:

@@ -3,12 +3,12 @@
 
 import argparse
 
-from typing import Dict
+from typing import Dict, List
 
 from ..lib import api
 
 SUBCOMMAND_NAME = "__template__"
-SUBCOMMAND_ALIASES = []
+SUBCOMMAND_ALIASES: List[str] = []
 
 
 async def call(args: Dict, cromwell: api.CromwellAPI):

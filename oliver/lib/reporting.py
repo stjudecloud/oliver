@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from typing import List, Dict
+from typing import Dict, List, Optional
 
 import pendulum
 from logzero import logger
@@ -21,9 +21,11 @@ DEFAULT_HEADER_ORDER = [
     "Succeeded",
 ]
 
+DEFAULT_GRID_STYLE = "fancy_grid"
+
 
 def localize_date(given_date: str):
-    "Returns a localized date given any date that is parsable by pedulum."
+    "Returns a localized date given any date that is parsable by pendulum."
     return pendulum.parse(given_date).in_tz(get_localzone()).to_day_datetime_string()
 
 
@@ -62,7 +64,7 @@ def duration_to_text(duration):
 
 def print_dicts_as_table(
     rows: List[Dict],
-    grid_style: str = "fancy_grid",
+    grid_style: Optional[str] = None,
     clean: bool = True,
     fill: str = None,
     header_order: list = None,
@@ -85,6 +87,9 @@ def print_dicts_as_table(
 
     if header_order is None:
         header_order = DEFAULT_HEADER_ORDER
+
+    if grid_style is None:
+        grid_style = DEFAULT_GRID_STYLE
 
     if not isinstance(rows, list) or not isinstance(rows[0], dict):
         errors.report(
@@ -146,7 +151,7 @@ def print_dicts_as_table(
     )
 
 
-def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
+def print_error_as_table(status: str, message: str, grid_style: Optional[str] = None):
     """Prints an error message as a table.
 
     Args:
@@ -156,5 +161,8 @@ def print_error_as_table(status: str, message: str, grid_style: str = "fancy_gri
                                     See https://github.com/astanin/python-tabulate#table-format
                                     for more information. Defaults to "fancy_grid".
     """
+    if grid_style is None:
+        grid_style = DEFAULT_GRID_STYLE
+
     results = [{"Status": status, "Message": message}]
     print_dicts_as_table(results, grid_style=grid_style)

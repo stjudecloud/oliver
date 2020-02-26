@@ -34,7 +34,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         cromwell (CromwellAPI): The cromwell API server to use.
     """
 
-    output_folder = args.get("output-folder")
+    output_folder = args.get("output-folder", "")
     workflows = []
 
     workflows = await _workflows.get_workflows(
@@ -42,14 +42,16 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     )
 
     for workflow in workflows:
-        outputs = await _outputs.get_outputs(cromwell, workflow.get("id"),)
+        outputs = await _outputs.get_outputs(cromwell, workflow.get("id", ""),)
         _this_output_folder = output_folder
 
-        if not _this_output_folder.endswith(os.path.sep):
+        if _this_output_folder and not _this_output_folder.endswith(os.path.sep):
             _this_output_folder = _this_output_folder + os.path.sep
 
         for output in outputs:
-            process_output(_this_output_folder, output["Location"], args.get("dry_run"))
+            process_output(
+                _this_output_folder, output["Location"], args.get("dry_run", False)
+            )
 
 
 def register_subparser(

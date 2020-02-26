@@ -1,6 +1,6 @@
 import os
 
-from typing import Dict
+from typing import Dict, Optional
 
 from ...lib import api, errors
 from ...subcommands import outputs as _outputs
@@ -10,8 +10,8 @@ def process_output_azure(
     dest_folder: str,
     output: str,
     azure_storage_account: str,
-    sas_token: str = None,
-    dry_run: bool = False,
+    sas_token: Optional[str] = "",
+    dry_run: Optional[bool] = False,
 ):
     if isinstance(output, list):
         for o in output:
@@ -60,9 +60,9 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
     for output in outputs:
         process_output_azure(
-            args.get("output-folder"),
+            args.get("output-folder", ""),
             output["Location"],
-            args.get("storage_account_name"),
+            args.get("storage_account_name", ""),
             args.get("sas_token"),
             args.get("dry_run"),
         )

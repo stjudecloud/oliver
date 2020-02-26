@@ -1,13 +1,13 @@
 import argparse
 
-from typing import Dict
+from typing import Dict, List
 
 from ..lib import api, reporting
 
 
 async def get_outputs(
     cromwell_api: api.CromwellAPI, workflow_id: str, output_prefix: str = None
-):
+) -> List[Dict[str, str]]:
     outputs = await cromwell_api.get_workflows_outputs(workflow_id)
     results = [{"Output Name": k, "Location": v} for k, v in outputs["outputs"].items()]
 
