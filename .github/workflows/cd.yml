@@ -6,27 +6,6 @@ on:
       - master
 
 jobs:
-  PyPI:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine python-semantic-release
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        git config --global user.email "support@stjude.cloud"
-        git config --global user.name "St. Jude Cloud"
-        semantic-release publish
-
   gh-pages:
     runs-on: ubuntu-18.04
     steps:
