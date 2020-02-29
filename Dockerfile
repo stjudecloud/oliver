@@ -9,7 +9,10 @@ ENV PYTHONWARNINGS="ignore"
 WORKDIR $OLIVER_HOME
 
 COPY requirements.txt ${OLIVER_HOME}/requirements.txt
+COPY requirements.dev.txt ${OLIVER_HOME}/requirements.dev.txt
+RUN pip install setuptools
 RUN pip install -r requirements.txt
+RUN pip install -r requirements.dev.txt
 
 COPY README.md ${OLIVER_HOME}/README.md
 COPY setup.py ${OLIVER_HOME}/setup.py

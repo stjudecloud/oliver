@@ -2,7 +2,7 @@ name: Tag
 
 on:
   push:
-    tag:
+    tags:
       - 'v*'
 
 jobs:
@@ -15,8 +15,6 @@ jobs:
             node-version: '13.x'
       - run: |
           git fetch --prune --unshallow --tags
-          git config --global user.name "St. Jude Cloud"
-          git config --global user.email "support@stjude.cloud"
       - run: npm install -g conventional-github-releaser
       - run: conventional-github-releaser -p angular
         env:

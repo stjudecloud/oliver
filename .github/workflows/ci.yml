@@ -11,7 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install httpie -y
+        run: |
+          sudo apt-get update
+          sudo apt-get install httpie -y
+          python3 -m pip install setuptools
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r ./requirements.txt
+          python3 -m pip install -r ./requirements.dev.txt
       - name: Start services
         run: docker-compose --project-name oliver up --build --detach
       - name: Wait for services to come available

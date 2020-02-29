@@ -2,13 +2,7 @@ aiohttp==3.6.2
 azure-cosmos==3.1.2
 boto3==1.11.9
 logzero==1.5.0
-mkdocs==1.0.4
-mkdocs-bootswatch==1.0
 pendulum==2.0.5
-pylint==2.4.4
-pytest==5.3.5
-pytest-asyncio==0.10.0
-pytest-cov==2.8.1
 requests==2.22.0
 tabulate==0.8.6
 tzlocal==2.0.0
