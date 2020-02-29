@@ -31,6 +31,7 @@ setup(
     scripts=["bin/oliver"],
     packages=find_packages(),
     install_requires=requirements,
+    include_package_data=True,
     python_requires=">=3.0, <3.8",
     classifiers=[
         "Programming Language :: Python :: 3",
