@@ -187,7 +187,6 @@ alias docker-run-oliver="docker container run \
   --network oliver_default \
   --mount type=bind,source=$PWD/seeds,target=/opt/oliver/seeds \
   --mount type=bind,source=$PWD/oliver,target=/opt/oliver/oliver \
-  --mount type=bind,source=$PWD/bin,target=/opt/oliver/bin \
   --mount type=bind,source=$PWD/tests,target=/opt/oliver/tests \
   --entrypoint '' \
   oliver:latest"

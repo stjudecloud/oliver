@@ -7,28 +7,32 @@ on:
 
 jobs:
   gh-pages:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
-          python-version: '3.8'
-          architecture: 'x64'
-      - name: Cache dependencies
+          python-version: '3.7'
+      - name: Cache Dependencies
         uses: actions/cache@v1
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          path: ~/.cache/pypoetry/
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install dependencies
+            ${{ runner.os }}-poetry-
+      - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
+          python3 -m pip install setuptools
           python3 -m pip install poetry==1.0.5
+          poetry config virtualenvs.create false
           poetry install
-      - run: cp README.md docs/index.md && sed -i.bak 's/\.\/docs/\.\//g' docs/index.md
-      - run: mkdocs build
+      - name: Prepare Docs
+        run: cp README.md docs/index.md && sed -i.bak 's/\.\/docs/\.\//g' docs/index.md
+      - name: Build Docs
+        run: mkdocs build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

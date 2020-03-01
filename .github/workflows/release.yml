@@ -8,20 +8,30 @@ jobs:
   PyPI:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install poetry==1.0.5
-        poetry install
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        poetry build
-        twine upload dist/*
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pypoetry/
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install setuptools
+          python3 -m pip install poetry==1.0.5
+          poetry config virtualenvs.create false
+          poetry install
+      - name: Build and Publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          poetry build
+          twine upload dist/*
