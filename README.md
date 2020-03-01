@@ -161,8 +161,8 @@ development environment, please use the following commands.
 git clone git@github.com:stjudecloud/oliver.git
 cd oliver
 
-# Link the package with your current Python environment
-python setup.py develop
+# Install the project using poetry
+poetry install
 
 # Ensure pre-commit is installed to automatically format
 # code using `black`.

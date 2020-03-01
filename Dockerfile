@@ -1,4 +1,4 @@
-FROM python:3.8.1
+FROM python:3.7.3
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends httpie jq \
@@ -8,17 +8,17 @@ ENV OLIVER_HOME=/opt/oliver
 ENV PYTHONWARNINGS="ignore"
 WORKDIR $OLIVER_HOME
 
-COPY requirements.txt ${OLIVER_HOME}/requirements.txt
-COPY requirements.dev.txt ${OLIVER_HOME}/requirements.dev.txt
-RUN pip install setuptools
-RUN pip install -r requirements.txt
-RUN pip install -r requirements.dev.txt
+RUN pip install --disable-pip-version-check \
+                --no-cache-dir \
+                poetry==1.0.5
+COPY poetry.lock pyproject.toml ${OLIVER_HOME}/
+RUN poetry config --local virtualenvs.create false
+RUN poetry install
 
 COPY README.md ${OLIVER_HOME}/README.md
-COPY setup.py ${OLIVER_HOME}/setup.py
 COPY oliver/ ${OLIVER_HOME}/oliver/
 COPY bin/ ${OLIVER_HOME}/bin/
 COPY tests/ ${OLIVER_HOME}/tests/
 
-RUN python3 setup.py develop
+RUN poetry install
 ENTRYPOINT ["oliver"]

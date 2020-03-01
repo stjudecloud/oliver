@@ -127,14 +127,6 @@ python = "<3.4.0 || >=3.5.0"
 version = ">=1.20,<1.26"
 
 [[package]]
-category = "dev"
-description = "Version-bump your software with a single command!"
-name = "bumpversion"
-optional = false
-python-versions = "*"
-version = "0.5.3"
-
-[[package]]
 category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
@@ -916,7 +908,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "aae49c936190f0831cfcbae930d68ae9a847cc1a04da236f790b0104bf549420"
+content-hash = "8fbfdc18bffa9ef49e538c33bfad2fbf93081c8be017a883823b71af4122527c"
 python-versions = ">=3.6 <3.8"
 
 [metadata.files]
@@ -966,10 +958,6 @@ boto3 = [
 botocore = [
     {file = "botocore-1.15.11-py2.py3-none-any.whl", hash = "sha256:35d553b8975a3810010fabb885e42d1bbc97bdae52c873f7640a2dd87772c455"},
     {file = "botocore-1.15.11.tar.gz", hash = "sha256:87a53301ee9e32e776d2d805c121753091fbddc3457dfdb8d6bdf7dbd945295a"},
-]
-bumpversion = [
-    {file = "bumpversion-0.5.3-py2.py3-none-any.whl", hash = "sha256:6753d9ff3552013e2130f7bc03c1007e24473b4835952679653fb132367bdd57"},
-    {file = "bumpversion-0.5.3.tar.gz", hash = "sha256:6744c873dd7aafc24453d8b6a1a0d6d109faf63cd0cd19cb78fd46e74932c77e"},
 ]
 certifi = [
     {file = "certifi-2019.11.28-py2.py3-none-any.whl", hash = "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3"},
