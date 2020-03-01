@@ -2,11 +2,10 @@
 import asyncio
 import argparse
 import logging
-import logzero
 import sys
 
-from logzero import logger
-from oliver import __version__
+import logzero
+
 from oliver.lib import api, args as _args, errors, config as _config
 from oliver.subcommands import (
     abort,
@@ -45,7 +44,6 @@ SUBCOMMANDS = {
 }
 
 
-
 def ensure_required_args(args):
     missing_args = []
 
@@ -55,15 +53,15 @@ def ensure_required_args(args):
 
     if missing_args:
         errors.report(
-            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n" + \
-            "We recommend you run 'oliver configure' to ensure all required arguments are cached in the oliver configuration file.\n" + \
-            "If you choose not to do this, you will need to pass their respective flags on the command line.",
+            f"The following required arguments are missing: {', '.join(missing_args)}!\n\n"
+            + "We recommend you run 'oliver configure' to ensure all required arguments are cached in the oliver configuration file.\n"
+            + "If you choose not to do this, you will need to pass their respective flags on the command line.",
             fatal=True,
             exitcode=errors.ERROR_PRECAUTION,
         )
 
 
-async def main():
+async def run():
     parser = argparse.ArgumentParser(
         description="An opinionated Cromwell orchestration system."
     )
@@ -71,10 +69,15 @@ async def main():
     # Common arguments
     parser.add_argument("--cromwell-server", help="Cromwell host location.")
     parser.add_argument("--cromwell-api-version", help="Cromwell API version.")
-    parser.add_argument("-f", "--force", default=False, action="store_true", help="Force running even with missing parameters.")
+    parser.add_argument(
+        "-f",
+        "--force",
+        default=False,
+        action="store_true",
+        help="Force running even with missing parameters.",
+    )
     _args.add_batches_interval_arg(parser)
     _args.add_loglevel_group(parser)
-    _args.add_version_arg(parser)
 
     # Subparsers
     subparsers = parser.add_subparsers(dest="subcommand")
@@ -97,10 +100,6 @@ async def main():
         if not k in args or not args[k]:
             args[k] = v
 
-    if args.get("version"):
-        print(__version__)
-        sys.exit(0)
-
     if not args.get("force") and args.get("subcommand") != "configure":
         ensure_required_args(args)
 
@@ -114,10 +113,12 @@ async def main():
     elif args.get("debug"):
         logzero.loglevel(logging.DEBUG)
 
-    cromwell = api.CromwellAPI(server=args["cromwell_server"], version=args["cromwell_api_version"])
+    cromwell = api.CromwellAPI(
+        server=args["cromwell_server"], version=args["cromwell_api_version"]
+    )
     await args["func"](args, cromwell)
     await cromwell.close()
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+def main():
+    asyncio.run(run())
