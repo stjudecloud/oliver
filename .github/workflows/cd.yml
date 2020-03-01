@@ -27,7 +27,6 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install setuptools
           python3 -m pip install poetry==1.0.5
-          poetry config virtualenvs.create false
           poetry install
       - name: Prepare Docs
         run: cp README.md docs/index.md && sed -i.bak 's/\.\/docs/\.\//g' docs/index.md
