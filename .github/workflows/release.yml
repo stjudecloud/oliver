@@ -1,10 +1,28 @@
 name: Release
 
 on:
-  release:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  PyPI:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+            node-version: '13.x'
+      - name: Install Dependencies
+        run: npm install -g conventional-github-releaser
+      - name: Run Releaser
+        run: conventional-github-releaser -p angular
+        env:
+            DEBUG: conventional-github-releaser
+            CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  pypi:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
