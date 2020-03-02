@@ -16,7 +16,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     azure_subcommand = args.get("azure-subcommand")
 
     if azure_subcommand == "cosmos":
-        cosmos.call(args, cromwell)
+        await cosmos.call(args, cromwell)
     elif azure_subcommand == "aggregate":
         await aggregate.call(args, cromwell)
     else:

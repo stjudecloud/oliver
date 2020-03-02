@@ -1,16 +1,14 @@
 import os
 import json
-from urllib.parse import urljoin
 
-from typing import Dict
-from requests import request
+from typing import Any, Dict
 import azure.cosmos.cosmos_client as cosmos_client
 
 from ...lib import api, reporting
 
 
 class CosmosAPI:
-    def __init__(self, cosmos_name="", resource_group=""):
+    def __init__(self, cosmos_name: str = "", resource_group: str = "") -> None:
         stream = os.popen(
             "az cosmosdb show --name "
             + cosmos_name
@@ -19,7 +17,7 @@ class CosmosAPI:
         )
         server = stream.read()
         server = json.loads(server)
-        self.server = server["documentEndpoint"]
+        self.server: str = server["documentEndpoint"]
         stream = os.popen(
             "az cosmosdb keys list --name "
             + cosmos_name
@@ -31,18 +29,9 @@ class CosmosAPI:
         self.key = key["primaryMasterKey"]
         self.client = cosmos_client.CosmosClient(self.server, {"masterKey": self.key})
 
-    def _api_call(self, route, params=None, data=None, files=None, method="GET"):
-        if params is None:
-            params = {}
-
-        url = urljoin(self.server, route).format(version=self.version)
-
-        response = request(
-            method, url, headers=self.headers, params=params, data=data, files=files
-        )
-        return response.status_code, json.loads(response.content)
-
-    def query(self, database_id="TES", container_id="Tasks", where=""):
+    def query(
+        self, database_id: str = "TES", container_id: str = "Tasks", where: str = ""
+    ):
         return self.client.QueryItems(
             "dbs/" + database_id + "/colls/" + container_id,
             "SELECT * FROM " + container_id + " r " + where,
@@ -51,8 +40,8 @@ class CosmosAPI:
 
 
 async def call(
-    args: Dict, cromwell: api.CromwellAPI
-):  # pylint: disable=unused-argument
+    args: Dict[str, Any], cromwell: api.CromwellAPI  # pylint: disable=unused-argument
+) -> None:
     """Execute the subcommand.
 
     Args:

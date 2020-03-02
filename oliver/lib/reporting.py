@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import pendulum
 from logzero import logger
@@ -24,12 +24,14 @@ DEFAULT_HEADER_ORDER = [
 DEFAULT_GRID_STYLE = "fancy_grid"
 
 
-def localize_date(given_date: str):
+def localize_date(given_date: str) -> str:
     "Returns a localized date given any date that is parsable by pendulum."
     return pendulum.parse(given_date).in_tz(get_localzone()).to_day_datetime_string()
 
 
-def localize_date_from_timestamp(timestamp: int, already_localized=False):
+def localize_date_from_timestamp(
+    timestamp: int, already_localized: bool = False
+) -> str:
     "Returns a localized date given a UNIX timestamp."
 
     tz = "UTC"
@@ -45,7 +47,7 @@ def localize_date_from_timestamp(timestamp: int, already_localized=False):
     )
 
 
-def duration_to_text(duration):
+def duration_to_text(duration: pendulum.DateTime) -> str:
     parts = []
     attrs = ["years", "months", "days", "hours", "minutes", "remaining_seconds"]
     for attr in attrs:
@@ -63,12 +65,12 @@ def duration_to_text(duration):
 
 
 def print_dicts_as_table(
-    rows: List[Dict],
+    rows: List[Dict[str, Any]],
     grid_style: Optional[str] = None,
     clean: bool = True,
-    fill: str = None,
-    header_order: list = None,
-):
+    fill: str = "",
+    header_order: List[str] = None,
+) -> None:
     """Format a list of dicts and print as a table using `tabulate`.
 
     Args:
@@ -151,7 +153,9 @@ def print_dicts_as_table(
     )
 
 
-def print_error_as_table(status: str, message: str, grid_style: Optional[str] = None):
+def print_error_as_table(
+    status: str, message: str, grid_style: Optional[str] = None
+) -> None:
     """Prints an error message as a table.
 
     Args:

@@ -2,7 +2,7 @@ import json
 import os
 import re
 
-from typing import Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from ..lib import constants, errors
@@ -39,14 +39,14 @@ def parse_workflow(workflow: str) -> Dict[str, str]:
 
 
 def parse_workflow_inputs(
-    workflow_inputs: List,
-    job_name: str = None,
-    job_group: str = None,
-    output_dir: str = None,
-    inputs: Dict = None,
-    options: Dict = None,
-    labels: Dict = None,
-):
+    workflow_inputs: List[str],
+    job_name: Optional[str] = None,
+    job_group: Optional[str] = None,
+    output_dir: Optional[str] = None,
+    inputs: Optional[Dict[str, Any]] = None,
+    options: Optional[Dict[str, Any]] = None,
+    labels: Optional[Dict[str, Any]] = None,
+) -> Tuple[str, str, str]:
     if inputs is None:
         inputs = {}
     if options is None:
@@ -75,7 +75,7 @@ def parse_workflow_inputs(
     return json.dumps(inputs), json.dumps(options), json.dumps(labels)
 
 
-def parse_cmdline_arg(arg):
+def parse_cmdline_arg(arg: str) -> Tuple[str, str, Dict[str, Any]]:
     # We step through this list in order and check if it matches. In this scenario, its
     # important that `inputs` remains last as it matches the patterns before it
     # (including the prefix characters).
@@ -85,8 +85,8 @@ def parse_cmdline_arg(arg):
         ("input", r"^(\S+)$"),
     ]
 
-    arg_type = None
-    source_type = None
+    arg_type = ""
+    source_type = ""
     result = {}
 
     for type, regex in patterns:

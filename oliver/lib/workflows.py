@@ -1,5 +1,5 @@
 import datetime
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import pendulum
 from logzero import logger
@@ -9,19 +9,19 @@ from . import api, batch, constants
 
 async def get_workflows(
     cromwell: api.CromwellAPI,
-    submission_time_hours_ago: int = None,
-    oliver_job_name: str = None,
-    oliver_job_group_name: str = None,
-    cromwell_workflow_uuid: str = None,
-    cromwell_workflow_name: str = None,
-    batches: Union[List[int], bool] = None,
+    submission_time_hours_ago: Optional[int] = None,
+    oliver_job_name: Optional[str] = None,
+    oliver_job_group_name: Optional[str] = None,
+    cromwell_workflow_uuid: Optional[str] = None,
+    cromwell_workflow_name: Optional[str] = None,
+    batches: Optional[Union[List[int], bool]] = None,
     batch_interval_mins: Optional[int] = 5,
     relative_batching: Optional[bool] = False,
     opt_into_reporting_running_jobs: bool = False,
     opt_into_reporting_aborted_jobs: bool = False,
     opt_into_reporting_failed_jobs: bool = False,
     opt_into_reporting_succeeded_jobs: bool = False,
-) -> List[Dict]:
+) -> List[Dict[str, Any]]:
     """Retrieves a list of workflows and filter based on provided parameters.
 
     Re: `opt_into_reporting_XXXXXX_jobs`. Okay, so admittedly this is a weird
@@ -157,7 +157,9 @@ async def get_workflows(
     return workflows
 
 
-async def get_outputs(cromwell: api.CromwellAPI, cromwell_workflow_uuid: str):
+async def get_outputs(
+    cromwell: api.CromwellAPI, cromwell_workflow_uuid: str
+) -> Dict[str, Any]:
     """Get the outputs from a workflow with the given uuid.
 
     Args:

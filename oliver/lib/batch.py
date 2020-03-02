@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import pendulum
 from logzero import logger
@@ -7,11 +7,11 @@ from . import errors
 
 
 def get_workflow_batches(
-    workflows: List[dict],
+    workflows: List[Dict[str, Any]],
     batches: Union[int, List[int], bool],
     batch_interval_mins: Optional[int] = 5,
     relative: Optional[bool] = False,
-):
+) -> List[Dict[str, Any]]:
     """Returns all workflows where the derived batch number is included in `batches`.
 
     args:
@@ -58,8 +58,8 @@ def get_workflow_batches(
 
 
 def batch_workflows(
-    workflows: List[Dict], batch_interval_mins: Optional[int] = 5
-) -> Tuple[List[Dict], int]:
+    workflows: List[Dict[str, Any]], batch_interval_mins: Optional[int] = 5
+) -> Tuple[List[Dict[str, Any]], int]:
     """Batches workflows based on their `submission` key and a time interval.
 
     In short, this is a simple method of batching jobs. Here, we start with the
@@ -96,6 +96,9 @@ def batch_workflows(
                     suggest_report=True,
                 )
 
+        # Asserting the variable is not None for mypy since it does not understand that
+        # errors.report exits the program
+        assert submission is not None
         t = pendulum.parse(submission)
         if last_submission_time:
             delta = (t - last_submission_time).total_minutes()

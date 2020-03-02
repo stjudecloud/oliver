@@ -1,14 +1,14 @@
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 from . import errors
 
 
-def _input(question: str):
+def _input(question: str) -> None:
     """Need a wrapper method for mocking during tests"""
     return input(question)
 
 
-def ask_boolean_question(question: str, tries: int = 3):
+def ask_boolean_question(question: str, tries: int = 3) -> str:
     choices: List[str] = ["yes", "y", "no", "n"]
 
     tried = 0
@@ -25,7 +25,9 @@ def ask_boolean_question(question: str, tries: int = 3):
     )
 
 
-def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
+def dict_to_aiohttp_tuples(
+    d: Dict[str, Union[str, int, List[Any]]]
+) -> List[Tuple[Any, Any]]:
     """aiohttp doesn't like dictionaries where the values are arrays.
 
     In particular, passing in a mapping parses all of the values with _query_var:
@@ -48,9 +50,9 @@ def dict_to_aiohttp_tuples(d: Dict) -> List[Tuple]:
     """
 
     assert isinstance(d, dict), "Expected a dictionary for aiohttp!"
-    results: List[Tuple] = []
+    results: List[Tuple[Any, Any]] = []
 
-    def parse(k, v):
+    def parse(k: Any, v: Any) -> List[Tuple[Any, Any]]:
         return [(k, v)]
 
     for k, v in d.items():
