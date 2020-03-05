@@ -1,12 +1,12 @@
 import argparse
 
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 from ..lib import api, reporting
 
 
 async def get_outputs(
-    cromwell_api: api.CromwellAPI, workflow_id: str, output_prefix: str = None
+    cromwell_api: api.CromwellAPI, workflow_id: str, output_prefix: Optional[str] = ""
 ) -> List[Dict[str, str]]:
     outputs = await cromwell_api.get_workflows_outputs(workflow_id)
     results = [{"Output Name": k, "Location": v} for k, v in outputs["outputs"].items()]
@@ -18,7 +18,7 @@ async def get_outputs(
     return results
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -26,14 +26,14 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     """
 
     results = await get_outputs(
-        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix"),
+        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix", ""),
     )
     reporting.print_dicts_as_table(results)
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

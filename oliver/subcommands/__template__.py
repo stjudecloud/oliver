@@ -3,7 +3,7 @@
 
 import argparse
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from ..lib import api
 
@@ -11,7 +11,7 @@ SUBCOMMAND_NAME = "__template__"
 SUBCOMMAND_ALIASES: List[str] = []
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -24,8 +24,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

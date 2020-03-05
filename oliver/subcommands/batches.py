@@ -2,7 +2,7 @@
 
 import argparse
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from collections import defaultdict
 from logzero import logger
@@ -19,7 +19,7 @@ SUBCOMMAND_NAME = "batches"
 SUBCOMMAND_ALIASES = ["b"]
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -45,7 +45,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         batch_interval_mins=args.get("batch_interval_mins"),
     )
 
-    aggregation: Dict[str, List] = defaultdict(list)
+    aggregation: Dict[str, List[Any]] = defaultdict(list)
     for w in workflows:
         if "batch" in w:
             aggregation[w["batch"]].append(w)
@@ -104,8 +104,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

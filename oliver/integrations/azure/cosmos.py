@@ -16,8 +16,8 @@ class CosmosAPI:
             + resource_group
         )
         server = stream.read()
-        server = json.loads(server)
-        self.server: str = server["documentEndpoint"]
+        server_obj = json.loads(server)
+        self.server = server_obj["documentEndpoint"]
         stream = os.popen(
             "az cosmosdb keys list --name "
             + cosmos_name
@@ -25,13 +25,13 @@ class CosmosAPI:
             + resource_group
         )
         key = stream.read()
-        key = json.loads(key)
-        self.key = key["primaryMasterKey"]
+        key_obj = json.loads(key)
+        self.key = key_obj["primaryMasterKey"]
         self.client = cosmos_client.CosmosClient(self.server, {"masterKey": self.key})
 
     def query(
         self, database_id: str = "TES", container_id: str = "Tasks", where: str = ""
-    ):
+    ) -> Any:
         return self.client.QueryItems(
             "dbs/" + database_id + "/colls/" + container_id,
             "SELECT * FROM " + container_id + " r " + where,

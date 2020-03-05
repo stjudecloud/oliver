@@ -1,6 +1,6 @@
 import os
 
-from typing import Dict
+from typing import Any, Dict
 
 from ...lib import (
     api,
@@ -11,7 +11,7 @@ from ...lib import (
 from ...subcommands import outputs as _outputs
 
 
-def process_output(dest_folder: str, output: str):
+def process_output(dest_folder: str, output: str) -> None:
     cmd = None
 
     if isinstance(output, list):
@@ -31,7 +31,7 @@ def process_output(dest_folder: str, output: str):
     print(cmd)
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:

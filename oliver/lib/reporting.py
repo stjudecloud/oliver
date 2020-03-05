@@ -1,10 +1,11 @@
 from collections import OrderedDict
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
-import pendulum
+from datetime import timedelta
 from logzero import logger
 from tzlocal import get_localzone
+import pendulum
 from tabulate import tabulate
 
 from . import errors
@@ -30,7 +31,7 @@ def localize_date(given_date: str) -> str:
 
 
 def localize_date_from_timestamp(
-    timestamp: int, already_localized: bool = False
+    timestamp: Union[int, float], already_localized: bool = False
 ) -> str:
     "Returns a localized date given a UNIX timestamp."
 
@@ -47,7 +48,7 @@ def localize_date_from_timestamp(
     )
 
 
-def duration_to_text(duration: pendulum.DateTime) -> str:
+def duration_to_text(duration: timedelta) -> str:
     parts = []
     attrs = ["years", "months", "days", "hours", "minutes", "remaining_seconds"]
     for attr in attrs:
@@ -69,7 +70,7 @@ def print_dicts_as_table(
     grid_style: Optional[str] = None,
     clean: bool = True,
     fill: str = "",
-    header_order: List[str] = None,
+    header_order: Optional[List[str]] = None,
 ) -> None:
     """Format a list of dicts and print as a table using `tabulate`.
 

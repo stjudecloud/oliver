@@ -137,7 +137,7 @@ async def get_workflows(
 
     workflows = sorted(
         workflows,
-        key=lambda k: pendulum.parse(k.get("submission")).timestamp()
+        key=lambda k: pendulum.parse(k.get("submission", "")).timestamp()
         if "submission" in k
         else 0,
     )

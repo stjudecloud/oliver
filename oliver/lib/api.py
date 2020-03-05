@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, cast, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
 from logzero import logger
 
@@ -271,7 +271,7 @@ class CromwellAPI:
         }
 
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
-        results = data.get("results")
+        results = cast(List[Dict[str, Any]], data.get("results"))
         if not results:
             if not isinstance(results, list):
                 errors.report(
@@ -287,7 +287,7 @@ class CromwellAPI:
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
 
-        return data["results"]
+        return results
 
     async def post_workflows_query(self) -> None:
         "POST /api/workflows/{version}/query"

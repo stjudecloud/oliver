@@ -1,25 +1,33 @@
 import os
 
-from typing import Dict
+from typing import Any, cast, Dict, List, Optional, Tuple, Union
 from functools import lru_cache
 from logzero import logger
 
 import pendulum
 import boto3
+from mypy_boto3 import batch, logs as _logs
+from mypy_boto3.batch import BatchClient
+from mypy_boto3.logs import CloudWatchLogsClient
 
 from ...lib import api, errors, reporting, workflows as _workflows
 
 
 @lru_cache(maxsize=4096)
-def describe_batch_job(batch_client, job_id):
+def describe_batch_job(batch_client: BatchClient, job_id: str) -> Dict[str, Any]:
     return batch_client.describe_jobs(jobs=[job_id])
 
 
-def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
+def get_aws_batch_jobs(
+    args: Dict[str, Any],
+    batch_client: BatchClient,
+    start_time_filter: Union[int, float],
+    end_time_filter: Union[int, float],
+) -> List[Dict[str, Any]]:
     paginator = batch_client.get_paginator("list_jobs")
     results = []
 
-    for status in args.get("status"):
+    for status in args.get("status", []):
         for item in paginator.paginate(jobQueue=args.get("queue"), jobStatus=status):
             resp = item.get("jobSummaryList")
             if not resp:
@@ -51,7 +59,7 @@ def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
                 )
                 new_job["startReadable"] = (
                     reporting.localize_date_from_timestamp(new_job.get("start"))
-                    if start
+                    if start and new_job.get("start") is not None
                     else None
                 )
                 new_job["endReadable"] = (
@@ -88,7 +96,9 @@ def get_aws_batch_jobs(args, batch_client, start_time_filter, end_time_filter):
     return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0))
 
 
-async def get_calls_and_times_for_workflows(args, cromwell):
+async def get_calls_and_times_for_workflows(
+    args: Dict[str, Any], cromwell: api.CromwellAPI
+) -> Tuple[List[Dict[str, Any]], Union[int, float], Union[int, float]]:
     batches = None
     relative = None
 
@@ -124,7 +134,9 @@ async def get_calls_and_times_for_workflows(args, cromwell):
 
     for w in workflows:
         # (1) aggregate all individual failed calls into `failed_calls`.
-        for call_name, call in metadatas.get(w.get("id")).get("calls").items():
+        for call_name, call in (
+            metadatas.get(w.get("id", ""), {}).get("calls", []).items()
+        ):
             for f in [f for f in call if f.get("executionStatus") == "Failed"]:
                 failed_call = {
                     "id": f.get("jobId"),
@@ -133,12 +145,16 @@ async def get_calls_and_times_for_workflows(args, cromwell):
                     "end": pendulum.parse(f.get("end")).timestamp(),
                     "workflow_id": w.get("id"),
                 }
-                failed_call["startReadable"] = reporting.localize_date_from_timestamp(
-                    failed_call.get("start")
-                )
-                failed_call["endReadable"] = reporting.localize_date_from_timestamp(
-                    failed_call.get("end")
-                )
+                if failed_call.get("start") is not None:
+                    failed_call[
+                        "startReadable"
+                    ] = reporting.localize_date_from_timestamp(
+                        cast(int, failed_call.get("start"))
+                    )
+                if failed_call.get("end") is not None:
+                    failed_call["endReadable"] = reporting.localize_date_from_timestamp(
+                        cast(int, failed_call.get("end"))
+                    )
                 failed_calls.append(failed_call)
 
         # (2) compute earliest start time and latest end time to know what time ranges
@@ -165,6 +181,11 @@ async def get_calls_and_times_for_workflows(args, cromwell):
             ):
                 end_time_to_filter_by = workflows_end_time
 
+    if start_time_to_filter_by is None or end_time_to_filter_by is None:
+        raise Exception(
+            "Unexpected values reached. Please report this to the developers."
+        )
+
     return (
         failed_calls,
         start_time_to_filter_by.timestamp(),
@@ -173,8 +194,12 @@ async def get_calls_and_times_for_workflows(args, cromwell):
 
 
 def write_log(
-    batch_client, logs_client, call, output_directory, candidate_batch_jobs=None
-):
+    batch_client: batch.BatchClient,
+    logs_client: _logs.CloudWatchLogsClient,
+    call: Dict[str, Any],
+    output_directory: str,
+    candidate_batch_jobs: Optional[List[Dict[str, Any]]] = None,
+) -> None:
     if candidate_batch_jobs is None:
         candidate_batch_jobs = []
 
@@ -226,8 +251,8 @@ def write_log(
                     logs = logs_client.get_log_events(
                         logGroupName="/aws/batch/job", logStreamName=logstream_name
                     )
-                    for event in logs.get("events"):
-                        f.write(event.get("message") + "\n")
+                    for event in logs.get("events", []):
+                        f.write(event.get("message", "") + "\n")
                     success = True
                 except Exception:
                     pass
@@ -240,9 +265,9 @@ def write_log(
                 )
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
-    batch_client = boto3.client("batch")
-    logs_client = boto3.client("logs")
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
+    batch_client: BatchClient = boto3.client("batch")
+    logs_client: CloudWatchLogsClient = boto3.client("logs")
 
     (
         failed_calls,
@@ -275,10 +300,9 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     for call in failed_calls:
         candidate_batch_jobs = []
 
+        call_name = call.get("name", "")
         easy_call_identifier = (
-            call.get("name").split("_")[0]
-            if "_" in call.get("name")
-            else call.get("name")
+            call_name.split("_")[0] if "_" in call_name else call_name
         )
         for batch_job in [
             j for j in aws_batch_jobs if easy_call_identifier in j.get("name")
@@ -298,6 +322,6 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
                 batch_client,
                 logs_client,
                 call,
-                args.get("output_folder"),
+                args.get("output_folder", ""),
                 candidate_batch_jobs=candidate_batch_jobs,
             )

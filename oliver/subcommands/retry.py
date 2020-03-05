@@ -1,13 +1,13 @@
 import argparse
 import json
 
-from typing import Dict
+from typing import Any, cast, Dict
 
 from ..lib import api, args as _args, errors, reporting, utils, workflows as _workflows
 from ..lib.parsing import parse_workflow_inputs
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -85,6 +85,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             job_group=args.get("job_group"),
             output_dir=args.get("output_dir"),
         )
+        print(workflow_args)
+        print(workflow_args["workflowInputs"])
 
         if args.get("dry_run"):
             for key, value in workflow_args.items():
@@ -94,9 +96,9 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         results.append(
             await cromwell.post_workflows(
                 workflowUrl=workflowUrl,
-                workflowInputs=workflow_args["workflowInputs"],
-                workflowOptions=workflow_args["workflowOptions"],
-                labels=workflow_args["workflowLabels"],
+                workflowInputs=cast(Dict[str, str], workflow_args["workflowInputs"]),
+                workflowOptions=cast(Dict[str, str], workflow_args["workflowOptions"]),
+                labels=cast(Dict[str, str], workflow_args["workflowLabels"]),
             )
         )
 
@@ -104,8 +106,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

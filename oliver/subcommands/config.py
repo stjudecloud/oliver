@@ -64,8 +64,8 @@ async def call(
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:
