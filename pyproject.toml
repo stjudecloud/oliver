@@ -61,6 +61,9 @@ pytest-asyncio = "^0.10.0"
 pytest-cov = "^2.8.1"
 python-semantic-release = { git = "https://github.com/claymcleod/python-semantic-release.git", branch="improvement/commit-messages" }
 wheel = "^0.34.0"
+mypy = "^0.761"
+mypy-boto3 = {extras = ["batch", "logs"], version = "^1.12.17"}
+boto3-stubs = "^1.12.17"
 
 [tool.semantic_release]
 version_variable = "pyproject.toml:version"
