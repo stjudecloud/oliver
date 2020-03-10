@@ -1,14 +1,14 @@
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Optional, Union
 
 from . import errors
 
 
-def _input(question: str) -> None:
+def _input(question: str) -> str:
     """Need a wrapper method for mocking during tests"""
     return input(question)
 
 
-def ask_boolean_question(question: str, tries: int = 3) -> str:
+def ask_boolean_question(question: str, tries: int = 3) -> Optional[str]:
     choices: List[str] = ["yes", "y", "no", "n"]
 
     tried = 0
@@ -23,6 +23,9 @@ def ask_boolean_question(question: str, tries: int = 3) -> str:
         fatal=True,
         exitcode=errors.ERROR_INVALID_INPUT,
     )
+    # This function should return `answer` or exit from the report method.
+    # The following return is just to silence mypy on missing return value.
+    return None
 
 
 def dict_to_aiohttp_tuples(

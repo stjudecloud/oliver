@@ -24,7 +24,11 @@ def remove_none_values(d: Dict[str, Any]) -> Dict[str, Any]:
 
 class CromwellAPI:
     def __init__(
-        self, server: str, version: str, headers: Optional[Dict[str, str]] = None, route_override: Optional[str] = None
+        self,
+        server: str,
+        version: str,
+        headers: Optional[Dict[str, str]] = None,
+        route_override: Optional[str] = None,
     ):
         self.server = server
         self.version = version
@@ -106,7 +110,7 @@ class CromwellAPI:
             )
         status_code = response.status
         response_text = await response.text()
-        content = None
+        content: Dict[str, Any] = {}
         try:
             if response_text:
                 content = json.loads(response_text)
