@@ -8,10 +8,13 @@ jobs:
     name: Check type annotations with MyPy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
       - run: pip install --no-cache-dir poetry
       - run: poetry install
       - run: which python
-      - run: which mypy
-      - run: mypy oliver --strict
+      - run: poetry run mypy oliver --strict
