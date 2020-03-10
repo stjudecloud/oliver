@@ -5,7 +5,7 @@ from functools import lru_cache
 from logzero import logger
 
 import pendulum
-import boto3.client  # pylint: disable=import-error
+import boto3
 from mypy_boto3_batch import BatchClient
 from mypy_boto3_batch.type_defs import DescribeJobsResponseTypeDef
 from mypy_boto3_logs import CloudWatchLogsClient
@@ -277,8 +277,8 @@ def write_log(
 
 
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
-    batch_client: BatchClient = boto3.client("batch")
-    logs_client: CloudWatchLogsClient = boto3.client("logs")
+    batch_client: BatchClient = boto3.client("batch")  # type: ignore
+    logs_client: CloudWatchLogsClient = boto3.client("logs")  # type: ignore
 
     (
         failed_calls,
