@@ -4,7 +4,7 @@ import argparse
 import logging
 import sys
 
-from typing import Any, Dict
+from typing import Any, cast, Dict
 import logzero
 
 from oliver.lib import api, args as _args, errors, config as _config
@@ -90,7 +90,7 @@ async def run() -> None:
                 fatal=True,
                 exitcode=errors.ERROR_INTERNAL_ERROR,
             )
-        subparser = module.register_subparser(subparsers)
+        subparser = cast(Any, module).register_subparser(subparsers)
         _args.add_loglevel_group(subparser)
 
     args = vars(parser.parse_args())
