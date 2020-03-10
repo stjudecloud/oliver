@@ -5,15 +5,18 @@ from functools import lru_cache
 from logzero import logger
 
 import pendulum
-from boto3 import client
+import boto3.client  # pylint: disable=import-error
 from mypy_boto3_batch import BatchClient
+from mypy_boto3_batch.type_defs import DescribeJobsResponseTypeDef
 from mypy_boto3_logs import CloudWatchLogsClient
 
 from ...lib import api, errors, reporting, workflows as _workflows
 
 
 @lru_cache(maxsize=4096)
-def describe_batch_job(batch_client: BatchClient, job_id: str) -> Dict[str, Any]:
+def describe_batch_job(
+    batch_client: BatchClient, job_id: str
+) -> DescribeJobsResponseTypeDef:
     return batch_client.describe_jobs(jobs=[job_id])
 
 
@@ -246,7 +249,7 @@ def write_log(
                 exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
             )
         assert len(jobs) == 1
-        logstream = jobs[0].get("container").get("logStreamName")
+        logstream = jobs[0].get("container", {}).get("logStreamName", "")
 
         with open(os.path.join(batchdir, "cloudwatch-logs.txt"), "w") as f:
             success = False
@@ -274,8 +277,8 @@ def write_log(
 
 
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
-    batch_client: BatchClient = client("batch")
-    logs_client: CloudWatchLogsClient = client("logs")
+    batch_client: BatchClient = boto3.client("batch")
+    logs_client: CloudWatchLogsClient = boto3.client("logs")
 
     (
         failed_calls,
