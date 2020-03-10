@@ -1,7 +1,6 @@
 name: MyPy Check
 on:
   push:
-  pull_request:
 
 jobs:
   mypy:

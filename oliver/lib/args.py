@@ -2,6 +2,7 @@ import argparse
 
 from typing import Any, Dict
 
+
 def add_version_arg(parser: argparse.ArgumentParser) -> None:
     """adds version arguments to a parser."""
 
