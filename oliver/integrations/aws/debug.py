@@ -193,9 +193,13 @@ async def get_calls_and_times_for_workflows(
                 end_time_to_filter_by = workflows_end_time
 
     if start_time_to_filter_by is None or end_time_to_filter_by is None:
-        raise Exception(
-            "Unexpected values reached. Please report this to the developers."
+        errors.report(
+            "Unexpected values for workflow start or end time!",
+            fatal=True,
+            exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
         )
+
+    assert start_time_to_filter_by is not None and end_time_to_filter_by is not None
 
     return (
         failed_calls,
