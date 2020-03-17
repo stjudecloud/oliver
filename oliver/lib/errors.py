@@ -13,7 +13,7 @@ ERROR_INTERNAL_ERROR = 255
 
 def report(
     message: str, fatal: bool = True, exitcode: int = 1, suggest_report: bool = False
-):
+) -> None:
     """Reports an error to terminal and exits (if specified).
 
     Args:

@@ -4,6 +4,7 @@ import argparse
 import logging
 import sys
 
+from typing import Any, cast, Dict
 import logzero
 
 from oliver.lib import api, args as _args, errors, config as _config
@@ -44,7 +45,7 @@ SUBCOMMANDS = {
 }
 
 
-def ensure_required_args(args):
+def ensure_required_args(args: Dict[str, Any]) -> None:
     missing_args = []
 
     for a in _config.REQUIRED_ARGS:
@@ -61,7 +62,7 @@ def ensure_required_args(args):
         )
 
 
-async def run():
+async def run() -> None:
     parser = argparse.ArgumentParser(
         description="An opinionated Cromwell orchestration system."
     )
@@ -89,7 +90,7 @@ async def run():
                 fatal=True,
                 exitcode=errors.ERROR_INTERNAL_ERROR,
             )
-        subparser = module.register_subparser(subparsers)
+        subparser = cast(Any, module).register_subparser(subparsers)
         _args.add_loglevel_group(subparser)
 
     args = vars(parser.parse_args())
@@ -120,5 +121,5 @@ async def run():
     await cromwell.close()
 
 
-def main():
+def main() -> None:
     asyncio.run(run())

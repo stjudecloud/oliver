@@ -2,7 +2,7 @@
 
 import argparse
 
-from typing import Dict
+from typing import Any, Dict, List
 
 from collections import defaultdict
 from logzero import logger
@@ -19,7 +19,7 @@ SUBCOMMAND_NAME = "batches"
 SUBCOMMAND_ALIASES = ["b"]
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -29,11 +29,13 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     batches = True
     relative = None
 
-    if args.get("batches_relative"):
-        batches = args.get("batches_relative")
+    batches_relative = args.get("batches_relative")
+    batches_absolute = args.get("batches_absolute")
+    if batches_relative:
+        batches = batches_relative
         relative = True
-    elif args.get("batches_absolute"):
-        batches = args.get("batches_absolute")
+    elif batches_absolute:
+        batches = batches_absolute
         relative = False
 
     workflows = await _workflows.get_workflows(
@@ -43,9 +45,10 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         batch_interval_mins=args.get("batch_interval_mins"),
     )
 
-    aggregation = defaultdict(list)
+    aggregation: Dict[str, List[Any]] = defaultdict(list)
     for w in workflows:
-        aggregation[w.get("batch")].append(w)
+        if "batch" in w:
+            aggregation[w["batch"]].append(w)
 
     results = []
 
@@ -60,7 +63,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         r = {"Batch": batch_num, "# of Jobs": len(batch_workflows)}
 
         # workflow statuses
-        statuses = defaultdict(int)
+        statuses: Dict[str, int] = defaultdict(int)
         for status in [w.get("status") for w in batch_workflows]:
             statuses[status] += 1
         r["Statuses"] = ", ".join(
@@ -76,7 +79,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
             r["Job Groups"] = ", ".join(
                 list(
                     {
-                        oliver.get_oliver_group(metadatas.get(x.get("id")))
+                        oliver.get_oliver_group(metadatas.get(x.get("id"), {}))
                         for x in batch_workflows
                     }
                 )
@@ -101,8 +104,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

@@ -1,6 +1,6 @@
 import os
 
-from typing import Dict
+from typing import Any, Dict, Optional
 
 from ...lib import api, errors
 from ...subcommands import outputs as _outputs
@@ -10,9 +10,9 @@ def process_output_azure(
     dest_folder: str,
     output: str,
     azure_storage_account: str,
-    sas_token: str = None,
-    dry_run: bool = False,
-):
+    sas_token: Optional[str] = "",
+    dry_run: Optional[bool] = False,
+) -> None:
     if isinstance(output, list):
         for o in output:
             process_output_azure(
@@ -41,7 +41,7 @@ def process_output_azure(
         os.system(cmd)
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -49,7 +49,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         cromwell (api.CromwellAPI): Cromwell server to use for subcommand.
     """
     outputs = await _outputs.get_outputs(
-        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix")
+        cromwell, args["workflow-id"], output_prefix=args.get("output_prefix", "")
     )
     if not args.get("storage_account_name"):
         errors.report(
@@ -60,9 +60,9 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
     for output in outputs:
         process_output_azure(
-            args.get("output-folder"),
+            args.get("output-folder", ""),
             output["Location"],
-            args.get("storage_account_name"),
+            args.get("storage_account_name", ""),
             args.get("sas_token"),
             args.get("dry_run"),
         )

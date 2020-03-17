@@ -1,4 +1,9 @@
-def add_version_arg(parser):
+import argparse
+
+from typing import Any, Dict
+
+
+def add_version_arg(parser: argparse.ArgumentParser) -> None:
     """adds version arguments to a parser."""
 
     parser.add_argument(
@@ -9,7 +14,7 @@ def add_version_arg(parser):
     )
 
 
-def add_loglevel_group(parser, required=False):
+def add_loglevel_group(parser: argparse.ArgumentParser, required: bool = False) -> None:
     """Adds log level groups to a parser."""
 
     loglevel_group = parser.add_mutually_exclusive_group(required=required)
@@ -28,7 +33,9 @@ def add_loglevel_group(parser, required=False):
     )
 
 
-def add_batches_interval_arg(parser):
+def add_batches_interval_arg(
+    parser: argparse._ActionsContainer,  # pylint: disable=protected-access
+) -> None:
     parser.add_argument(
         "-x",
         "--batch-interval-mins",
@@ -38,8 +45,10 @@ def add_batches_interval_arg(parser):
 
 
 def add_batches_group(
-    parser, required=False, add_batches_interval_arg_automatically=True
-):
+    parser: argparse._ActionsContainer,  # pylint: disable=protected-access
+    required: bool = False,
+    add_batches_interval_arg_automatically: bool = True,
+) -> None:
     batches = parser.add_mutually_exclusive_group(required=required)
     batches.add_argument(
         "-b",
@@ -61,13 +70,21 @@ def add_batches_group(
         add_batches_interval_arg(parser)
 
 
-def add_oliver_job_group_args(parser, **kwargs):
-    _kwargs = {"help": "Specify the Oliver job group.", "type": str, "default": None}
+def add_oliver_job_group_args(parser: argparse.ArgumentParser, **kwargs: Any) -> None:
+    _kwargs: Dict[str, Any] = {
+        "help": "Specify the Oliver job group.",
+        "type": str,
+        "default": None,
+    }
     _kwargs.update(kwargs)
     parser.add_argument("-g", "--job-group", **_kwargs)
 
 
-def add_oliver_job_name_args(parser, **kwargs):
-    _kwargs = {"help": "Specify the Oliver job name.", "type": str, "default": None}
+def add_oliver_job_name_args(parser: argparse.ArgumentParser, **kwargs: Any) -> None:
+    _kwargs: Dict[str, Any] = {
+        "help": "Specify the Oliver job name.",
+        "type": str,
+        "default": None,
+    }
     _kwargs.update(kwargs)
     parser.add_argument("-j", "--job-name", **_kwargs)

@@ -1,20 +1,20 @@
 """Remove outputs for all failed or aborted workflows.
 """
 
-from typing import Dict
+from typing import Any, Dict, Mapping
 from logzero import logger
 
 from ...lib import api, errors, workflows as _workflows
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    workflow_root_folder = args.get("workflow-root-folder")
+    workflow_root_folder = args.get("workflow-root-folder", "")
     if not workflow_root_folder.startswith("s3://"):
         errors.report(
             message="Workflow root folder must start with 's3://'!",
@@ -31,7 +31,10 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         while workflow_root_folder.endswith("/"):
             workflow_root_folder = workflow_root_folder[:-1]
 
-    kwargs = {}
+    # Relevant issue: https://github.com/python/mypy/issues/1969
+    # mypy maps kwargs to arguments in the function and therefore is an incompatible type.
+    # The issue states that mypy does not error if the type is set to Mapping
+    kwargs: Mapping[str, bool] = {}
     if not args.get("all"):
         kwargs = {
             "opt_into_reporting_aborted_jobs": True,

@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import pendulum
 from logzero import logger
@@ -7,11 +7,11 @@ from . import errors
 
 
 def get_workflow_batches(
-    workflows: List[dict],
-    batches: Union[int, List[int]],
-    batch_interval_mins: int = 5,
-    relative: bool = False,
-):
+    workflows: List[Dict[str, Any]],
+    batches: Union[int, List[int], bool],
+    batch_interval_mins: Optional[int] = 5,
+    relative: Optional[bool] = False,
+) -> List[Dict[str, Any]]:
     """Returns all workflows where the derived batch number is included in `batches`.
 
     args:
@@ -29,13 +29,18 @@ def get_workflow_batches(
         List[dict]: the `workflows` filtered by batch number.
     """
 
-    if not isinstance(batches, bool) and isinstance(batches, int):
-        batches = [batches]
-
     _workflows, _max_batch_num = batch_workflows(
         workflows, batch_interval_mins=batch_interval_mins
     )
-    _batches = batches
+
+    if isinstance(batches, bool) and batches:
+        logger.info("Targetting all batches.")
+        return _workflows
+
+    if isinstance(batches, int):
+        batches = [batches]
+
+    _batches: List[int] = batches
 
     if relative:
         _batches = [_max_batch_num - b for b in _batches]
@@ -46,17 +51,15 @@ def get_workflow_batches(
                 exitcode=errors.ERROR_INVALID_INPUT,
             )
 
-    if isinstance(batches, bool) and batches:
-        logger.info("Targetting all batches.")
-        return _workflows
-
     logger.info(
         f"Targetting all jobs in batch(es): {', '.join([str(b) for b in _batches])} (original={', '.join([str(b) for b in batches])}, relative={relative})."
     )
     return list(filter(lambda w: w.get("batch") in _batches, _workflows))
 
 
-def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List[Dict]:
+def batch_workflows(
+    workflows: List[Dict[str, Any]], batch_interval_mins: Optional[int] = 5
+) -> Tuple[List[Dict[str, Any]], int]:
     """Batches workflows based on their `submission` key and a time interval.
 
     In short, this is a simple method of batching jobs. Here, we start with the
@@ -93,6 +96,9 @@ def batch_workflows(workflows: List[Dict], batch_interval_mins: int = 5) -> List
                     suggest_report=True,
                 )
 
+        # Asserting the variable is not None for mypy since it does not understand that
+        # errors.report exits the program
+        assert submission is not None
         t = pendulum.parse(submission)
         if last_submission_time:
             delta = (t - last_submission_time).total_minutes()

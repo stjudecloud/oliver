@@ -1,7 +1,7 @@
 import argparse
 import os
 
-from typing import Dict
+from typing import Any, Dict
 
 from ..lib import (
     api,
@@ -10,7 +10,7 @@ from ..lib import (
 from ..subcommands import outputs as _outputs
 
 
-def process_output(dest_folder: str, output: str, dry_run: bool = False):
+def process_output(dest_folder: str, output: str, dry_run: bool = False) -> None:
     cmd = None
 
     if isinstance(output, list):
@@ -26,7 +26,7 @@ def process_output(dest_folder: str, output: str, dry_run: bool = False):
         os.system(cmd)
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -34,7 +34,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         cromwell (CromwellAPI): The cromwell API server to use.
     """
 
-    output_folder = args.get("output-folder")
+    output_folder = args.get("output-folder", "")
     workflows = []
 
     workflows = await _workflows.get_workflows(
@@ -42,19 +42,21 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
     )
 
     for workflow in workflows:
-        outputs = await _outputs.get_outputs(cromwell, workflow.get("id"),)
+        outputs = await _outputs.get_outputs(cromwell, workflow.get("id", ""),)
         _this_output_folder = output_folder
 
-        if not _this_output_folder.endswith(os.path.sep):
+        if _this_output_folder and not _this_output_folder.endswith(os.path.sep):
             _this_output_folder = _this_output_folder + os.path.sep
 
         for output in outputs:
-            process_output(_this_output_folder, output["Location"], args.get("dry_run"))
+            process_output(
+                _this_output_folder, output["Location"], args.get("dry_run", False)
+            )
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
     Args:
         subparser (argparse._SubParsersAction): Subparsers action.

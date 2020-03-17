@@ -1,0 +1,19 @@
+name: MyPy Check
+on:
+  push:
+
+jobs:
+  mypy:
+    name: Check type annotations with MyPy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - run: pip install --no-cache-dir poetry
+      - run: poetry install
+      - run: which python
+      - run: poetry run mypy oliver --strict

@@ -1,12 +1,12 @@
 import argparse
 import json
 
-from typing import Dict
+from typing import Any, Dict
 
 from ..lib import api, errors
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -26,8 +26,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

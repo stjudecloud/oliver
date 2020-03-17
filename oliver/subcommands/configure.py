@@ -1,6 +1,6 @@
 import argparse
 
-from typing import Dict
+from typing import Any, Dict
 
 from ..lib import api
 from ..lib.config import get_default_config, read_config, write_config
@@ -12,13 +12,13 @@ QUESTION_MAPPING = {
 }
 
 
-def ask(question, default):
+def ask(question: str, default: str) -> str:
     return input(f"{question} (default: {default})? ")
 
 
 async def call(
-    args: Dict, cromwell: api.CromwellAPI
-):  # pylint: disable=unused-argument
+    args: Dict[str, Any], cromwell: api.CromwellAPI  # pylint: disable=unused-argument
+) -> None:
     """Execute the subcommand.
 
     Args:
@@ -32,9 +32,7 @@ async def call(
 
     for k, _default in starting_config.items():
         if not use_defaults:
-            question = "What is the value for '{k}'"
-            if k in QUESTION_MAPPING:
-                question = QUESTION_MAPPING.get(k)
+            question = QUESTION_MAPPING.get(k, f"What is the value for '{k}'")
 
             answer = ask(question, _default)
             if answer:
@@ -45,8 +43,8 @@ async def call(
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

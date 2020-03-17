@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from typing import Dict, List
+from typing import Any, cast, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
 from logzero import logger
 
@@ -9,7 +9,7 @@ import aiohttp
 from . import errors, utils
 
 
-def remove_none_values(d: Dict):
+def remove_none_values(d: Dict[str, Any]) -> Dict[str, Any]:
     result = {}
 
     for key, item in d.items():
@@ -23,17 +23,29 @@ def remove_none_values(d: Dict):
 
 
 class CromwellAPI:
-    def __init__(self, server, version, headers=None, route_override=None):
+    def __init__(
+        self,
+        server: str,
+        version: str,
+        headers: Optional[Dict[str, str]] = None,
+        route_override: Optional[str] = None,
+    ):
         self.server = server
         self.version = version
         self.headers = headers or {"Accept": "application/json"}
         self.session = aiohttp.ClientSession()
         self.route_override = route_override
 
-    async def close(self):
+    async def close(self) -> None:
         await self.session.close()
 
-    async def _api_call(self, route, params=None, data=None, method="GET"):
+    async def _api_call(
+        self,
+        route: str,
+        params: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+        method: str = "GET",
+    ) -> Tuple[int, Dict[str, Any]]:
         # only used when testing
         if self.route_override:
             route = self.route_override
@@ -60,14 +72,14 @@ class CromwellAPI:
         elif method == "POST":
             func = self.session.post
         else:
-            raise errors.report(
+            errors.report(
                 "Unhandled API call type! This is an internal error with oliver.",
                 fatal=True,
                 exitcode=errors.ERROR_INTERNAL_ERROR,
                 suggest_report=True,
             )
 
-        kwargs = {"headers": self.headers}
+        kwargs: Dict[str, Any] = {"headers": self.headers}
 
         if params:
             kwargs["params"] = utils.dict_to_aiohttp_tuples(params)
@@ -80,6 +92,7 @@ class CromwellAPI:
             kwargs["data"] = _data
 
         try:
+            assert func is not None
             response = await func(url, **kwargs)
         except aiohttp.client_exceptions.ClientConnectorError:
             await self.close()
@@ -97,7 +110,7 @@ class CromwellAPI:
             )
         status_code = response.status
         response_text = await response.text()
-        content = None
+        content: Dict[str, Any] = {}
         try:
             if response_text:
                 content = json.loads(response_text)
@@ -128,12 +141,12 @@ class CromwellAPI:
 
     async def post_workflows(
         self,
-        workflowSource=None,
-        workflowUrl=None,
-        workflowInputs=None,
-        workflowOptions=None,
-        labels=None,
-    ):
+        workflowSource: Optional[str] = None,
+        workflowUrl: Optional[str] = None,
+        workflowInputs: Optional[Dict[str, str]] = None,
+        workflowOptions: Optional[Dict[str, str]] = None,
+        labels: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, Any]:
         "POST /api/workflows/{version}"
 
         if workflowInputs is None:
@@ -169,19 +182,19 @@ class CromwellAPI:
         )
         return data
 
-    async def post_workflows_batch(self):
+    async def post_workflows_batch(self) -> None:
         "POST /api/workflows/{version}/batch"
         raise NotImplementedError()
 
-    async def get_workflows_labels(self):
+    async def get_workflows_labels(self) -> None:
         "GET /api/workflows/{version}/{id}/labels"
         raise NotImplementedError()
 
-    async def patch_workflows_labels(self):
+    async def patch_workflows_labels(self) -> None:
         "PATCH /api/workflows/{version}/{id}/labels"
         raise NotImplementedError()
 
-    async def post_workflows_abort(self, workflow_id):
+    async def post_workflows_abort(self, workflow_id: str) -> Dict[str, Any]:
         "POST /api/workflows/{version}/{id}/abort"
 
         _, data = await self._api_call(
@@ -189,15 +202,15 @@ class CromwellAPI:
         )
         return data
 
-    async def post_workflows_release_hold(self):
+    async def post_workflows_release_hold(self) -> None:
         "POST /api/workflows/{version}/{id}/releaseHold"
         raise NotImplementedError()
 
-    async def get_workflows_status(self):
+    async def get_workflows_status(self) -> None:
         "GET /api/workflows/{version}/{id}/status"
         raise NotImplementedError()
 
-    async def get_workflows_outputs(self, workflow_id):
+    async def get_workflows_outputs(self, workflow_id: str) -> Dict[str, Any]:
         "GET /api/workflows/{version}/{id}/outputs"
 
         _, data = await self._api_call(
@@ -205,7 +218,7 @@ class CromwellAPI:
         )
         return data
 
-    async def get_workflows_logs(self, workflow_id):
+    async def get_workflows_logs(self, workflow_id: str) -> Dict[str, Any]:
         "POST /api/workflows/{version}/{id}/logs"
 
         _, data = await self._api_call(f"/api/workflows/{{version}}/{workflow_id}/logs")
@@ -213,19 +226,19 @@ class CromwellAPI:
 
     async def get_workflows_query(
         self,
-        submission: datetime.datetime = None,
-        start: datetime.datetime = None,
-        end: datetime.datetime = None,
-        statuses: List[str] = None,
-        names: List[str] = None,
-        ids: List[str] = None,
-        labels: List[str] = None,
-        labelors: List[str] = None,
-        excludeLabelAnds: List[str] = None,
-        excludeLabelOrs: List[str] = None,
-        additionalQueryResultFields: List[str] = None,
-        includeSubworkflows: bool = True,
-    ) -> List:
+        submission: Optional[Union[datetime.datetime, str]] = None,
+        start: Optional[datetime.datetime] = None,
+        end: Optional[datetime.datetime] = None,
+        statuses: Optional[List[str]] = None,
+        names: Optional[List[str]] = None,
+        ids: Optional[List[str]] = None,
+        labels: Optional[List[str]] = None,
+        labelors: Optional[List[str]] = None,
+        excludeLabelAnds: Optional[List[str]] = None,
+        excludeLabelOrs: Optional[List[str]] = None,
+        additionalQueryResultFields: Optional[List[str]] = None,
+        includeSubworkflows: Optional[bool] = True,
+    ) -> List[Dict[str, Any]]:
         """GET /api/workflows/{version}/query
 
         Args:
@@ -262,7 +275,7 @@ class CromwellAPI:
         }
 
         _, data = await self._api_call("/api/workflows/{version}/query", params=params)
-        results = data.get("results")
+        results = cast(List[Dict[str, Any]], data.get("results"))
         if not results:
             if not isinstance(results, list):
                 errors.report(
@@ -271,25 +284,29 @@ class CromwellAPI:
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
             else:
-                logger.warning("No results found in response!")
+                errors.report(
+                    "No results found in response!",
+                    fatal=True,
+                    exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
+                )
 
-        return data["results"]
+        return results
 
-    async def post_workflows_query(self):
+    async def post_workflows_query(self) -> None:
         "POST /api/workflows/{version}/query"
         raise NotImplementedError()
 
-    async def get_workflows_timing(self):
+    async def get_workflows_timing(self) -> None:
         "GET /api/workflows/{version}/{id}/timing"
         raise NotImplementedError()
 
     async def get_workflows_metadata(
         self,
         id: str,
-        includeKey: List[str] = None,
-        excludeKey: List[str] = None,
-        expandSubWorkflows: bool = False,
-    ) -> Dict:
+        includeKey: Optional[List[str]] = None,
+        excludeKey: Optional[List[str]] = None,
+        expandSubWorkflows: Optional[bool] = False,
+    ) -> Dict[str, Any]:
         """GET /api/workflows/{version}/{id}/metadata
 
         Args:
@@ -313,10 +330,10 @@ class CromwellAPI:
         )
         return data
 
-    async def get_workflows_call_caching_diff(self):
+    async def get_workflows_call_caching_diff(self) -> None:
         "GET /api/workflows/{version}/callcaching/diff"
         raise NotImplementedError()
 
-    async def get_workflows_backends(self):
+    async def get_workflows_backends(self) -> None:
         "GET /api/workflows/{version}/backends"
         raise NotImplementedError()

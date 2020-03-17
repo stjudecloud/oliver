@@ -1,19 +1,21 @@
 import argparse
 
-from typing import Dict
+from typing import Any, Dict
 
 import pendulum
 
 from ..lib import api, constants, errors, reporting
 
 
-def report_failure(failure, indent, step=2, offset=2):
+def report_failure(
+    failure: Dict[str, Any], indent: int, step: int = 2, offset: int = 2
+) -> None:
     print((" " * offset) + "| " + (" " * indent) + failure["message"])
     for f in failure["causedBy"]:
         report_failure(f, indent + step)
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -35,6 +37,14 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         workflow_language += " " + metadata.get("actualWorkflowLanguageVersion", "")
 
     workflow_submission_date = metadata.get("submission")
+    if workflow_submission_date is None:
+        errors.report(
+            message="Workflow submission date cannot be empty.",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+            suggest_report=True,
+        )
+        return
     workflow_start_date = metadata.get("start")
     workflow_end_date = metadata.get("end")
     workflow_start_to_report = ""
@@ -141,8 +151,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:

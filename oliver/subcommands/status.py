@@ -1,6 +1,6 @@
 import argparse
 
-from typing import Dict, List
+from typing import Any, cast, DefaultDict, Dict, List, Optional, Union
 
 from collections import defaultdict
 
@@ -14,7 +14,7 @@ from ..lib import (
 )
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
@@ -57,7 +57,7 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
         for workflow in workflows:
             keep_workflow = False
             for call_name, calls in (
-                metadatas.get(workflow.get("id"), {}).get("calls").items()
+                metadatas.get(workflow.get("id"), {}).get("calls", {}).items()
             ):
                 if call_name in call_names_to_consider:
                     if any([c.get("executionStatus") == "Failed" for c in calls]):
@@ -82,8 +82,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:
@@ -181,7 +181,11 @@ def register_subparser(
     return subcommand
 
 
-def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_grid"):
+def print_workflow_summary(
+    workflows: List[Dict[str, Any]],
+    metadatas: Dict[str, Any],
+    grid_style: Optional[str] = "fancy_grid",
+) -> None:
     """Print a summary of workflow statuses.
 
     Args:
@@ -189,7 +193,7 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
     """
 
-    agg = defaultdict(lambda: defaultdict(int))
+    agg: DefaultDict[str, DefaultDict[str, int]] = defaultdict(lambda: defaultdict(int))
 
     for w in workflows:
         m = metadatas[w["id"]]
@@ -201,7 +205,7 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
     for group in agg.keys():
         for k in agg[group]:
             keys.add(k)
-        obj = {"Job Group": group}
+        obj: Dict[str, Union[str, int]] = {"Job Group": group}
         obj.update(agg[group])
         results.append(obj)
 
@@ -214,8 +218,10 @@ def print_workflow_summary(workflows: List, metadatas: Dict, grid_style="fancy_g
 
 
 def print_workflow_detail_view(
-    workflows: List, metadatas: Dict, grid_style="fancy_grid",
-):
+    workflows: List[Dict[str, Any]],
+    metadatas: Dict[str, Any],
+    grid_style: str = "fancy_grid",
+) -> None:
     """Print a detailed table of workflow statuses.
 
     Args:
@@ -225,12 +231,14 @@ def print_workflow_detail_view(
 
     results = [
         {
-            "Job Name": oliver.get_oliver_name(metadatas.get(w.get("id"))),
-            "Job Group": oliver.get_oliver_group(metadatas.get(w.get("id"))),
+            "Job Name": oliver.get_oliver_name(metadatas.get(w.get("id", ""), {})),
+            "Job Group": oliver.get_oliver_group(metadatas.get(w.get("id", ""), {})),
             "Workflow ID": w.get("id", ""),
             "Workflow Name": w.get("name", ""),
             "Status": w.get("status", ""),
-            "Start": reporting.localize_date(w.get("start")) if "start" in w else "",
+            "Start": reporting.localize_date(w.get("start", ""))
+            if "start" in w
+            else "",
         }
         for w in workflows
     ]
@@ -239,8 +247,10 @@ def print_workflow_detail_view(
 
 
 def print_workflow_steps_view(
-    workflows: List, metadatas: Dict, grid_style="fancy_grid"
-):
+    workflows: List[Dict[str, Any]],
+    metadatas: Dict[str, Any],
+    grid_style: Optional[str] = "fancy_grid",
+) -> None:
     """Print a table summarizing which steps (calls) are in progress.
 
     Args:
@@ -248,10 +258,10 @@ def print_workflow_steps_view(
         metadatas (Dict): Dictionary of metadatas indexed by workflow id.
     """
 
-    results = defaultdict(lambda: defaultdict(int))
+    results: DefaultDict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
 
     for w in workflows:
-        uuid = w.get("id")
+        uuid = cast(str, w.get("id", ""))
         if not uuid:
             errors.report(
                 "`id` not found for workflow.",
@@ -259,7 +269,7 @@ def print_workflow_steps_view(
                 exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
             )
 
-        m = metadatas.get(uuid)
+        m = metadatas.get(uuid, {})
         if not m:
             errors.report(
                 f"'{uuid}' not found in metadatas.",
@@ -271,7 +281,7 @@ def print_workflow_steps_view(
             most_recent_call = sorted(calls, key=lambda x: x["start"])[-1]
             results[call_name][most_recent_call.get("executionStatus")] += 1
 
-    _results = [
+    _results: List[Dict[str, Union[str, int]]] = [
         {"Call Name": call_name, **results[call_name]} for call_name in results.keys()
     ]
 

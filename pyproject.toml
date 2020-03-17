@@ -51,6 +51,8 @@ requests = "^2.22.0"
 tabulate = "^0.8.6"
 tzlocal = "^2.0.0"
 python-semantic-release = "^4.8.0"
+mypy_boto3_batch = "^1.12.21"
+mypy_boto3_logs = "^1.12.21"
 
 [tool.poetry.dev-dependencies]
 mkdocs = "1.0.4"
@@ -61,6 +63,9 @@ pytest-asyncio = "^0.10.0"
 pytest-cov = "^2.8.1"
 python-semantic-release = { git = "https://github.com/claymcleod/python-semantic-release.git", branch="improvement/commit-messages" }
 wheel = "^0.34.0"
+mypy = "^0.761"
+mypy-boto3 = {extras = ["batch", "logs"], version = "^1.12.17"}
+boto3-stubs = "^1.12.17"
 
 [tool.semantic_release]
 version_variable = "pyproject.toml:version"

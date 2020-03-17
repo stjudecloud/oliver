@@ -1,6 +1,6 @@
 import os
 
-from typing import Dict
+from typing import Any, Dict
 
 from ...lib import (
     api,
@@ -11,7 +11,7 @@ from ...lib import (
 from ...subcommands import outputs as _outputs
 
 
-def process_output(dest_folder: str, output: str):
+def process_output(dest_folder: str, output: str) -> None:
     cmd = None
 
     if isinstance(output, list):
@@ -31,14 +31,14 @@ def process_output(dest_folder: str, output: str):
     print(cmd)
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    output_folder = args.get("root-output-folder")
+    output_folder = args.get("root-output-folder", "")
     workflows = []
 
     if args.get("workflow"):
@@ -69,15 +69,15 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
     for workflow in workflows:
         outputs = await _outputs.get_outputs(
-            cromwell, workflow.get("id"), output_prefix=args.get("output_prefix"),
+            cromwell, workflow.get("id", ""), output_prefix=args.get("output_prefix"),
         )
         _this_output_folder = output_folder
 
         if args.get("append_job_name"):
             name = oliver.get_oliver_name(
-                await cromwell.get_workflows_metadata(workflow.get("id"))
+                await cromwell.get_workflows_metadata(workflow.get("id", ""))
             )
-            if name == "<not set>":
+            if not name or name == "<not set>":
                 name = "__UNKNOWN__"
             _this_output_folder = os.path.join(_this_output_folder, name)
 

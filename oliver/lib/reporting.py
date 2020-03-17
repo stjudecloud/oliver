@@ -1,10 +1,11 @@
 from collections import OrderedDict
 
-from typing import List, Dict, OrderedDict as OrderedDictType
+from typing import Any, Dict, List, Optional, Union
 
-import pendulum
+from datetime import timedelta
 from logzero import logger
 from tzlocal import get_localzone
+import pendulum
 from tabulate import tabulate
 
 from . import errors
@@ -21,13 +22,17 @@ DEFAULT_HEADER_ORDER = [
     "Succeeded",
 ]
 
+DEFAULT_GRID_STYLE = "fancy_grid"
 
-def localize_date(given_date: str):
-    "Returns a localized date given any date that is parsable by pedulum."
+
+def localize_date(given_date: str) -> str:
+    "Returns a localized date given any date that is parsable by pendulum."
     return pendulum.parse(given_date).in_tz(get_localzone()).to_day_datetime_string()
 
 
-def localize_date_from_timestamp(timestamp: int, already_localized=False):
+def localize_date_from_timestamp(
+    timestamp: Union[int, float], already_localized: bool = False
+) -> str:
     "Returns a localized date given a UNIX timestamp."
 
     tz = "UTC"
@@ -43,7 +48,7 @@ def localize_date_from_timestamp(timestamp: int, already_localized=False):
     )
 
 
-def duration_to_text(duration):
+def duration_to_text(duration: timedelta) -> str:
     parts = []
     attrs = ["years", "months", "days", "hours", "minutes", "remaining_seconds"]
     for attr in attrs:
@@ -61,12 +66,12 @@ def duration_to_text(duration):
 
 
 def print_dicts_as_table(
-    rows: List[Dict],
-    grid_style: str = "fancy_grid",
+    rows: List[Dict[str, Any]],
+    grid_style: Optional[str] = None,
     clean: bool = True,
-    fill=None,
-    header_order: list = None,
-):
+    fill: str = "",
+    header_order: Optional[List[str]] = None,
+) -> None:
     """Format a list of dicts and print as a table using `tabulate`.
 
     Args:
@@ -86,6 +91,9 @@ def print_dicts_as_table(
     if header_order is None:
         header_order = DEFAULT_HEADER_ORDER
 
+    if grid_style is None:
+        grid_style = DEFAULT_GRID_STYLE
+
     if not isinstance(rows, list) or not isinstance(rows[0], dict):
         errors.report(
             "Expected 'data' to be a list of dicts!",
@@ -97,7 +105,9 @@ def print_dicts_as_table(
     # to make an elegant solution at this moment.
 
     # use ordered dict as ordered set (again, laziness)
-    ordered_set: OrderedDictType[str, None] = OrderedDict()
+    ordered_set: OrderedDict[  # pylint: disable=unsubscriptable-object
+        str, None
+    ] = OrderedDict()
     for row in rows:
         for h in row.keys():
             ordered_set[h] = None
@@ -114,8 +124,8 @@ def print_dicts_as_table(
 
     if clean:
         for header in headers:
-            results = [row.get(header) in uninteresting_values for row in rows]
-            to_remove = all(results)
+            res: List[bool] = [row.get(header) in uninteresting_values for row in rows]
+            to_remove = all(res)
             if to_remove:
                 headers_to_remove.append(header)
 
@@ -126,7 +136,7 @@ def print_dicts_as_table(
             if header in row:
                 del row[header]
 
-    results = []
+    results: List[Dict[str, str]] = []
 
     # definitely a more elegant solution for this...
     for row in rows:
@@ -144,7 +154,9 @@ def print_dicts_as_table(
     )
 
 
-def print_error_as_table(status: str, message: str, grid_style: str = "fancy_grid"):
+def print_error_as_table(
+    status: str, message: str, grid_style: Optional[str] = None
+) -> None:
     """Prints an error message as a table.
 
     Args:
@@ -154,5 +166,8 @@ def print_error_as_table(status: str, message: str, grid_style: str = "fancy_gri
                                     See https://github.com/astanin/python-tabulate#table-format
                                     for more information. Defaults to "fancy_grid".
     """
+    if grid_style is None:
+        grid_style = DEFAULT_GRID_STYLE
+
     results = [{"Status": status, "Message": message}]
     print_dicts_as_table(results, grid_style=grid_style)

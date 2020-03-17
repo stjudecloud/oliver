@@ -5,26 +5,37 @@ Input files can be passed or inputs can be directly added via the command line.
 
 import argparse
 
-from typing import Dict
+from typing import Any, Dict
 
-from ..lib import api, args as _args, reporting
+from ..lib import api, args as _args, errors, reporting
 from ..lib.parsing import parse_workflow, parse_workflow_inputs
 
 
-async def call(args: Dict, cromwell: api.CromwellAPI):
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
     Args:
         args (Dict): Arguments parsed from the command line.
     """
 
-    workflow_args = parse_workflow(args["workflow"])
+    workflow_inputs = args.get("workflowInputs")
+
+    if not isinstance(workflow_inputs, list):
+        errors.report(
+            message="Workflow inputs must be a list.",
+            fatal=True,
+            exitcode=errors.ERROR_INVALID_INPUT,
+            suggest_report=True,
+        )
+        return
+
+    workflow_args: Dict[str, Any] = parse_workflow(args["workflow"])
     (
         workflow_args["workflowInputs"],
         workflow_args["workflowOptions"],
         workflow_args["labels"],
     ) = parse_workflow_inputs(
-        args.get("workflowInputs"),
+        workflow_inputs,
         job_name=args.get("job_name"),
         job_group=args.get("job_group"),
         output_dir=args.get("output_dir"),
@@ -41,8 +52,8 @@ async def call(args: Dict, cromwell: api.CromwellAPI):
 
 # _SubParsersAction is the return type by add_subparser
 def register_subparser(
-    subparser: argparse._SubParsersAction,
-):  # pylint: disable=protected-access
+    subparser: argparse._SubParsersAction,  # pylint: disable=protected-access
+) -> argparse.ArgumentParser:
     """Registers a subparser for the current command.
 
     Args:
