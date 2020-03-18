@@ -66,7 +66,7 @@ def register_subparser(
     subcommand.add_argument("workflow", help="The workflow to run (URL or file).")
     subcommand.add_argument(
         "workflowInputs",
-        nargs="+",
+        nargs="*",
         help="""JSON files or key=value pairs to add to inputs, options, \
           or labels (see documentation for more information).""",
     )
