@@ -41,9 +41,9 @@
     <a href="https://stjudecloud.github.io/oliver/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/stjudecloud/oliver/issues">Request Feature</a>
+    <a href="https://github.com/stjudecloud/oliver/issues/new?assignees=&labels=&template=feature_request.md&title=Descriptive%20Title&labels=enhancement">Request Feature</a>
     ·
-    <a href="https://github.com/stjudecloud/oliver/issues">Report Bug</a>
+    <a href="https://github.com/stjudecloud/oliver/issues/new?assignees=&labels=&template=bug_report.md&title=Descriptive%20Title&labels=bug">Report Bug</a>
     ·
     ⭐ Consider starring the repo! ⭐
     <br />
