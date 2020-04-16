@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 
 from typing import Any, cast, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
@@ -88,7 +89,11 @@ class CromwellAPI:
         if data:
             _data = aiohttp.FormData()
             for k, v in data.items():
-                _data.add_field(k, v, filename=k, content_type="application/json")
+                if k == "workflowSource":
+                    filename = os.path.basename(v)
+                    _data.add_field(k, open(v), filename=filename)
+                else:
+                    _data.add_field(k, v, filename=k, content_type="application/json")
             kwargs["data"] = _data
 
         try:
