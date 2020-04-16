@@ -29,7 +29,7 @@ def parse_workflow(workflow: str) -> Dict[str, str]:
     if is_url(workflow):
         return {"workflowUrl": workflow}
     if os.path.isfile(workflow):
-        return {"workflowSource": workflow}
+        return {"workflowSource": os.path.abspath(workflow)}
     errors.report(
         "Workflow is not a valid file or URL!",
         fatal=True,
