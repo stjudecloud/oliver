@@ -40,6 +40,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         job_group=args.get("job_group"),
         output_dir=args.get("output_dir"),
     )
+    workflow_args["workflowDependencies"] = args.get("dependencies")
 
     if args.get("dry_run"):
         for key, value in workflow_args.items():
@@ -70,6 +71,7 @@ def register_subparser(
         help="""JSON files or key=value pairs to add to inputs, options, \
           or labels (see documentation for more information).""",
     )
+    subcommand.add_argument("--dependencies", help="Zip file of workflow dependencies")
     subcommand.add_argument(
         "-d",
         "--dry-run",
