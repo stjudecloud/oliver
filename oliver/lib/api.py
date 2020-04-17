@@ -9,6 +9,8 @@ from logzero import logger
 import aiohttp
 from . import errors, utils
 
+FILE_PARAMS = ["workflowSource", "workflowDependencies"]
+
 
 def remove_none_values(d: Dict[str, Any]) -> Dict[str, Any]:
     result = {}
@@ -89,9 +91,9 @@ class CromwellAPI:
         if data:
             _data = aiohttp.FormData()
             for k, v in data.items():
-                if k == "workflowSource":
+                if k in FILE_PARAMS:
                     filename = os.path.basename(v)
-                    _data.add_field(k, open(v), filename=filename)
+                    _data.add_field(k, open(v, "rb"), filename=filename)
                 else:
                     _data.add_field(k, v, filename=k, content_type="application/json")
             kwargs["data"] = _data
@@ -151,6 +153,7 @@ class CromwellAPI:
         workflowInputs: Optional[Dict[str, str]] = None,
         workflowOptions: Optional[Dict[str, str]] = None,
         labels: Optional[Dict[str, str]] = None,
+        workflowDependencies: Optional[Dict[str, str]] = None,
     ) -> Dict[str, Any]:
         "POST /api/workflows/{version}"
 
@@ -174,6 +177,7 @@ class CromwellAPI:
             "workflowInputs": workflowInputs,
             "workflowOptions": workflowOptions,
             "labels": labels,
+            "workflowDependencies": workflowDependencies,
         }
 
         logger.debug(f"workflowSource: {workflowSource}")
@@ -181,6 +185,7 @@ class CromwellAPI:
         logger.debug(f"workflowInputs: {workflowInputs}")
         logger.debug(f"workflowOptions: {workflowOptions}")
         logger.debug(f"labels: {labels}")
+        logger.debug(f"workflowDependencies: {workflowDependencies}")
 
         _, data = await self._api_call(
             "/api/workflows/{version}", method="POST", data=data,
