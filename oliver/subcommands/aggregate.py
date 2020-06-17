@@ -19,11 +19,12 @@ def process_output(dest_folder: str, output: str, dry_run: bool = False) -> None
 
         return
 
-    cmd = f"cp {output} {dest_folder}"
-    if dry_run:
-        print(cmd)
-    else:
-        os.system(cmd)
+    if output:
+        cmd = f"cp {output} {dest_folder}"
+        if dry_run:
+            print(cmd)
+        else:
+            os.system(cmd)
 
 
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
