@@ -2,7 +2,7 @@ import argparse
 
 from typing import Any, Dict
 
-from ..lib import api, reporting
+from ..lib import api, reporting, args as _args, workflows as _workflows
 
 
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
@@ -12,14 +12,36 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         args (Dict): Arguments parsed from the command line.
     """
 
-    resp = await cromwell.post_workflows_abort(args["workflow-id"])
+    batches = None
+    relative = None
 
-    if not resp.get("id"):
-        reporting.print_error_as_table(resp["status"], resp["message"])
-        return
+    if args.get("batches_relative"):
+        batches = args.get("batches_relative")
+        relative = True
+    elif args.get("batches_absolute"):
+        batches = args.get("batches_absolute")
+        relative = False
 
-    results = [{"Workflow ID": resp["id"], "Status": resp["status"]}]
-    reporting.print_dicts_as_table(results)
+    workflows = await _workflows.get_workflows(
+        cromwell=cromwell,
+        oliver_job_name=args["job_name"],
+        oliver_job_group_name=args["job_group"],
+        cromwell_workflow_uuid=args["cromwell_workflow_uuid"],
+        batches=batches,
+        batch_interval_mins=args["batch_interval_mins"],
+        relative_batching=relative,
+        opt_into_reporting_running_jobs=True
+    )
+
+    for w in workflows:
+        resp = await cromwell.post_workflows_abort(w["id"])
+
+        if not resp.get("id"):
+            reporting.print_error_as_table(resp["status"], resp["message"])
+            continue
+
+        results = [{"Workflow ID": resp["id"], "Status": resp["status"]}]
+        reporting.print_dicts_as_table(results)
 
 
 def register_subparser(
@@ -36,7 +58,16 @@ def register_subparser(
         aliases=["kill", "k"],
         help="Abort a workflow running on a Cromwell server.",
     )
-    subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
+    scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
+    _args.add_batches_group(
+        scope_predicate, add_batches_interval_arg_automatically=False
+    )
+    _args.add_batches_interval_arg(subcommand)
+    scope_predicate.add_argument(
+        "-w", "--cromwell-workflow-uuid", help="Workflow UUID you wish to retry."
+    )
+    _args.add_oliver_job_group_args(scope_predicate)
+    _args.add_oliver_job_name_args(scope_predicate)
     subcommand.add_argument(
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",
