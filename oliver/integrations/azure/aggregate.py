@@ -20,6 +20,9 @@ def process_output_azure(
             )
         return
 
+    if not output:
+        return
+
     if not azure_storage_account:
         errors.report(
             f"Must include Azure blob storage account name in config!",
