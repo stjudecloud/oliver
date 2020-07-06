@@ -33,6 +33,15 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         opt_into_reporting_running_jobs=True
     )
 
+    if args.get("cromwell_workflow_uuid"):
+        resp = await cromwell.post_workflows_abort(args["cromwell_workflow_uuid"])
+
+        if not resp.get("id"):
+            reporting.print_error_as_table(resp["status"], resp["message"])
+        else:
+            results = [{"Workflow ID": resp["id"], "Status": resp["status"]}]
+            reporting.print_dicts_as_table(results)
+
     for w in workflows:
         resp = await cromwell.post_workflows_abort(w["id"])
 
@@ -64,7 +73,7 @@ def register_subparser(
     )
     _args.add_batches_interval_arg(subcommand)
     scope_predicate.add_argument(
-        "-w", "--cromwell-workflow-uuid", help="Workflow UUID you wish to retry."
+        "-w", "--cromwell-workflow-uuid", help="Workflow UUID you wish to abort."
     )
     _args.add_oliver_job_group_args(scope_predicate)
     _args.add_oliver_job_name_args(scope_predicate)
