@@ -30,7 +30,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         batches=batches,
         batch_interval_mins=args["batch_interval_mins"],
         relative_batching=relative,
-        opt_into_reporting_running_jobs=True
+        opt_into_reporting_running_jobs=True,
     )
 
     if args.get("cromwell_workflow_uuid"):
@@ -65,7 +65,7 @@ def register_subparser(
     subcommand = subparser.add_parser(
         "abort",
         aliases=["kill", "k"],
-        help="Abort a workflow running on a Cromwell server.",
+        help="Abort workflows running on a Cromwell server.",
     )
     scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
     _args.add_batches_group(
@@ -75,8 +75,10 @@ def register_subparser(
     scope_predicate.add_argument(
         "-w", "--cromwell-workflow-uuid", help="Workflow UUID you wish to abort."
     )
-    _args.add_oliver_job_group_args(scope_predicate)
-    _args.add_oliver_job_name_args(scope_predicate)
+    scope_predicate.add_argument(
+        "-g", "--job-group", help="Job group name you wish to abort."
+    )
+    scope_predicate.add_argument("-j", "--job-name", help="Job name you wish to abort.")
     subcommand.add_argument(
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",
