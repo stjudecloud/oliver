@@ -3,7 +3,7 @@ version: "3.7"
 services:
     cromwell:
         build: "mocks/cromwell"
-        ports: 
+        ports:
             - 8000:8000
         entrypoint: ["/bin/bash", "-c", "wait-for-it.sh mysql-db:3306 -t 120 -- java -Dconfig.file=/app/cromwell.conf -jar /app/cromwell.jar server"]
     mysql-db:
@@ -15,10 +15,10 @@ services:
             - 3307:3306
         volumes:
             - type: "volume"
-              source: "mysql_data" 
+              source: "mysql_data"
               target: "/var/lib/mysql"
             - type: "bind"
-              source: "./mocks/cromwell/db/init" 
+              source: "./mocks/cromwell/db/init"
               target: "/docker-entrypoint-initdb.d"
     httpbin:
         image: kennethreitz/httpbin

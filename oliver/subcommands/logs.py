@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 
 from ..lib import api, errors, reporting
 
+
 async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict]:
     """Get logs from a workflow ID.
 
@@ -60,6 +61,7 @@ async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict]:
                 }
             )
     return results
+
 
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
