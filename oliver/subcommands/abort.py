@@ -1,6 +1,7 @@
 import argparse
 
 from typing import Any, Dict
+from logzero import logger
 
 from ..lib import api, reporting, args as _args, workflows as _workflows
 
@@ -11,6 +12,16 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     Args:
         args (Dict): Arguments parsed from the command line.
     """
+
+    if args.get("cromwell_workflow_uuid"):
+        resp = await cromwell.post_workflows_abort(args["cromwell_workflow_uuid"])
+
+        if not resp.get("id"):
+            reporting.print_error_as_table(resp["status"], resp["message"])
+        else:
+            results = [{"Workflow ID": resp["id"], "Status": resp["status"]}]
+            reporting.print_dicts_as_table(results)
+        return
 
     batches = None
     relative = None
@@ -33,14 +44,9 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         opt_into_reporting_running_jobs=True,
     )
 
-    if args.get("cromwell_workflow_uuid"):
-        resp = await cromwell.post_workflows_abort(args["cromwell_workflow_uuid"])
-
-        if not resp.get("id"):
-            reporting.print_error_as_table(resp["status"], resp["message"])
-        else:
-            results = [{"Workflow ID": resp["id"], "Status": resp["status"]}]
-            reporting.print_dicts_as_table(results)
+    if not workflows:
+        logger.warning("No running jobs matching criteria found.")
+        return
 
     for w in workflows:
         resp = await cromwell.post_workflows_abort(w["id"])
