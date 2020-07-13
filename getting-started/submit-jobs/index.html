@@ -137,7 +137,7 @@
 <p>One of the novel features provided by Oliver is the ease with which workflow
 inputs, options, and labels can be set dynamically on the command line.
 Typically when submitting a workflow, one must craft and POST one or more <code>workflowInputs</code>,
-<code>workflowOptions</code>, and <code>labels</code> JSON files to Cromwell. This can be cumbersome 
+<code>workflowOptions</code>, and <code>labels</code> JSON files to Cromwell. This can be cumbersome
 — especially when you have thousands of workflows to run.</p>
 <h2 id="dynamic-parameter-parsing">Dynamic Parameter Parsing</h2>
 <p>Oliver provides an improvement over this experience for a few keys reasons:</p>
@@ -200,7 +200,7 @@ Typically when submitting a workflow, one must craft and POST one or more <code>
 </code></pre>
 
 <h2 id="job-names-and-groups">Job Names and Groups</h2>
-<p>You can submit jobs with a "Oliver Job Name" (<code>-j</code>) and "Oliver Job Group" (<code>-g</code>) to mimic the capabilities of an HPC. Under the hood, Oliver adds these as labels to the workflow. In most Oliver commands, you can then specify these options to restrict results. </p>
+<p>You can submit jobs with a "Oliver Job Name" (<code>-j</code>) and "Oliver Job Group" (<code>-g</code>) to mimic the capabilities of an HPC. Under the hood, Oliver adds these as labels to the workflow. In most Oliver commands, you can then specify these options to restrict results.</p>
 <p>For instance, if you wished to submit a group of samples with the same job name and then track their status:</p>
 <pre><code># Submit jobs
 for SAMPLE in $SAMPLES; do
