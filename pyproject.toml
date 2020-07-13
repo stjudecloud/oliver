@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "stjudecloud-oliver"
-version = "1.3.2"
+version = "1.4.0"
 description = "An opinionated Cromwell orchestration system"
 license = "MIT"
 authors = [
