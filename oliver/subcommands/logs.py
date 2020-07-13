@@ -1,22 +1,32 @@
 import argparse
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from ..lib import api, errors, reporting
 
 
-async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
-    """Execute the subcommand.
+async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict[str, str]]:
+    """Get logs from a workflow ID.
+
+    Cromwell has REST API for getting logs, but it excludes sub-workflows.
+    To obtain sub-workflows as well, use the metadata API recursively when
+    calls to sub-worfklows are encountered.
 
     Args:
-        args (Dict): Arguments parsed from the command line.
+        cromwell (api.CromwellAPI): Cromwell API
+        workflow_id (str): Workflow ID
+
+    Returns:
+        List[Dict]: List of log files for the workflow
     """
-
-    logs = await cromwell.get_workflows_logs(args["workflow-id"])
-    results = []
-
-    for name, call in logs["calls"].items():
+    metadata = await cromwell.get_workflows_metadata(workflow_id)
+    results: List[Dict[str, str]] = []
+    for name, call in metadata["calls"].items():
         for process in call:
+            if "subWorkflowId" in process:
+                results += await get_logs(cromwell, process.get("subWorkflowId"))
+                continue
+
             attempt = process.get("attempt")
             shard = process.get("shardIndex")
 
@@ -50,7 +60,16 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
                     "Location": stderr,
                 }
             )
+    return results
 
+
+async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
+    """Execute the subcommand.
+
+    Args:
+        args (Dict): Arguments parsed from the command line.
+    """
+    results = await get_logs(cromwell, args["workflow-id"])
     if args.get("output_prefix"):
         for result in results:
             result["Location"] = args["output_prefix"] + result["Location"]
