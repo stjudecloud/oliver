@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 from ..lib import api, errors, reporting
 
 
-async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict]:
+async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict[str, str]]:
     """Get logs from a workflow ID.
 
     Cromwell has REST API for getting logs, but it excludes sub-workflows.
@@ -20,11 +20,11 @@ async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict]:
         List[Dict]: List of log files for the workflow
     """
     metadata = await cromwell.get_workflows_metadata(workflow_id)
-    results = []
+    results: List[Dict[str, str]] = []
     for name, call in metadata["calls"].items():
         for process in call:
             if "subWorkflowId" in process:
-                results = await get_logs(cromwell, process.get("subWorkflowId"))
+                results += await get_logs(cromwell, process.get("subWorkflowId"))
                 continue
 
             attempt = process.get("attempt")
