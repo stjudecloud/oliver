@@ -85,8 +85,6 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
             job_group=args.get("job_group"),
             output_dir=args.get("output_dir"),
         )
-        print(workflow_args)
-        print(workflow_args["workflowInputs"])
 
         if args.get("dry_run"):
             for key, value in workflow_args.items():
