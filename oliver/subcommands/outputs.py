@@ -28,7 +28,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     results = await get_outputs(
         cromwell, args["workflow-id"], output_prefix=args.get("output_prefix", ""),
     )
-    reporting.print_dicts_as_table(results)
+    reporting.print_dicts_as_table(results, grid_style=args.get("grid_style")
 
 
 def register_subparser(
