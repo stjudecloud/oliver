@@ -44,6 +44,6 @@ The following key values pairs are commonly used to configure Oliver. Note that 
 ### Cromwell on Azure Specific
 
 | Key                    | Description                                                                          | Type   | Default |
-| ---------------------- | ------------------------------------------------------------------------------------ | ------- | ---- |
+| ---------------------- | ------------------------------------------------------------------------------------ | ------ | ------- |
 | `azure_resource_group` | If using Cromwell on Azure, resource group associated with your Cromwell instance.   | String |         | None |
 | `cosmos_account_name`  | If using Cromwell on Azure, name of CosmosDB associated with your Cromwell instance. | String |         | None |
