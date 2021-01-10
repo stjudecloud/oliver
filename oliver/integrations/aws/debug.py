@@ -285,8 +285,8 @@ def write_log(
 
 
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
-    batch_client: BatchClient = boto3.client("batch")  # type: ignore
-    logs_client: CloudWatchLogsClient = boto3.client("logs")  # type: ignore
+    batch_client: BatchClient = boto3.client("batch")
+    logs_client: CloudWatchLogsClient = boto3.client("logs")
 
     (
         failed_calls,
