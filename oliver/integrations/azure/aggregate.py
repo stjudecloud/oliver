@@ -25,7 +25,7 @@ def process_output_azure(
 
     if not azure_storage_account:
         errors.report(
-            f"Must include Azure blob storage account name in config!",
+            "Must include Azure blob storage account name in config!",
             fatal=True,
             exitcode=errors.ERROR_INVALID_INPUT,
         )
@@ -56,7 +56,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     )
     if not args.get("storage_account_name"):
         errors.report(
-            f"Must include Azure blob storage account name in config! [oliver config set storage_account_name cromwell-XXXXX]",
+            "Must include Azure blob storage account name in config! [oliver config set storage_account_name cromwell-XXXXX]",
             fatal=True,
             exitcode=errors.ERROR_INVALID_INPUT,
         )

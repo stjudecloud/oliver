@@ -4,5 +4,6 @@
     "autoDocstring.includeExtendedSummary": true,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "python.pythonPath": "/Users/afrantz/miniconda3/envs/oliver/bin/python"
 }

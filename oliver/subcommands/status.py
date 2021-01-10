@@ -75,7 +75,9 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         )
     elif args.get("detail_view"):
         print_workflow_detail_view(
-            workflows, metadatas, grid_style=args["grid_style"],
+            workflows,
+            metadatas,
+            grid_style=args["grid_style"],
         )
     else:
         print_workflow_summary(workflows, metadatas, grid_style=args["grid_style"])

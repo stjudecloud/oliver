@@ -1,9 +1,4 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: stable
-    hooks:
-      - id: black
-        language_version: python3.7
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v2.2.0
     hooks:

@@ -43,7 +43,8 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
 
     if args.get("workflow"):
         workflows = await _workflows.get_workflows(
-            cromwell, cromwell_workflow_uuid=args.get("workflow"),
+            cromwell,
+            cromwell_workflow_uuid=args.get("workflow"),
         )
     elif args.get("batches_absolute"):
         workflows = await _workflows.get_workflows(
@@ -61,7 +62,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         )
     else:
         errors.report(
-            f"Unhandled `retry` scope and predicate.",
+            "Unhandled `retry` scope and predicate.",
             fatal=True,
             exitcode=errors.ERROR_INVALID_INPUT,
             suggest_report=True,
@@ -69,7 +70,9 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
 
     for workflow in workflows:
         outputs = await _outputs.get_outputs(
-            cromwell, workflow.get("id", ""), output_prefix=args.get("output_prefix"),
+            cromwell,
+            workflow.get("id", ""),
+            output_prefix=args.get("output_prefix"),
         )
         _this_output_folder = output_folder
 

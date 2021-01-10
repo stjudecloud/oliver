@@ -39,11 +39,15 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     workflows = []
 
     workflows = await _workflows.get_workflows(
-        cromwell, cromwell_workflow_uuid=args.get("workflow-id"),
+        cromwell,
+        cromwell_workflow_uuid=args.get("workflow-id"),
     )
 
     for workflow in workflows:
-        outputs = await _outputs.get_outputs(cromwell, workflow.get("id", ""),)
+        outputs = await _outputs.get_outputs(
+            cromwell,
+            workflow.get("id", ""),
+        )
         _this_output_folder = output_folder
 
         if _this_output_folder and not _this_output_folder.endswith(os.path.sep):

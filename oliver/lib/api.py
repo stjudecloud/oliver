@@ -188,7 +188,9 @@ class CromwellAPI:
         logger.debug(f"workflowDependencies: {workflowDependencies}")
 
         _, data = await self._api_call(
-            "/api/workflows/{version}", method="POST", data=data,
+            "/api/workflows/{version}",
+            method="POST",
+            data=data,
         )
         return data
 

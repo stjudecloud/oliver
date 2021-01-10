@@ -40,7 +40,8 @@ def register_subparser(
     """
 
     subcommand = subparser.add_parser(
-        "aws", help="All subcommands related to Cromwell on AWS.",
+        "aws",
+        help="All subcommands related to Cromwell on AWS.",
     )
 
     aws_subcommands = subcommand.add_subparsers(dest="aws-subcommand")

@@ -145,15 +145,19 @@ async def get_calls_and_times_for_workflows(
 
     for w in workflows:
         # (1) aggregate all individual failed calls into `failed_calls`.
-        for call_name, call in (
+        for call_name, cur_call in (
             metadatas.get(w.get("id", ""), {}).get("calls", []).items()
         ):
-            for f in [f for f in call if f.get("executionStatus") == "Failed"]:
+            for cur_file in [
+                cur_file
+                for cur_file in cur_call
+                if cur_file.get("executionStatus") == "Failed"
+            ]:
                 failed_call = {
-                    "id": f.get("jobId"),
+                    "id": cur_file.get("jobId"),
                     "name": call_name.split(".")[-1],
-                    "start": pendulum.parse(f.get("start")).timestamp(),
-                    "end": pendulum.parse(f.get("end")).timestamp(),
+                    "start": pendulum.parse(cur_file.get("start")).timestamp(),
+                    "end": pendulum.parse(cur_file.get("end")).timestamp(),
                     "workflow_id": w.get("id"),
                 }
                 if failed_call.get("start") is not None:
@@ -211,25 +215,25 @@ async def get_calls_and_times_for_workflows(
 def write_log(
     batch_client: BatchClient,
     logs_client: CloudWatchLogsClient,
-    call: Dict[str, Any],
+    cur_call: Dict[str, Any],
     output_directory: str,
     candidate_batch_jobs: Optional[List[Dict[str, Any]]] = None,
 ) -> None:
     if candidate_batch_jobs is None:
         candidate_batch_jobs = []
 
-    workflow_id = call.get("workflow_id", "")
-    call_name = call.get("name", "")
+    workflow_id = cur_call.get("workflow_id", "")
+    call_name = cur_call.get("name", "")
 
     calldir = os.path.join(output_directory, workflow_id, call_name)
     if not os.path.isdir(calldir):
         os.makedirs(calldir)
 
     # summary
-    with open(os.path.join(calldir, "summary.txt"), "w") as f:
-        f.write("== Cromwell ==\n\n")
-        for k, v in call.items():
-            f.write(f"{k.capitalize()}: {v}\n")
+    with open(os.path.join(calldir, "summary.txt"), "w") as cur_file:
+        cur_file.write("== Cromwell ==\n\n")
+        for k, v in cur_call.items():
+            cur_file.write(f"{k.capitalize()}: {v}\n")
 
     for batch_job in candidate_batch_jobs:
         logger.info(f"Writing info for {batch_job.get('id')}.")
@@ -238,10 +242,10 @@ def write_log(
             os.makedirs(batchdir)
 
         # summary
-        with open(os.path.join(batchdir, "summary.txt"), "w") as f:
-            f.write("== AWS batch ==\n\n")
+        with open(os.path.join(batchdir, "summary.txt"), "w") as cur_file:
+            cur_file.write("== AWS batch ==\n\n")
             for k, v in batch_job.items():
-                f.write(f"{k.capitalize()}: {v}\n")
+                cur_file.write(f"{k.capitalize()}: {v}\n")
 
         # logs
         resp = describe_batch_job(batch_client, batch_job.get("id"))
@@ -255,7 +259,7 @@ def write_log(
         assert len(jobs) == 1
         logstream = jobs[0].get("container", {}).get("logStreamName", "")
 
-        with open(os.path.join(batchdir, "cloudwatch-logs.txt"), "w") as f:
+        with open(os.path.join(batchdir, "cloudwatch-logs.txt"), "w") as cur_file:
             success = False
 
             for logstream_name in [logstream, logstream + "-proxy"]:
@@ -267,13 +271,13 @@ def write_log(
                         logGroupName="/aws/batch/job", logStreamName=logstream_name
                     )
                     for event in logs.get("events", []):
-                        f.write(event.get("message", "") + "\n")
+                        cur_file.write(event.get("message", "") + "\n")
                     success = True
                 except Exception:
                     pass
 
             if not success:
-                f.write("Could not retrive logs!\n")
+                cur_file.write("Could not retrive logs!\n")
                 errors.report(
                     message=f"Could not find logstream reporting by describe-jobs: {logstream}! Skipping.",
                     fatal=False,
@@ -293,9 +297,9 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     logger.info(
         f"Attempting to match up {len(failed_calls)} failed calls with associated AWS logs."
     )
-    for call in failed_calls:
+    for cur_call in failed_calls:
         logger.debug(
-            f"  [*] {call.get('name')} ({call.get('startReadable')} -> {call.get('endReadable')})"
+            f"  [*] {cur_call.get('name')} ({cur_call.get('startReadable')} -> {cur_call.get('endReadable')})"
         )
     logger.info(
         f"Searching from {reporting.localize_date_from_timestamp(start_time_filter)} -> {reporting.localize_date_from_timestamp(end_time_filter)}."
@@ -312,10 +316,10 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
             f"  [*] {job.get('name')}-{job.get('id')} ({job.get('startReadable')} -> {job.get('endReadable')})"
         )
 
-    for call in failed_calls:
+    for cur_call in failed_calls:
         candidate_batch_jobs = []
 
-        call_name = call.get("name", "")
+        call_name = cur_call.get("name", "")
         easy_call_identifier = (
             call_name.split("_")[0] if "_" in call_name else call_name
         )
@@ -324,19 +328,19 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         ]:
             # created at for the batch job is a better indicator than the start time because
             # once Cromwell submits the job (start time for Cromwell), the job may pend in AWS batch
-            dist = abs(call.get("start", 0) - batch_job.get("created", 0))
+            dist = abs(cur_call.get("start", 0) - batch_job.get("created", 0))
             if dist < 300:
                 candidate_batch_jobs.append(batch_job)
 
         if candidate_batch_jobs:
             logger.debug(
-                f"Found {len(candidate_batch_jobs)} candidate batch jobs for {call.get('workflow_id')}/{call.get('name')}."
+                f"Found {len(candidate_batch_jobs)} candidate batch jobs for {cur_call.get('workflow_id')}/{cur_call.get('name')}."
             )
 
             write_log(
                 batch_client,
                 logs_client,
-                call,
+                cur_call,
                 args.get("output_folder", ""),
                 candidate_batch_jobs=candidate_batch_jobs,
             )

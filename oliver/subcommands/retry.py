@@ -51,7 +51,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         )
     else:
         errors.report(
-            f"Unhandled `retry` scope and predicate.",
+            "Unhandled `retry` scope and predicate.",
             fatal=True,
             exitcode=errors.ERROR_INVALID_INPUT,
             suggest_report=True,

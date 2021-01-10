@@ -37,7 +37,8 @@ def register_subparser(
     """
 
     subcommand = subparser.add_parser(
-        "azure", help="All subcommands related to Cromwell on Azure.",
+        "azure",
+        help="All subcommands related to Cromwell on Azure.",
     )
 
     azure_subcommands = subcommand.add_subparsers(dest="azure-subcommand")

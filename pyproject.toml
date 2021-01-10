@@ -66,6 +66,8 @@ wheel = "^0.34.0"
 mypy = "^0.761"
 mypy-boto3 = {extras = ["batch", "logs"], version = "^1.12.17"}
 boto3-stubs = "^1.12.17"
+pydocstyle = "^5.1.1"
+rope = "^0.18.0"
 
 [tool.semantic_release]
 version_variable = "pyproject.toml:version"
@@ -79,3 +81,20 @@ upload_to_release = "false"
 
 [tool.black]
 target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | __pycache__
+  | .*egg-info
+)/
+'''

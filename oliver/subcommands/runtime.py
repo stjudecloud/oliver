@@ -18,8 +18,8 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         return
 
     calls_that_match = []
-    for name, call in metadata["calls"].items():
-        for process in call:
+    for name, cur_call in metadata["calls"].items():
+        for process in cur_call:
             attempt = process.get("attempt")
             shard = process.get("shardIndex")
 
