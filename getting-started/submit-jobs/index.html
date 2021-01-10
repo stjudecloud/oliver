@@ -147,9 +147,8 @@ Typically when submitting a workflow, one must craft and POST one or more <code>
 <li>Oliver distinguishes between inputs, options, and labels based on the prefix provided.</li>
 </ul>
 <p>For instance, consider the following command:</p>
-<pre><code class="bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D
+<pre><code class="language-bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D
 </code></pre>
-
 <p>Here, Oliver loads <code>workflow.wdl</code> and begins preparing the <code>workflowInputs</code> (inputs), <code>workflowOptions</code> (options), and <code>labels</code> (labels) JSON objects — all of which are initialized as <code>{}</code>.</p>
 <ol>
 <li>Oliver loads the JSON object defined in <code>defaults.json</code>. For each key-value in that object, it adds the pair to <code>workflowInputs</code>, overwriting the pair if it already exists. In this case, the JSON object is empty, so <code>workflowInputs</code> now mirrors what was contained in <code>defaults.json</code>.</li>
@@ -185,7 +184,7 @@ Typically when submitting a workflow, one must craft and POST one or more <code>
 </tbody>
 </table>
 <p>For example, consider the following command and note the process Oliver follows in the comments:</p>
-<pre><code class="bash">oliver submit workflow.wdl \
+<pre><code class="language-bash">oliver submit workflow.wdl \
     default-inputs.json \      # loads all values in the JSON file to the inputs object.
     @default-options.json \    # loads all values in the JSON file to the options object.
     %default-labels.json \     # loads all values in the JSON file to the labels object.
@@ -193,12 +192,10 @@ Typically when submitting a workflow, one must craft and POST one or more <code>
     @option_key=value \        # adds `option_key=value` to the options object (overwrites the value if `option_key` set in default-options.json).
     %label_key=value \         # adds `label_key=value` to the labels object (overwrites the value if `label_key` set in default-labels.json).
 </code></pre>
-
 <h3 id="inspecting-parameters-with-dry-runs">Inspecting Parameters with Dry Runs</h3>
 <p>Often, it can be useful to inspect how Oliver is parsing the parameters you are passing on the command line. You can easily do so by specifying the dry-run argument.</p>
-<pre><code class="bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D --dry-run
+<pre><code class="language-bash">oliver submit workflow.wdl defaults.json sample_name=SJBALL101_D --dry-run
 </code></pre>
-
 <h2 id="job-names-and-groups">Job Names and Groups</h2>
 <p>You can submit jobs with a "Oliver Job Name" (<code>-j</code>) and "Oliver Job Group" (<code>-g</code>) to mimic the capabilities of an HPC. Under the hood, Oliver adds these as labels to the workflow. In most Oliver commands, you can then specify these options to restrict results.</p>
 <p>For instance, if you wished to submit a group of samples with the same job name and then track their status:</p>

@@ -138,15 +138,13 @@
 dotfile is location at <code>~/.oliver_config</code>. One of the benefits of using Oliver is the "set and forget" nature of configuration. For instance, a common configuration option that you might want to set rather than providing on the command line is the URL to your Cromwell server.</p>
 <h2 id="basics">Basics</h2>
 <p>Before using Oliver, you should run the configuration quickstart wizard:</p>
-<pre><code class="bash">oliver configure
+<pre><code class="language-bash">oliver configure
 </code></pre>
-
 <p>If you just want to accept the defaults, or if you are using Oliver in a non interactive environment like CI, you can just start with the default configuration.</p>
-<pre><code class="bash">oliver configure --defaults
+<pre><code class="language-bash">oliver configure --defaults
 </code></pre>
-
 <p>Similarly, you can use the <code>oliver config</code> subcommand to display current config values, get specific key-value pairs, or set new values for configuration options.</p>
-<pre><code class="bash"># list all config values
+<pre><code class="language-bash"># list all config values
 oliver config list
 
 # get a particular key
@@ -155,7 +153,6 @@ oliver config get cromwell_server
 # set a particular key's value
 oliver config set cromwell_server http://foo:8000
 </code></pre>
-
 <h2 id="commonly-used-options">Commonly Used Options</h2>
 <p>The following key values pairs are commonly used to configure Oliver. Note that any key in the <code>argparse</code> parser can be specified in the configuration — if you would like to set any of these options and don't mind looking through Python code, you can do so (we do not exhaustively list all possible config options here).</p>
 <table>

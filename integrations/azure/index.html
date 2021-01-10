@@ -137,10 +137,9 @@
 <p>The subcommand <code>oliver azure</code> currently exists for the community to try, but the guide is still in progress. We will continue to add to this guide as we add functionality. In the meantime, if you use Cromwell on Azure and would like to suggest features or report bugs you encounter, we invite you to do so on the <a href="https://github.com/stjudecloud/oliver/issues">issues</a> page.</p>
 <h2 id="cosmosdb">CosmosDB</h2>
 <p>When using Cromwell on Azure, <a href="https://azure.microsoft.com/en-us/services/cosmos-db/">CosmosDB</a> is used as the metadata store for Cromwell. It can be extremely useful to peer into this metadata to understand failures that happen outside of Cromwell (for instance, within Azure Batch). Thus, we have integrated custom commands (such as <code>oliver cosmos</code>) to interrogate this database. If you wish to use this functionality, you'll need to set the following configuration parameters.</p>
-<pre><code class="bash">oliver config set azure_resource_group &quot;YOUR RESOURCE GROUP NAME&quot;
+<pre><code class="language-bash">oliver config set azure_resource_group &quot;YOUR RESOURCE GROUP NAME&quot;
 oliver config set cosmos_account_name &quot;YOUR COSMOSDB ACCOUNT NAME&quot;
 </code></pre>
-
 <p>For more information, see our <a href="../../getting-started/configuration/">configuration guide</a>.</p></div>
         </div>
 

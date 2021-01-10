@@ -138,7 +138,6 @@ the storage location as a FUSE filesystem. This leads to Cromwell reporting the
 location of output files or logs like so:</p>
 <pre><code>/cromwell-execution/rnaseq_standard/&lt;UUID&gt;/call-multiqc/multiqc_results.tar.gz
 </code></pre>
-
 <p>In general, this location is not ammenable to quickly leveraging in another
 script to download the file. In this case, we have chosen to create the
 <code>output_prefix</code> configuration option that allows prefixing any output locations
@@ -146,10 +145,9 @@ with a string. For instance, if the output prefix is <code>azure://container-nam
 reported output of the above will be</p>
 <pre><code>azure://container-name/cromwell-execution/rnaseq_standard/&lt;UUID&gt;/call-multiqc/multiqc_results.tar.gz
 </code></pre>
-
 <p>This string is much more amenable to copying and pasting. You can set this
 configuration option by running the following command.</p>
-<pre><code class="bash">oliver config set output_prefix &quot;azure://container-name&quot;
+<pre><code class="language-bash">oliver config set output_prefix &quot;azure://container-name&quot;
 </code></pre></div>
         </div>
 
