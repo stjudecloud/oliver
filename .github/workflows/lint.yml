@@ -36,4 +36,4 @@ jobs:
       - uses: actions/checkout@v1
       - uses: lgeiger/black-action@v1.0.1
         with:
-          args: "oliver --check"
+          args: "oliver --diff"
