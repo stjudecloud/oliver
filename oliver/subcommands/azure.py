@@ -45,37 +45,38 @@ def register_subparser(
     # https://bugs.python.org/issue9253#msg186387
     azure_subcommands.required = True
 
-    cosmos = azure_subcommands.add_parser(
+    cosmos_parser = azure_subcommands.add_parser(
         "cosmos",
-        description="Gathers information about azure Batch failures and puts them in a folder for analysis.",
+        description="Gathers information about azure Batch failures "
+        + "and puts them in a folder for analysis.",
     )
-    cosmos.add_argument("workflow-id", help="Cromwell workflow ID.")
-    cosmos.add_argument(
+    cosmos_parser.add_argument("workflow-id", help="Cromwell workflow ID.")
+    cosmos_parser.add_argument(
         "--failures", action="store_true", help="Return only failed tasks"
     )
-    cosmos.add_argument(
+    cosmos_parser.add_argument(
         "--grid-style",
         help="Any valid `tablefmt` for python-tabulate.",
         default="fancy_grid",
     )
-    cosmos.add_argument(
+    cosmos_parser.add_argument(
         "--json",
         help="Print the full JSON objects for Cosmos records",
         action="store_true",
     )
-    cosmos.add_argument("-o", "--outfile", help="File to save JSON records to")
+    cosmos_parser.add_argument("-o", "--outfile", help="File to save JSON records to")
 
-    aggregate = azure_subcommands.add_parser(
+    aggregate_parser = azure_subcommands.add_parser(
         "aggregate", description="Aggregate outputs from Azure blob container."
     )
-    aggregate.add_argument("workflow-id", help="Cromwell workflow ID.")
-    aggregate.add_argument(
+    aggregate_parser.add_argument("workflow-id", help="Cromwell workflow ID.")
+    aggregate_parser.add_argument(
         "output-folder", help="Output folder to download the files to."
     )
-    aggregate.add_argument(
+    aggregate_parser.add_argument(
         "--sas-token", help="Valid SAS token for the `cromwell-executions` container."
     )
-    aggregate.add_argument(
+    aggregate_parser.add_argument(
         "-d",
         "--dry-run",
         help="Print what would be submitted rather than actually submitting.",

@@ -65,8 +65,8 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         )
 
     calls = []
-    for name, call in metadata["calls"].items():
-        for process in call:
+    for name, cur_call in metadata["calls"].items():
+        for process in cur_call:
             attempt = process.get("attempt")
             shard = process.get("shardIndex")
 
@@ -111,8 +111,8 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
 
     calls = sorted(calls, key=lambda k: k["Start"])
 
-    for call in calls:
-        call["Start"] = reporting.localize_date(call_start_date)
+    for cur_call in calls:
+        cur_call["Start"] = reporting.localize_date(call_start_date)
 
     if oliver_job_name:
         print(f"Job Name: {oliver_job_name}")

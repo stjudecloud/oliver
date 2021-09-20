@@ -101,7 +101,7 @@ async def run() -> None:
         if not k in args or not args[k]:
             args[k] = v
 
-    if not args.get("force") and args.get("subcommand") != "configure":
+    if not args.get("force") and args.get("subcommand") not in ["configure", "config"]:
         ensure_required_args(args)
 
     if not args.get("subcommand"):
