@@ -102,7 +102,8 @@ def register_subparser(
     debug_subcommand = aws_subcommands.add_parser(
         "debug",
         aliases=["d"],
-        description="Gathers information about AWS Batch failures and puts them in a folder for analysis.",
+        description="Gathers information about AWS Batch failures "
+        + "and puts them in a folder for analysis.",
     )
     debug_subcommand.add_argument(
         "queue", help="Which AWS batch queue to query?", type=str

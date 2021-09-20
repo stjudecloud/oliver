@@ -21,8 +21,8 @@ async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict[str
     """
     metadata = await cromwell.get_workflows_metadata(workflow_id)
     results: List[Dict[str, str]] = []
-    for name, call in metadata["calls"].items():
-        for process in call:
+    for name, cur_call in metadata["calls"].items():
+        for process in cur_call:
             if "subWorkflowId" in process:
                 results += await get_logs(cromwell, process.get("subWorkflowId"))
                 continue
@@ -35,7 +35,8 @@ async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict[str
             # further flesh out how Cromwell is reporting results.
             if not attempt:
                 errors.report(
-                    "Expected key is missing! The code needs to be updated, please contact the author!",
+                    "Expected key is missing! The code needs to be updated, "
+                    + "please contact the author!",
                     fatal=True,
                     exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
                 )
