@@ -188,7 +188,7 @@ class CromwellAPI:
         logger.debug(f"workflowDependencies: {workflowDependencies}")
 
         _, data = await self._api_call(
-            "/api/workflows/{version}",
+            "api/workflows/{version}",
             method="POST",
             data=data,
         )
@@ -210,7 +210,7 @@ class CromwellAPI:
         "POST /api/workflows/{version}/{id}/abort"
 
         _, data = await self._api_call(
-            f"/api/workflows/{{version}}/{workflow_id}/abort", method="POST"
+            f"api/workflows/{{version}}/{workflow_id}/abort", method="POST"
         )
         return data
 
@@ -226,14 +226,14 @@ class CromwellAPI:
         "GET /api/workflows/{version}/{id}/outputs"
 
         _, data = await self._api_call(
-            f"/api/workflows/{{version}}/{workflow_id}/outputs"
+            f"api/workflows/{{version}}/{workflow_id}/outputs"
         )
         return data
 
     async def get_workflows_logs(self, workflow_id: str) -> Dict[str, Any]:
         "POST /api/workflows/{version}/{id}/logs"
 
-        _, data = await self._api_call(f"/api/workflows/{{version}}/{workflow_id}/logs")
+        _, data = await self._api_call(f"api/workflows/{{version}}/{workflow_id}/logs")
         return data
 
     async def get_workflows_query(
@@ -286,7 +286,7 @@ class CromwellAPI:
             "includeSubworkflows": str(includeSubworkflows),
         }
 
-        _, data = await self._api_call("/api/workflows/{version}/query", params=params)
+        _, data = await self._api_call("api/workflows/{version}/query", params=params)
         results = cast(List[Dict[str, Any]], data.get("results"))
         if not results:
             if not isinstance(results, list):
@@ -338,7 +338,7 @@ class CromwellAPI:
         }
 
         _, data = await self._api_call(
-            f"/api/workflows/{{version}}/{id}/metadata", params=params
+            f"api/workflows/{{version}}/{id}/metadata", params=params
         )
         return data
 
