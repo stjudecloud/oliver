@@ -9,42 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v1
+        uses: stjudecloud/release-python-action@v1
         with:
-          python-version: '3.7'
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '13.x'
-      - name: Cache Dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/pypoetry/
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-      - name: Install Python Dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install setuptools
-          python3 -m pip install poetry==1.0.5
-          poetry config virtualenvs.create false
-          poetry install
-      - name: Install Node Dependencies
-        run: npm install -g conventional-github-releaser
-      - name: Build and Publish
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          git config --local user.email "support@stjude.cloud"
-          git config --local user.name "St. Jude Cloud"
-          semantic-release publish
-      - name: Run Releaser
-        run: conventional-github-releaser -p angular || exit 0
-        env:
-          DEBUG: conventional-github-releaser
-          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
