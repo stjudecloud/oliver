@@ -12,7 +12,9 @@ CROMWELL_ENDPOINT=$1; shift;
 WDL_WORKFLOW=$1; shift;
 
 for _ in $(seq 1 5); do
-    http -f POST \
+    http --ignore-stdin \
+        --verbose \
+        -f POST \
         "${CROMWELL_ENDPOINT}/api/workflows/v1" \
         Accept:application/json \
         workflowSource@"${WDL_WORKFLOW}"
