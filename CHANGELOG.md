@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.7 (2021-11-20)
+### Fix
+* Removes the wheel package from dependencies altogether ([`083b720`](https://github.com/stjudecloud/oliver/commit/083b7209bd45a2f1cc4ac51b8226498b0bb4af56))
+
 ## v1.4.6 (2021-11-20)
 ### Fix
 * Further downgrade wheel to 0.34.0 ([`edb10f1`](https://github.com/stjudecloud/oliver/commit/edb10f1ad5023cffe6322b3f360f33a0fdb6bce5))
