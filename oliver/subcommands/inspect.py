@@ -109,7 +109,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
 
             calls.append(result)
 
-    calls = sorted(calls, key=lambda k: k["Start"])
+    calls = sorted(calls, key=lambda k: k["Start"]) # type: ignore
 
     for cur_call in calls:
         cur_call["Start"] = reporting.localize_date(call_start_date)

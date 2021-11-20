@@ -87,7 +87,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
             )
 
         # start time
-        _sorted_workflows = sorted(batch_workflows, key=lambda x: x["start"])
+        _sorted_workflows = sorted(batch_workflows, key=lambda x: x["start"]) # type: ignore
         earliest_start_time = min([x.get("start") for x in _sorted_workflows])
         r["Start Time"] = reporting.localize_date(earliest_start_time)
 

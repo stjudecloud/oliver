@@ -282,7 +282,7 @@ def print_workflow_steps_view(
             )
 
         for call_name, calls in m.get("calls").items():
-            most_recent_call = sorted(calls, key=lambda x: x["start"])[-1]
+            most_recent_call = sorted(calls, key=lambda x: x["start"])[-1]  # type: ignore
             results[call_name][most_recent_call.get("executionStatus")] += 1
 
     # pylint: disable=C0206
