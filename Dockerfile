@@ -1,7 +1,7 @@
-FROM python:3.9.7
+FROM python:3.9.7-bullseye
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends httpie jq \
+    && apt-get install -y --no-install-recommends jq \
     && rm -rf /var/lib/apt/lists/*
 
 ENV OLIVER_HOME=/opt/oliver
@@ -10,7 +10,7 @@ WORKDIR $OLIVER_HOME
 
 RUN pip install --disable-pip-version-check \
     --no-cache-dir \
-    setuptools poetry==1.0.3
+    setuptools poetry httpie
 COPY poetry.lock pyproject.toml ${OLIVER_HOME}/
 COPY README.md ${OLIVER_HOME}/README.md
 COPY oliver/ ${OLIVER_HOME}/oliver/
