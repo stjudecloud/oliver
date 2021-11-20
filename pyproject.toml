@@ -35,7 +35,7 @@ packages = [
 ]
 readme = "README.md"
 repository = "https://github.com/stjudecloud/oliver"
-version = "1.4.5"
+version = "1.4.6"
 
 [tool.poetry.scripts]
 oliver = "oliver.__main__:main"

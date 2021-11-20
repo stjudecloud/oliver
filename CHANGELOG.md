@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.6 (2021-11-20)
+### Fix
+* Downgrade wheel ([`9fd865c`](https://github.com/stjudecloud/oliver/commit/9fd865c94841f810a47707d2e918b2f47debe134))
+
 ## v1.4.5 (2021-11-20)
 ### Fix
 * Fixes build with new version of typed-ast ([`200ad9f`](https://github.com/stjudecloud/oliver/commit/200ad9ff74a03628e6c4ce913a6c2c139348968a))
