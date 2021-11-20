@@ -82,7 +82,7 @@ def register_subparser(
 
     # clean up s3 resources for failed and aborted workflows
     clean_subcommand = aws_subcommands.add_parser(
-        "clean", aliases=["c"], help=clean.__doc__.split("\n")[0]
+        "clean", aliases=["c"], help=clean.__doc__.split("\n", maxsplit=1)[0]
     )
     clean_subcommand.add_argument(
         "workflow-root-folder",

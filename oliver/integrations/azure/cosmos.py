@@ -2,7 +2,7 @@ import os
 import json
 
 from typing import Any, Dict
-import azure.cosmos.cosmos_client as cosmos_client
+from azure.cosmos import cosmos_client
 
 from ...lib import api, reporting
 
@@ -65,7 +65,7 @@ async def call(
         for item in results:
             output += json.dumps(item, indent=True)
         if args["outfile"] and args["outfile"] is not None:
-            f = open(args["outfile"], "w")
+            f = open(args["outfile"], mode="w", encoding="utf-8")
             f.write(output)
             f.close()
         else:
