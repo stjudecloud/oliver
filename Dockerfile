@@ -1,4 +1,4 @@
-FROM python:3.7.3
+FROM python:3.9.7
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends httpie jq \
@@ -9,8 +9,8 @@ ENV PYTHONWARNINGS="ignore"
 WORKDIR $OLIVER_HOME
 
 RUN pip install --disable-pip-version-check \
-                --no-cache-dir \
-                setuptools poetry==1.0.3
+    --no-cache-dir \
+    setuptools poetry==1.0.3
 COPY poetry.lock pyproject.toml ${OLIVER_HOME}/
 COPY README.md ${OLIVER_HOME}/README.md
 COPY oliver/ ${OLIVER_HOME}/oliver/
