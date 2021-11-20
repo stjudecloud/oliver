@@ -93,8 +93,8 @@ class CromwellAPI:
             for k, v in data.items():
                 if k in FILE_PARAMS:
                     filename = os.path.basename(v)
-                    with open(v, "rb") as f:
-                        _data.add_field(k, f, filename=filename)
+                    # pylint: disable=R1732
+                    _data.add_field(k, open(v, "rb"), filename=filename)
                 else:
                     _data.add_field(k, v, filename=k, content_type="application/json")
             kwargs["data"] = _data
