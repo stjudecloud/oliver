@@ -104,7 +104,7 @@ def get_aws_batch_jobs(
                 else:
                     results.append(new_job)
 
-    return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0))
+    return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0)) # type: ignore
 
 
 async def get_calls_and_times_for_workflows(

@@ -57,7 +57,7 @@ black = "^20.8b1"
 boto3-stubs = "^1.12.17"
 mkdocs = "^1.0.4"
 mkdocs-bootswatch = "^1.0"
-mypy = "^0.761"
+mypy = "0.910"
 mypy-boto3 = {extras = ["batch", "logs"], version = "^1.12.17"}
 mypy_boto3_batch = "^1.12.21"
 mypy_boto3_logs = "^1.12.21"
@@ -68,6 +68,7 @@ pytest-asyncio = "^0.10.0"
 pytest-cov = "^2.8.1"
 python-semantic-release = ">=6.0.0"
 rope = "^0.18.0"
+types-tabulate = "^0.8.3"
 
 [tool.semantic_release]
 build_command = "poetry build"
