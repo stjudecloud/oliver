@@ -84,15 +84,27 @@ tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)"
 tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
 
 [[package]]
-name = "azure-cosmos"
-version = "3.2.0"
-description = "Azure Cosmos Python SDK"
+name = "azure-core"
+version = "1.20.1"
+description = "Microsoft Azure Core Library for Python"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-requests = ">=2.10.0"
+requests = ">=2.18.4"
+six = ">=1.11.0"
+
+[[package]]
+name = "azure-cosmos"
+version = "4.2.0"
+description = "Microsoft Azure Cosmos Client Library for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+azure-core = ">=1.0.0,<2.0.0"
 six = ">=1.6"
 
 [[package]]
@@ -1488,7 +1500,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9.7"
-content-hash = "0db0ef2e4935fb50c472ecf01b165434743ce8788a8e7ce0aa35775e0618cb16"
+content-hash = "de853d076e02ca62672976c54d45cb068ee69caf97c090ad22dae85971e79e03"
 
 [metadata.files]
 aiohttp = [
@@ -1589,9 +1601,13 @@ attrs = [
     {file = "attrs-20.3.0-py2.py3-none-any.whl", hash = "sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6"},
     {file = "attrs-20.3.0.tar.gz", hash = "sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700"},
 ]
+azure-core = [
+    {file = "azure-core-1.20.1.zip", hash = "sha256:21d06311c9c373e394ed9f9db035306773334a0181932e265889eca34d778d17"},
+    {file = "azure_core-1.20.1-py2.py3-none-any.whl", hash = "sha256:5e5df1850ef6eff2b481a4a5fefa7d73ec74b6a2e0b27b179341f73f655fa4bf"},
+]
 azure-cosmos = [
-    {file = "azure-cosmos-3.2.0.tar.gz", hash = "sha256:4f77cc558fecffac04377ba758ac4e23f076dc1c54e2cf2515f85bc15cbde5c6"},
-    {file = "azure_cosmos-3.2.0-py2.py3-none-any.whl", hash = "sha256:313e766bcf5a1779802c274dec94d5b9cc0e4d0d269489c56606fd2464070fad"},
+    {file = "azure-cosmos-4.2.0.zip", hash = "sha256:867191fa5966446101f7ca3834f23060a85735d0b660303ca353864945d572b6"},
+    {file = "azure_cosmos-4.2.0-py2.py3-none-any.whl", hash = "sha256:d0edcc3acd09e5c422b6cf07a34f9faa418414ba72eea3db2a3dcfaa9b1ee610"},
 ]
 black = [
     {file = "black-20.8b1.tar.gz", hash = "sha256:1c02557aa099101b9d21496f8a914e9ed2222ef70336404eeeac8edba836fbea"},
