@@ -105,7 +105,8 @@ def parse_cmdline_arg(arg: str) -> Tuple[str, str, Dict[str, Any]]:
                 # file
                 source_type = "file"
                 try:
-                    result = json.loads(open(suffix, "rb").read())
+                    with open(suffix, "rb") as f:
+                        result = json.loads(f.read())
                 except:
                     errors.report(
                         f"Could not parse JSON for file: {arg}.",

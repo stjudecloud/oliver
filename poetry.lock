@@ -39,16 +39,16 @@ python-versions = "*"
 
 [[package]]
 name = "astroid"
-version = "2.4.2"
+version = "2.8.5"
 description = "An abstract syntax tree for Python with inference support."
 category = "dev"
 optional = false
-python-versions = ">=3.5"
+python-versions = "~=3.6"
 
 [package.dependencies]
-lazy-object-proxy = ">=1.4.0,<1.5.0"
-six = ">=1.12,<2.0"
-wrapt = ">=1.11,<2.0"
+lazy-object-proxy = ">=1.4.0"
+typing-extensions = {version = ">=3.10", markers = "python_version < \"3.10\""}
+wrapt = ">=1.11,<1.14"
 
 [[package]]
 name = "async-timeout"
@@ -919,6 +919,18 @@ python-versions = "*"
 testing = ["nose", "coverage"]
 
 [[package]]
+name = "platformdirs"
+version = "2.4.0"
+description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["Sphinx (>=4)", "furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)"]
+test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)"]
+
+[[package]]
 name = "pluggy"
 version = "0.13.1"
 description = "plugin and hook calling mechanisms for python"
@@ -966,18 +978,20 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pylint"
-version = "2.6.2"
+version = "2.11.1"
 description = "python code static checker"
 category = "dev"
 optional = false
-python-versions = ">=3.5.*"
+python-versions = "~=3.6"
 
 [package.dependencies]
-astroid = ">=2.4.0,<2.5"
+astroid = ">=2.8.0,<2.9"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
 isort = ">=4.2.5,<6"
 mccabe = ">=0.6,<0.7"
+platformdirs = ">=2.2.0"
 toml = ">=0.7.1"
+typing-extensions = {version = ">=3.10.0", markers = "python_version < \"3.10\""}
 
 [[package]]
 name = "pyparsing"
@@ -1363,11 +1377,11 @@ python-versions = "*"
 
 [[package]]
 name = "typing-extensions"
-version = "3.7.4.3"
-description = "Backported and Experimental Type Hints for Python 3.5+"
+version = "4.0.0"
+description = "Backported and Experimental Type Hints for Python 3.6+"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [[package]]
 name = "tzlocal"
@@ -1454,8 +1468,8 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.9.7"
-content-hash = "118553e1a85096f5328605c65780c62028304a03ecc5d55da4a913e247532e0a"
+python-versions = "^3.9.7"
+content-hash = "21851fa790cfbb816aa0a18de12559a6b08c8375bb1b3f7b78add4e3d3c77504"
 
 [metadata.files]
 aiohttp = [
@@ -1541,8 +1555,8 @@ appdirs = [
     {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
 ]
 astroid = [
-    {file = "astroid-2.4.2-py3-none-any.whl", hash = "sha256:bc58d83eb610252fd8de6363e39d4f1d0619c894b0ed24603b881c02e64c7386"},
-    {file = "astroid-2.4.2.tar.gz", hash = "sha256:2f4078c2a41bf377eea06d71c9d2ba4eb8f6b1af2135bec27bbbb7d8f12bb703"},
+    {file = "astroid-2.8.5-py3-none-any.whl", hash = "sha256:abc423a1e85bc1553954a14f2053473d2b7f8baf32eae62a328be24f436b5107"},
+    {file = "astroid-2.8.5.tar.gz", hash = "sha256:11f7356737b624c42e21e71fe85eea6875cb94c03c82ac76bd535a0ff10b0f25"},
 ]
 async-timeout = [
     {file = "async-timeout-4.0.1.tar.gz", hash = "sha256:b930cb161a39042f9222f6efb7301399c87eeab394727ec5437924a36d6eef51"},
@@ -2055,6 +2069,10 @@ pkginfo = [
     {file = "pkginfo-1.6.1-py2.py3-none-any.whl", hash = "sha256:ce14d7296c673dc4c61c759a0b6c14bae34e34eb819c0017bb6ca5b7292c56e9"},
     {file = "pkginfo-1.6.1.tar.gz", hash = "sha256:a6a4ac943b496745cec21f14f021bbd869d5e9b4f6ec06918cffea5a2f4b9193"},
 ]
+platformdirs = [
+    {file = "platformdirs-2.4.0-py3-none-any.whl", hash = "sha256:8868bbe3c3c80d42f20156f22e7131d2fb321f5bc86a2a345375c6481a67021d"},
+    {file = "platformdirs-2.4.0.tar.gz", hash = "sha256:367a5e80b3d04d2428ffa76d33f124cf11e8fff2acdaa9b43d545f5c7d661ef2"},
+]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
@@ -2076,8 +2094,8 @@ pygments = [
     {file = "Pygments-2.7.3.tar.gz", hash = "sha256:ccf3acacf3782cbed4a989426012f1c535c9a90d3a7fc3f16d231b9372d2b716"},
 ]
 pylint = [
-    {file = "pylint-2.6.2-py3-none-any.whl", hash = "sha256:e71c2e9614a4f06e36498f310027942b0f4f2fde20aebb01655b31edc63b9eaf"},
-    {file = "pylint-2.6.2.tar.gz", hash = "sha256:718b74786ea7ed07aa0c58bf572154d4679f960d26e9641cc1de204a30b87fc9"},
+    {file = "pylint-2.11.1-py3-none-any.whl", hash = "sha256:0f358e221c45cbd4dad2a1e4b883e75d28acdcccd29d40c76eb72b307269b126"},
+    {file = "pylint-2.11.1.tar.gz", hash = "sha256:2c9843fff1a88ca0ad98a256806c82c5a8f86086e7ccbdb93297d86c3f90c436"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
@@ -2289,9 +2307,8 @@ types-tabulate = [
     {file = "types_tabulate-0.8.3-py3-none-any.whl", hash = "sha256:f815bdcaa227777517edea91dcac85effe03f58dd350c7e19b8019f4fb14dacc"},
 ]
 typing-extensions = [
-    {file = "typing_extensions-3.7.4.3-py2-none-any.whl", hash = "sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f"},
-    {file = "typing_extensions-3.7.4.3-py3-none-any.whl", hash = "sha256:7cb407020f00f7bfc3cb3e7881628838e69d8f3fcab2f64742a5e76b2f841918"},
-    {file = "typing_extensions-3.7.4.3.tar.gz", hash = "sha256:99d4073b617d30288f569d3f13d2bd7548c3a7e4c8de87db09a9d29bb3a4a60c"},
+    {file = "typing_extensions-4.0.0-py3-none-any.whl", hash = "sha256:829704698b22e13ec9eaf959122315eabb370b0884400e9818334d8b677023d9"},
+    {file = "typing_extensions-4.0.0.tar.gz", hash = "sha256:2cdf80e4e04866a9b3689a51869016d36db0814d84b8d8a568d22781d45d27ed"},
 ]
 tzlocal = [
     {file = "tzlocal-2.1-py2.py3-none-any.whl", hash = "sha256:e2cb6c6b5b604af38597403e9852872d7f534962ae2954c7f35efcb1ccacf4a4"},

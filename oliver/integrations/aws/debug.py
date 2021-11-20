@@ -230,7 +230,7 @@ def write_log(
         os.makedirs(calldir)
 
     # summary
-    with open(os.path.join(calldir, "summary.txt"), "w") as cur_file:
+    with open(os.path.join(calldir, "summary.txt"), mode="w", encoding="utf-8") as cur_file:
         cur_file.write("== Cromwell ==\n\n")
         for k, v in cur_call.items():
             cur_file.write(f"{k.capitalize()}: {v}\n")
@@ -242,7 +242,7 @@ def write_log(
             os.makedirs(batchdir)
 
         # summary
-        with open(os.path.join(batchdir, "summary.txt"), "w") as cur_file:
+        with open(os.path.join(batchdir, "summary.txt"), mode="w", encoding="utf-8") as cur_file:
             cur_file.write("== AWS batch ==\n\n")
             for k, v in batch_job.items():
                 cur_file.write(f"{k.capitalize()}: {v}\n")
@@ -259,7 +259,7 @@ def write_log(
         assert len(jobs) == 1
         logstream = jobs[0].get("container", {}).get("logStreamName", "")
 
-        with open(os.path.join(batchdir, "cloudwatch-logs.txt"), "w") as cur_file:
+        with open(os.path.join(batchdir, "cloudwatch-logs.txt"), mode="w", encoding="utf-8") as cur_file:
             success = False
 
             for logstream_name in [logstream, logstream + "-proxy"]:

@@ -44,6 +44,7 @@ def get_workflow_batches(
 
     if relative:
         _batches = [_max_batch_num - b for b in _batches]
+        # pylint: disable=R1729
         if any([b < 0 for b in _batches]):
             errors.report(
                 message="One of the batch numbers given was higher than the largest batch number, so it does not exist!",

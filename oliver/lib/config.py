@@ -25,7 +25,7 @@ def read_config(config_file: str = DEFAULT_LOCATION) -> Any:
     if not os.path.exists(path):
         return {}
 
-    with open(path, "r") as f:
+    with open(path, mode="r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -39,5 +39,5 @@ def write_config(
             if not isinstance(config.get(key), _type):
                 config[key] = _type(config.get(key))
 
-    with open(path, "w") as f:
+    with open(path, mode="w", encoding="utf-8") as f:
         json.dump(config, f, indent=4, sort_keys=True)

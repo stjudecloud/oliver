@@ -60,6 +60,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
                 metadatas.get(workflow.get("id"), {}).get("calls", {}).items()
             ):
                 if call_name in call_names_to_consider:
+                    # pylint: disable=R1729
                     if any([c.get("executionStatus") == "Failed" for c in calls]):
                         keep_workflow = True
                         break
@@ -204,6 +205,7 @@ def print_workflow_summary(
 
     results = []
     keys = set()
+    # pylint: disable=C0206
     for group in agg.keys():
         for k in agg[group]:
             keys.add(k)
@@ -283,6 +285,7 @@ def print_workflow_steps_view(
             most_recent_call = sorted(calls, key=lambda x: x["start"])[-1]
             results[call_name][most_recent_call.get("executionStatus")] += 1
 
+    # pylint: disable=C0206
     _results: List[Dict[str, Union[str, int]]] = [
         {"Call Name": call_name, **results[call_name]} for call_name in results.keys()
     ]

@@ -66,6 +66,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         statuses: Dict[str, int] = defaultdict(int)
         for status in [w.get("status") for w in batch_workflows]:
             statuses[status] += 1
+        # pylint: disable=C0206
         r["Statuses"] = ", ".join(
             sorted([f"{key} ({statuses[key]})" for key in statuses.keys()])
         )
@@ -113,7 +114,7 @@ def register_subparser(
     """
 
     subcommand = subparser.add_parser(
-        SUBCOMMAND_NAME, aliases=SUBCOMMAND_ALIASES, help=__doc__.split("\n")[0]
+        SUBCOMMAND_NAME, aliases=SUBCOMMAND_ALIASES, help=__doc__.split("\n", maxsplit=1)[0]
     )
 
     _args.add_batches_group(subcommand)
