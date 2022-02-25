@@ -47,7 +47,6 @@ def add_batches_interval_arg(
 def add_batches_group(
     parser: argparse._ActionsContainer,  # pylint: disable=protected-access
     required: bool = False,
-    add_batches_interval_arg_automatically: bool = True,
 ) -> None:
     batches = parser.add_mutually_exclusive_group(required=required)
     batches.add_argument(
@@ -66,8 +65,6 @@ def add_batches_group(
         default=None,
         type=int,
     )
-    if add_batches_interval_arg_automatically:
-        add_batches_interval_arg(parser)
 
 
 def add_oliver_job_group_args(parser: argparse.ArgumentParser, **kwargs: Any) -> None:
