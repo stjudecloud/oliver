@@ -118,9 +118,7 @@ def register_subparser(
         help="Resubmit a workflow with the same parameters. By default, only restarts workflows which are 'Failed' or 'Aborted'.",
     )
     scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
-    _args.add_batches_group(
-        scope_predicate, add_batches_interval_arg_automatically=False
-    )
+    _args.add_batches_group(scope_predicate)
     _args.add_batches_interval_arg(subcommand)
     scope_predicate.add_argument(
         "-w", "--workflow", help="Workflow UUID you wish to retry."

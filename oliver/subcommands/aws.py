@@ -55,9 +55,7 @@ def register_subparser(
         help="Aggregate all results to a local or cloud folder for a run.",
     )
     scope_predicate = aggregate_subcommand.add_mutually_exclusive_group(required=True)
-    _args.add_batches_group(
-        scope_predicate, add_batches_interval_arg_automatically=False
-    )
+    _args.add_batches_group(scope_predicate)
     _args.add_batches_interval_arg(subcommand)
     scope_predicate.add_argument(
         "-w", "--workflow", help="Workflow UUID you wish to retry."
