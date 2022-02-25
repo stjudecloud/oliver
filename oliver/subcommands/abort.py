@@ -74,9 +74,7 @@ def register_subparser(
         help="Abort workflows running on a Cromwell server.",
     )
     scope_predicate = subcommand.add_mutually_exclusive_group(required=True)
-    _args.add_batches_group(
-        scope_predicate, add_batches_interval_arg_automatically=False
-    )
+    _args.add_batches_group(scope_predicate)
     _args.add_batches_interval_arg(subcommand)
     scope_predicate.add_argument(
         "-w", "--cromwell-workflow-uuid", help="Workflow UUID you wish to abort."
