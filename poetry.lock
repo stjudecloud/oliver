@@ -869,8 +869,8 @@ python2 = ["typed-ast (>=1.4.0,<1.5.0)"]
 
 [[package]]
 name = "mypy-boto3"
-version = "1.21.7"
-description = "Type annotations for boto3 1.21.7 master module generated with mypy-boto3-builder 7.1.2"
+version = "1.21.13"
+description = "Type annotations for boto3 1.21.13 master module generated with mypy-boto3-builder 7.3.0"
 category = "main"
 optional = false
 python-versions = ">=3.6"
@@ -2069,8 +2069,8 @@ mypy = [
     {file = "mypy-0.910.tar.gz", hash = "sha256:704098302473cb31a218f1775a873b376b30b4c18229421e9e9dc8916fd16150"},
 ]
 mypy-boto3 = [
-    {file = "mypy-boto3-1.21.7.tar.gz", hash = "sha256:2d164edc203e4e169681e9b175051aabebba8395f4cbc5aa35f2d6e6802e5bb4"},
-    {file = "mypy_boto3-1.21.7-py3-none-any.whl", hash = "sha256:42f8c8d81efafd7e251a8343bc58adab70b073859760787f333fd4ad065c08de"},
+    {file = "mypy-boto3-1.21.13.tar.gz", hash = "sha256:58f78a7de90d37d670e49889fd09c1a353c9655597ab66975504e101b838e94b"},
+    {file = "mypy_boto3-1.21.13-py3-none-any.whl", hash = "sha256:f6cb0dcde10d040448f2e316c4994806a28d62fa294a4383ceff497ad2674748"},
 ]
 mypy-boto3-batch = [
     {file = "mypy-boto3-batch-1.21.0.tar.gz", hash = "sha256:2cc76e73c85b9cc2900bd90a9d897ae2d4eb1c84edce04cd7258160836027778"},
