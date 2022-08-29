@@ -30,9 +30,9 @@ class CosmosAPI:
         self.client = cosmos_client.CosmosClient(self.server, {"masterKey": self.key})
 
     def query(
-        self, database_id: str = "TES", container_id: str = "Tasks", where: str = ""
+            self, database_id: str = "TES", container_id: str = "Tasks", where: str = ""
     ) -> Any:
-        return self.client.QueryItems(
+        return self.client.QueryItems( # type: ignore
             "dbs/" + database_id + "/colls/" + container_id,
             "SELECT * FROM " + container_id + " r " + where,
             {"enableCrossPartitionQuery": True},
