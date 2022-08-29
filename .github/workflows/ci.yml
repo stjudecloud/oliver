@@ -22,13 +22,6 @@ jobs:
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
-      - name: Cache Docker
-        uses: actions/cache@v1
-        with:
-          path: /var/lib/docker/
-          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
       - name: Install Dependencies
         run: |
           sudo apt-get update
