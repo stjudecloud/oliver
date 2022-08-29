@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.8 (2022-08-29)
+### Fix
+* Fixes linting error ([`3e4cbaa`](https://github.com/stjudecloud/oliver/commit/3e4cbaad6ec392d26bbf1dfba29e6aa06f419b8a))
+* Fixes packaging on pip and updates dependencies ([`e6c7a6a`](https://github.com/stjudecloud/oliver/commit/e6c7a6aaf16b955d1baed7a5df78ea3f49600693))
+* Adds boto deps back to main bundle ([`9f3853f`](https://github.com/stjudecloud/oliver/commit/9f3853ffdedff4a90da8c14aeeb505407f1e357b))
+
 ## v1.4.7 (2021-11-20)
 ### Fix
 * Removes the wheel package from dependencies altogether ([`083b720`](https://github.com/stjudecloud/oliver/commit/083b7209bd45a2f1cc4ac51b8226498b0bb4af56))
