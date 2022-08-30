@@ -35,7 +35,7 @@ def register_subparser(
     """
 
     subcommand = subparser.add_parser(
-        "inputs", help="Find all reported outputs for a given workflow."
+        "inputs", help="Find all reported inputs for a given workflow."
     )
     subcommand.add_argument("workflow-id", help="Cromwell workflow ID.")
     subcommand.add_argument(
