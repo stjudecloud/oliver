@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.9 (2022-09-01)
+### Fix
+* Fixes case where no jobs have yet started ([`e2bf9ee`](https://github.com/stjudecloud/oliver/commit/e2bf9ee8ee3caa07af766bacdb069e1a4a39d5e8))
+* Fixes the very valid objection by pylint ([`346fc78`](https://github.com/stjudecloud/oliver/commit/346fc78afe7bea593101f67ad11ff3bf96560f8c))
+* Fixes batching when some workflows aren't started ([`a6303ec`](https://github.com/stjudecloud/oliver/commit/a6303ec5a91ae04014aad34660c2fcb2a6d358aa))
+* Fixes wrong command line description for inputs ([`32b852e`](https://github.com/stjudecloud/oliver/commit/32b852e695982c11555de963e5a410b16c99e0a3))
+
 ## v1.4.8 (2022-08-29)
 ### Fix
 * Fixes linting error ([`3e4cbaa`](https://github.com/stjudecloud/oliver/commit/3e4cbaad6ec392d26bbf1dfba29e6aa06f419b8a))
