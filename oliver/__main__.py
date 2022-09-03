@@ -117,8 +117,11 @@ async def run() -> None:
     cromwell = api.CromwellAPI(
         server=args["cromwell_server"], version=args["cromwell_api_version"]
     )
-    await args["func"](args, cromwell)
-    await cromwell.close()
+
+    try:
+        await args["func"](args, cromwell)
+    finally:
+        await cromwell.close()
 
 
 def main() -> None:
