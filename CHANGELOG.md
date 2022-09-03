@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.10 (2022-09-03)
+### Fix
+* In the case of an error, be sure to close the cromwell server ([`662942a`](https://github.com/stjudecloud/oliver/commit/662942acc8fe7e5a07d03cac2cb447e1d3a09715))
+
 ## v1.4.9 (2022-09-01)
 ### Fix
 * Fixes case where no jobs have yet started ([`e2bf9ee`](https://github.com/stjudecloud/oliver/commit/e2bf9ee8ee3caa07af766bacdb069e1a4a39d5e8))
