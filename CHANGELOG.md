@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.11 (2022-09-05)
+### Fix
+* Fixes grid style for batches subcommand ([`433cda6`](https://github.com/stjudecloud/oliver/commit/433cda622d66f22557b45e2322f65f460766d12c))
+
 ## v1.4.10 (2022-09-03)
 ### Fix
 * In the case of an error, be sure to close the cromwell server ([`662942a`](https://github.com/stjudecloud/oliver/commit/662942acc8fe7e5a07d03cac2cb447e1d3a09715))
