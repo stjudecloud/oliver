@@ -106,7 +106,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
 
         results.append(r)
 
-    reporting.print_dicts_as_table(results, grid_style=args.get("grid-style"))
+    reporting.print_dicts_as_table(results, grid_style=args.get("grid_style"))
 
 
 def register_subparser(
