@@ -52,7 +52,7 @@ pendulum = "^2.0.5"
 python = "^3.9.7"
 requests = "^2.22.0"
 tabulate = "^0.8.6"
-typed-ast = "1.5.2"
+typed-ast = "1.5.4"
 tzlocal = "<3.0.0"
 
 [tool.poetry.dev-dependencies]
