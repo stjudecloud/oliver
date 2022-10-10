@@ -1,4 +1,4 @@
-FROM broadinstitute/cromwell:83-b3f8906
+FROM broadinstitute/cromwell:85-07d4a74
 LABEL maintainer "St. Jude Cloud Team <support@stjude.cloud>"
 
 ADD cromwell.conf /app/cromwell.conf
