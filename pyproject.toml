@@ -57,7 +57,7 @@ tzlocal = "<3.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.11b1"
-boto3-stubs = "^1.24.61"
+boto3-stubs = "^1.26.3"
 mkdocs = "^1.0.4"
 mkdocs-bootswatch = "^1.0"
 mypy = "^0.910"
