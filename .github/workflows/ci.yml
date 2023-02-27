@@ -1,9 +1,9 @@
-name: CI
+name: Oliver CI
 on:
-    push:
-      branches:
-        - master
-    pull_request:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   integration-tests:
@@ -14,7 +14,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: "3.10"
       - name: Cache Dependencies
         uses: actions/cache@v1
         with:
