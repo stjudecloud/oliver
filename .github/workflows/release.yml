@@ -1,4 +1,4 @@
-name: Release
+name: Oliver Release
 on:
   push:
     branches:
