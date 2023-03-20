@@ -18,21 +18,11 @@ classifiers = [
 description = "An opinionated Cromwell orchestration system"
 documentation = "https://stjudecloud.github.io/oliver/"
 homepage = "https://stjudecloud.github.io/oliver/"
-include = [
-  "*.txt",
-  "*.md",
-]
-keywords = [
-  "bioinformatics",
-  "genomics",
-  "workflows",
-  "cromwell",
-]
+include = ["*.txt", "*.md"]
+keywords = ["bioinformatics", "genomics", "workflows", "cromwell"]
 license = "MIT"
 name = "stjudecloud-oliver"
-packages = [
-  {include = "oliver"},
-]
+packages = [{ include = "oliver" }]
 readme = "README.md"
 repository = "https://github.com/stjudecloud/oliver"
 version = "1.4.11"
@@ -45,7 +35,7 @@ aiohttp = "^3.8"
 azure-cosmos = "^4.3"
 boto3 = "^1.26"
 logzero = "^1.7"
-mypy-boto3 = {extras = ["batch", "logs"], version = "^1.26"}
+mypy-boto3 = { extras = ["batch", "logs"], version = "^1.26" }
 mypy_boto3_batch = "^1.26"
 mypy_boto3_logs = "^1.26"
 pendulum = "^2.1"
