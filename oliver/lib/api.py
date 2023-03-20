@@ -42,6 +42,7 @@ class CromwellAPI:
     async def close(self) -> None:
         await self.session.close()
 
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     async def _api_call(
         self,
         route: str,
@@ -53,7 +54,7 @@ class CromwellAPI:
         if self.route_override:
             route = self.route_override
 
-        logger.debug(f"{method} {route}")
+        logger.debug("%s %s", method, route)
         url = urljoin(self.server, route).format(version=self.version)
 
         if params is None:
@@ -122,8 +123,10 @@ class CromwellAPI:
         try:
             if response_text:
                 content = json.loads(response_text)
-        except:
+        # pylint: disable=broad-exception-caught
+        except Exception:
             pass
+        # pylint: enable=broad-exception-caught
 
         if not status_code // 200 == 1:
             message = f"Server returned status code {status_code}."
@@ -147,6 +150,7 @@ class CromwellAPI:
 
         return status_code, content
 
+    # pylint: disable=too-many-arguments
     async def post_workflows(
         self,
         workflowSource: Optional[str] = None,
@@ -181,12 +185,12 @@ class CromwellAPI:
             "workflowDependencies": workflowDependencies,
         }
 
-        logger.debug(f"workflowSource: {workflowSource}")
-        logger.debug(f"workflowUrl: {workflowUrl}")
-        logger.debug(f"workflowInputs: {workflowInputs}")
-        logger.debug(f"workflowOptions: {workflowOptions}")
-        logger.debug(f"labels: {labels}")
-        logger.debug(f"workflowDependencies: {workflowDependencies}")
+        logger.debug("workflowSource: %s", workflowSource)
+        logger.debug("workflowUrl: %s", workflowUrl)
+        logger.debug("workflowInputs: %s", workflowInputs)
+        logger.debug("workflowOptions: %s", workflowOptions)
+        logger.debug("labels: %s", labels)
+        logger.debug("workflowDependencies: %s", workflowDependencies)
 
         _, data = await self._api_call(
             "api/workflows/{version}",
@@ -315,6 +319,7 @@ class CromwellAPI:
 
     async def get_workflows_metadata(
         self,
+        # pylint: disable=redefined-builtin
         id: str,
         includeKey: Optional[List[str]] = None,
         excludeKey: Optional[List[str]] = None,

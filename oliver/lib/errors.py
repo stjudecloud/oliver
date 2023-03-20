@@ -28,6 +28,6 @@ def report(
     logger.error(message)
     if suggest_report:
         logger.error("")
-        logger.error(f"Please report this error at {constants.OLIVER_ISSUE_URL}")
+        logger.error("Please report this error at %s", constants.OLIVER_ISSUE_URL)
     if fatal:
         sys.exit(exitcode)

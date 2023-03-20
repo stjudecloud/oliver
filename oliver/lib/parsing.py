@@ -12,8 +12,10 @@ def is_url(url_string: str) -> bool:
     try:
         scheme = urlparse(url_string).scheme
         return scheme in ("http", "https")
-    except:
+    # pylint: disable=broad-exception-caught
+    except Exception:
         return False
+    # pylint: enable=broad-exception-caught
 
 
 def parse_workflow(workflow: str) -> Dict[str, str]:
@@ -38,6 +40,7 @@ def parse_workflow(workflow: str) -> Dict[str, str]:
     return {}
 
 
+# pylint: disable=too-many-arguments
 def parse_workflow_inputs(
     workflow_inputs: List[str],
     job_name: Optional[str] = None,
@@ -89,10 +92,10 @@ def parse_cmdline_arg(arg: str) -> Tuple[str, str, Dict[str, Any]]:
     source_type = ""
     result = {}
 
-    for type, regex in patterns:
+    for _type, regex in patterns:
         arg_match = re.match(regex, arg)
         if arg_match:
-            arg_type = type
+            arg_type =_type
             suffix = arg_match.group(1)
             source_match = re.match(r"(\S+)=(\S+)", suffix)
             if source_match:
@@ -107,13 +110,15 @@ def parse_cmdline_arg(arg: str) -> Tuple[str, str, Dict[str, Any]]:
                 try:
                     with open(suffix, "rb") as f:
                         result = json.loads(f.read())
-                except:
+                # pylint: disable=broad-exception-caught
+                except Exception:
                     errors.report(
                         f"Could not parse JSON for file: {arg}.",
                         fatal=True,
                         exitcode=errors.ERROR_INVALID_INPUT,
                     )
                 break
+                # pylint: enable=broad-exception-caught
             # source_type = "unknown"
             errors.report(
                 f"Not a valid input: {arg}.",

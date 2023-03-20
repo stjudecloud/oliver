@@ -39,7 +39,7 @@ def localize_date_from_timestamp(
     if already_localized:
         tz = get_localzone()
 
-    logger.debug(f"Converting using timezone: {tz}")
+    logger.debug("Converting using timezone: %s", tz)
 
     return (
         pendulum.from_timestamp(timestamp, tz=tz)
@@ -64,7 +64,7 @@ def duration_to_text(duration: timedelta) -> str:
 
     return " ".join(parts)
 
-
+# pylint: disable=too-many-locals,too-many-branches
 def print_dicts_as_table(
     rows: List[Dict[str, Any]],
     grid_style: Optional[str] = None,

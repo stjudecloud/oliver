@@ -7,6 +7,7 @@ from logzero import logger
 from . import api, batch, constants
 
 
+# pylint: disable=too-many-arguments,too-many-locals
 async def get_workflows(
     cromwell: api.CromwellAPI,
     submission_time_hours_ago: Optional[int] = None,
@@ -153,7 +154,7 @@ async def get_workflows(
     if statuses:
         workflows = list(filter(lambda x: x["status"] in statuses, workflows))
 
-    logger.info(f"Found {len(workflows)} eligible workflows given search criteria.")
+    logger.info("Found %d eligible workflows given search criteria.", len(workflows))
     return workflows
 
 
