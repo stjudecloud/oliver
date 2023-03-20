@@ -33,7 +33,9 @@ def register_subparser(
     """
 
     subcommand = subparser.add_parser(
-        SUBCOMMAND_NAME, aliases=SUBCOMMAND_ALIASES, help=__doc__.split('\n', maxsplit=1)[0]
+        SUBCOMMAND_NAME,
+        aliases=SUBCOMMAND_ALIASES,
+        help=__doc__.split("\n", maxsplit=1)[0],
     )
 
     subcommand.set_defaults(func=call)
