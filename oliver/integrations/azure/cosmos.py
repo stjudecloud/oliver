@@ -32,11 +32,13 @@ class CosmosAPI:
     def query(
             self, database_id: str = "TES", container_id: str = "Tasks", where: str = ""
     ) -> Any:
+        # pylint: disable=no-member
         return self.client.QueryItems( # type: ignore
             "dbs/" + database_id + "/colls/" + container_id,
             "SELECT * FROM " + container_id + " r " + where,
             {"enableCrossPartitionQuery": True},
         )
+        # pylint: enable=no-member
 
 
 async def call(

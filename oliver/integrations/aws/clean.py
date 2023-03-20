@@ -47,4 +47,4 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         cmd = f"aws s3 rm --recursive {workflow_root_folder}/{workflow.get('id')}/"
         print(cmd)
 
-    logger.info(f"Found {len(workflows)} workflows.")
+    logger.info("Found %d workflows.", len(workflows))

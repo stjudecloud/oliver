@@ -15,6 +15,7 @@ def report_failure(
         report_failure(f, indent + step)
 
 
+# pylint: disable=too-many-locals,too-many-branches,too-many-statements
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
@@ -69,16 +70,6 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         for process in cur_call:
             attempt = process.get("attempt")
             shard = process.get("shardIndex")
-
-            # TODO: experimental, this code can be removed in the future if no
-            # runtime errors are raised. If they are raised, we'll need to
-            # further flesh out how Cromwell is reporting results.
-            if not attempt:
-                errors.report(
-                    "Expected key is missing! The code needs to be updated, please contact the author!",
-                    fatal=True,
-                    exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
-                )
 
             call_start_date = process.get("start")
             call_end_date = process.get("end")

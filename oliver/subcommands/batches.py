@@ -19,6 +19,7 @@ SUBCOMMAND_NAME = "batches"
 SUBCOMMAND_ALIASES = ["b"]
 
 
+# pylint: disable=too-many-locals
 async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     """Execute the subcommand.
 
@@ -52,12 +53,14 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
 
     results = []
 
+    # pylint: disable=logging-not-lazy
     if args.get("show_oliver_job_groups"):
         logger.warning(
             "You specified you'd like to see job group names. "
             + "This significantly increases runtime due to the need to query metadata about each workflow. "
             + "This may take a while!"
         )
+    # pylint: enable=logging-not-lazy
 
     for batch_num, batch_workflows in aggregation.items():
         r = {"Batch": batch_num, "# of Jobs": len(batch_workflows)}
@@ -93,7 +96,7 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
             r["Start Time"] = "Not yet started"
         else:
             _sorted_workflows = sorted(batch_workflows_with_times, key=lambda x: x.get("start")) # type: ignore
-            earliest_start_time = min([x.get("start") for x in _sorted_workflows])
+            earliest_start_time = min(x.get("start") for x in _sorted_workflows)
             r["Start Time"] = reporting.localize_date(earliest_start_time)
 
         # end time

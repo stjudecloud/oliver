@@ -23,16 +23,6 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
             attempt = process.get("attempt")
             shard = process.get("shardIndex")
 
-            # TODO: experimental, this code can be removed in the future if no
-            # runtime errors are raised. If they are raised, we'll need to
-            # further flesh out how Cromwell is reporting results.
-            if not attempt:
-                errors.report(
-                    "Expected key is missing! The code needs to be updated, please contact the author!",
-                    fatal=True,
-                    exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
-                )
-
             if (
                 attempt == args["attempt"]
                 and shard == args["shard"]

@@ -2,7 +2,7 @@ import argparse
 
 from typing import Any, Dict, List
 
-from ..lib import api, errors, reporting
+from ..lib import api, reporting
 
 
 async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict[str, str]]:
@@ -29,17 +29,6 @@ async def get_logs(cromwell: api.CromwellAPI, workflow_id: str) -> List[Dict[str
 
             attempt = process.get("attempt")
             shard = process.get("shardIndex")
-
-            # TODO: experimental, this code can be removed in the future if no
-            # runtime errors are raised. If they are raised, we'll need to
-            # further flesh out how Cromwell is reporting results.
-            if not attempt:
-                errors.report(
-                    "Expected key is missing! The code needs to be updated, "
-                    + "please contact the author!",
-                    fatal=True,
-                    exitcode=errors.ERROR_UNEXPECTED_RESPONSE,
-                )
 
             stdout = process.get("stdout", "")
             stderr = process.get("stderr", "")
