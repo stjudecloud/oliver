@@ -52,7 +52,12 @@ def get_workflow_batches(
                 exitcode=errors.ERROR_INVALID_INPUT,
             )
 
-    logger.info("Targetting all jobs in batch(es): %s (original=%s, relative=%s).", ', '.join([str(b) for b in _batches]), ', '.join([str(b) for b in batches]), relative)
+    logger.info(
+        "Targetting all jobs in batch(es): %s (original=%s, relative=%s).",
+        ", ".join([str(b) for b in _batches]),
+        ", ".join([str(b) for b in batches]),
+        relative,
+    )
     return list(filter(lambda w: w.get("batch") in _batches, _workflows))
 
 

@@ -95,7 +95,7 @@ def parse_cmdline_arg(arg: str) -> Tuple[str, str, Dict[str, Any]]:
     for _type, regex in patterns:
         arg_match = re.match(regex, arg)
         if arg_match:
-            arg_type =_type
+            arg_type = _type
             suffix = arg_match.group(1)
             source_match = re.match(r"(\S+)=(\S+)", suffix)
             if source_match:

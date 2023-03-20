@@ -95,13 +95,21 @@ def get_aws_batch_jobs(
                     continue
 
                 if start_time_filter > this_jobs_start_time:
-                    logger.debug("Job disqualified because %s > %s.", reporting.localize_date_from_timestamp(start_time_filter), reporting.localize_date_from_timestamp(this_jobs_start_time))
+                    logger.debug(
+                        "Job disqualified because %s > %s.",
+                        reporting.localize_date_from_timestamp(start_time_filter),
+                        reporting.localize_date_from_timestamp(this_jobs_start_time),
+                    )
                 elif end_time_filter < this_jobs_end_time:
-                    logger.debug("Job disqualified because %s < %s.", reporting.localize_date_from_timestamp(end_time_filter), reporting.localize_date_from_timestamp(this_jobs_end_time))
+                    logger.debug(
+                        "Job disqualified because %s < %s.",
+                        reporting.localize_date_from_timestamp(end_time_filter),
+                        reporting.localize_date_from_timestamp(this_jobs_end_time),
+                    )
                 else:
                     results.append(new_job)
 
-    return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0)) # type: ignore
+    return list(sorted(results, key=lambda x: x["start"] if x.get("start") else 0))  # type: ignore
 
 
 # pylint: disable=too-many-branches
@@ -228,19 +236,23 @@ def write_log(
         os.makedirs(calldir)
 
     # summary
-    with open(os.path.join(calldir, "summary.txt"), mode="w", encoding="utf-8") as cur_file:
+    with open(
+        os.path.join(calldir, "summary.txt"), mode="w", encoding="utf-8"
+    ) as cur_file:
         cur_file.write("== Cromwell ==\n\n")
         for k, v in cur_call.items():
             cur_file.write(f"{k.capitalize()}: {v}\n")
 
     for batch_job in candidate_batch_jobs:
-        logger.info("Writing info for %s.", batch_job.get('id'))
+        logger.info("Writing info for %s.", batch_job.get("id"))
         batchdir = os.path.join(calldir, "batch-job-" + batch_job.get("id", ""))
         if not os.path.isdir(batchdir):
             os.makedirs(batchdir)
 
         # summary
-        with open(os.path.join(batchdir, "summary.txt"), mode="w", encoding="utf-8") as cur_file:
+        with open(
+            os.path.join(batchdir, "summary.txt"), mode="w", encoding="utf-8"
+        ) as cur_file:
             cur_file.write("== AWS batch ==\n\n")
             for k, v in batch_job.items():
                 cur_file.write(f"{k.capitalize()}: {v}\n")
@@ -257,7 +269,9 @@ def write_log(
         assert len(jobs) == 1
         logstream = jobs[0].get("container", {}).get("logStreamName", "")
 
-        with open(os.path.join(batchdir, "cloudwatch-logs.txt"), mode="w", encoding="utf-8") as cur_file:
+        with open(
+            os.path.join(batchdir, "cloudwatch-logs.txt"), mode="w", encoding="utf-8"
+        ) as cur_file:
             success = False
 
             for logstream_name in [logstream, logstream + "-proxy"]:
@@ -294,10 +308,22 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
         end_time_filter,
     ) = await get_calls_and_times_for_workflows(args, cromwell)
 
-    logger.info("Attempting to match up %s failed calls with associated AWS logs.", len(failed_calls))
+    logger.info(
+        "Attempting to match up %s failed calls with associated AWS logs.",
+        len(failed_calls),
+    )
     for cur_call in failed_calls:
-        logger.debug("  [*] %s (%s -> %s)",cur_call.get('name'), cur_call.get('startReadable'), cur_call.get('endReadable'))
-    logger.info("Searching from %s -> %s.", reporting.localize_date_from_timestamp(start_time_filter), reporting.localize_date_from_timestamp(end_time_filter))
+        logger.debug(
+            "  [*] %s (%s -> %s)",
+            cur_call.get("name"),
+            cur_call.get("startReadable"),
+            cur_call.get("endReadable"),
+        )
+    logger.info(
+        "Searching from %s -> %s.",
+        reporting.localize_date_from_timestamp(start_time_filter),
+        reporting.localize_date_from_timestamp(end_time_filter),
+    )
     aws_batch_jobs = get_aws_batch_jobs(
         args, batch_client, start_time_filter, end_time_filter
     )
@@ -305,7 +331,13 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
     logger.info("Found %s matching AWS batch jobs.", len(aws_batch_jobs))
 
     for job in aws_batch_jobs:
-        logger.debug("  [*] %s-%s (%s -> %s)",job.get('name'), job.get('id'), job.get('startReadable'), job.get('endReadable'))
+        logger.debug(
+            "  [*] %s-%s (%s -> %s)",
+            job.get("name"),
+            job.get("id"),
+            job.get("startReadable"),
+            job.get("endReadable"),
+        )
 
     for cur_call in failed_calls:
         candidate_batch_jobs = []
@@ -324,7 +356,12 @@ async def call(args: Dict[str, Any], cromwell: api.CromwellAPI) -> None:
                 candidate_batch_jobs.append(batch_job)
 
         if candidate_batch_jobs:
-            logger.debug("Found %s candidate batch jobs for %s/%s.", len(candidate_batch_jobs), cur_call.get('workflow_id'), cur_call.get('name'))
+            logger.debug(
+                "Found %s candidate batch jobs for %s/%s.",
+                len(candidate_batch_jobs),
+                cur_call.get("workflow_id"),
+                cur_call.get("name"),
+            )
 
             write_log(
                 batch_client,

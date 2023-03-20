@@ -64,6 +64,7 @@ def duration_to_text(duration: timedelta) -> str:
 
     return " ".join(parts)
 
+
 # pylint: disable=too-many-locals,too-many-branches
 def print_dicts_as_table(
     rows: List[Dict[str, Any]],
