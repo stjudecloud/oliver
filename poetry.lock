@@ -1722,19 +1722,18 @@ python2 = ["typed-ast (>=1.4.0,<1.5.0)"]
 
 [[package]]
 name = "mypy-boto3"
-version = "1.26.95"
-description = "Type annotations for boto3 1.26.95 master module generated with mypy-boto3-builder 7.13.0"
+version = "1.26.99"
+description = "Type annotations for boto3 1.26.99 master module generated with mypy-boto3-builder 7.14.2"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mypy-boto3-1.26.95.tar.gz", hash = "sha256:965bc52a29ddf9218551df1160d75fb5aca193f3840856ff846d1be9df93ca06"},
-    {file = "mypy_boto3-1.26.95-py3-none-any.whl", hash = "sha256:887dd41cb0448de4a5c7383ac065e9d803196a8157e347686255a2f7607c6688"},
+    {file = "mypy-boto3-1.26.99.tar.gz", hash = "sha256:c6792a0261263fb0bfec1bc513563258eea7c2ffc03132bfe313d797534f21c0"},
+    {file = "mypy_boto3-1.26.99-py3-none-any.whl", hash = "sha256:77acc89847f75f3d32631990bfe7b9a557e499fe35b6b6e4b1895801e8a4a5da"},
 ]
 
 [package.dependencies]
 boto3 = "*"
-typing-extensions = ">=4.1.0"
 
 [[package]]
 name = "mypy-boto3-batch"
