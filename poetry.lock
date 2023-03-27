@@ -1738,18 +1738,15 @@ typing-extensions = ">=4.1.0"
 
 [[package]]
 name = "mypy-boto3-batch"
-version = "1.26.34"
-description = "Type annotations for boto3.Batch 1.26.34 service generated with mypy-boto3-builder 7.12.0"
+version = "1.26.98"
+description = "Type annotations for boto3.Batch 1.26.98 service generated with mypy-boto3-builder 7.14.2"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mypy-boto3-batch-1.26.34.tar.gz", hash = "sha256:3b9ed98ae9acebcf37203924e22f1832e4bc135422a062f31c435ab2a8e1c065"},
-    {file = "mypy_boto3_batch-1.26.34-py3-none-any.whl", hash = "sha256:cab64072ec72f29145c298c68564652963960f8c7ef4b04a38ad7fc3385667e6"},
+    {file = "mypy-boto3-batch-1.26.98.tar.gz", hash = "sha256:10801f04690dd2a82ac25d14714176aa8308abd47cd42d8fe6e43f31ee15ac74"},
+    {file = "mypy_boto3_batch-1.26.98-py3-none-any.whl", hash = "sha256:6b87ea578a797dd31b65b73e62c4fa9bb3977e042bf30ff4f51235740250aaad"},
 ]
-
-[package.dependencies]
-typing-extensions = ">=4.1.0"
 
 [[package]]
 name = "mypy-boto3-logs"
