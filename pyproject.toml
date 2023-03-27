@@ -43,7 +43,7 @@ python = "^3.9"
 requests = "^2.28"
 tabulate = "^0.9"
 typed-ast = "^1.5"
-tzlocal = "<3.0.0"
+tzlocal = "<5.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^23"
